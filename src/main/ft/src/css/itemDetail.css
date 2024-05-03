@@ -1,0 +1,52 @@
+.itemDetail {
+  padding: 2%;
+}
+
+.itemDetail img {
+  width: 100%;
+  height: auto;
+}
+
+.itemDetail .rating {
+  margin-bottom: 1%;
+}
+
+.itemDetail .tag {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 1% 4%;
+  margin-right: 2%;
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: black;
+  background-color: lightgrey;
+  border: 1px solid grey;
+  cursor: pointer;
+}
+
+.itemDetail .tag:hover {
+  background-color: grey;
+  color: white;
+}
+
+.itemDetail #nowPrice {
+  text-decoration: line-through;
+  line-height: 1.5;
+  font-size: 0.7rem;
+}
+
+.itemDetail .option-button {
+  margin: 0 2%;
+}
+
+.itemDetail .total-price {
+  font-weight: bold;
+}
+
+.itemDetail .action-button {
+  margin-right: 2%;
+}
+
+.itemDetail .action-button:last-child {
+  margin-right: 0;
+}

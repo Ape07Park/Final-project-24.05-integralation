@@ -1,0 +1,29 @@
+/* ReviewForm.css */
+
+.rating {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 10px; /* Add margin between the rating stars and other elements */
+}
+
+.rating .icon {
+  font-size: 2rem;
+  color: #ccc;
+  cursor: pointer;
+}
+
+.rating .icon:hover,
+.rating .icon.active {
+  color: #ffbb00;
+}
+
+/* Add margin between each form input */
+form > div {
+  margin-bottom: 10px;
+}
+
+/* Add margin between the label and input */
+form label {
+  display: block;
+  margin-bottom: 10px;
+}

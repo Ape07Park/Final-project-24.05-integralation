@@ -1,0 +1,33 @@
+.itemInsert {
+  text-align: center;
+}
+
+.itemInsert .itemInsert-card {
+  width: 80%;
+  display: inline-block;
+}
+
+.itemInsert .form-item {
+  margin-bottom: 10px;
+  width: 90%;
+}
+
+.itemInsert .options-container,
+.itemInsert .counts-container,
+.itemInsert .tags-container,
+.itemInsert .images-container {
+  text-align: left;
+  margin-left: 50px;
+  margin-bottom: 10px;
+}
+
+.itemInsert .form-button {
+  margin-bottom: 10px;
+  padding: 5px 10px;
+  min-width: unset;
+}
+
+.itemInsert .form-image {
+  width: 70%;
+  height: 400px;
+}

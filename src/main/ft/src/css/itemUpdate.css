@@ -1,0 +1,51 @@
+.itemUpdate {
+  text-align: center;
+}
+
+.itemUpdate .card {
+  width: 80%;
+  display: inline-block;
+}
+
+.itemUpdate .card-content {
+  width: 90%;
+  display: inline-block;
+  text-align: center;
+}
+
+.itemUpdate .form-input {
+  width: 90%;
+  margin-bottom: 10px;
+}
+
+.itemUpdate .options-section,
+.itemUpdate .tags-section,
+.itemUpdate .image-upload-section {
+  text-align: left;
+  margin-left: 50px;
+  margin-bottom: 10px;
+}
+
+.itemUpdate .options-section label,
+.itemUpdate .tags-section label {
+  margin-bottom: 10px;
+}
+
+.itemUpdate .option-input,
+.itemUpdate .count-input,
+.itemUpdate .tag-input {
+  margin-right: 10px;
+  width: 20%;
+}
+
+.itemUpdate .button {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 5px 10px;
+  min-width: unset;
+}
+
+.itemUpdate .image-preview {
+  width: 70%;
+  height: 400px;
+}
