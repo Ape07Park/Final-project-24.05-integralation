@@ -110,7 +110,7 @@ export default function SignIn() {
               margin="normal"
               fullWidth
               id="email"
-              label="이메일"
+              label="이메일" 
               name="email"
               autoComplete="email"
               autoFocus

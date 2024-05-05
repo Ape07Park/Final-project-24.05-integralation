@@ -95,8 +95,8 @@ export function logout() {
 // --------------------- #login 끝 ----------------------
 
 /*========================= # Authentication =========================*/
-export function authRegister({ email, password, name, addr, detailAddr, 
-  tel, req, def, isAdmin}) { //  사용처에서 obj로 처리하기에 그것에 맞춰서 제공 
+export function authRegister({ email, password, name, postCode, addr, detailAddr, 
+  tel, req}) { //  사용처에서 obj로 처리하기에 그것에 맞춰서 제공 
   console.log('firebase:register():', email, password);
   createUserWithEmailAndPassword(auth, email, password) 
 
@@ -107,18 +107,17 @@ export function authRegister({ email, password, name, addr, detailAddr,
         email: email,
         password:password,
         name: name,
+        postCode:postCode,
         addr: addr,
         detailAddr: detailAddr,
         tel: tel,
         req: req,
-        def: def,
-        isAdmin: isAdmin
       })
-      console.log("User profile  updated");
+      console.log("User profile updated");
     })
     .then(() => {
-      insertUserData(email, password, name, addr, detailAddr, tel, 
-        req, def, isAdmin );
+      insertUserData(email, password, name, postCode, addr, detailAddr, tel, 
+        req );
         console.log("User added to Database");
     })
     .then(() => {logout()})
@@ -168,8 +167,8 @@ export function authRemoveUser() {
 /*========================= # Authentication 끝=========================*/
 
 /*========================= DAO =========================*/
-function insertUserData(email, password, name, addr, detailAddr, 
-  tel, req, def, isAdmin) {
+function insertUserData(email, password, name, postCode, addr, detailAddr, 
+  tel, req, ) {
   if (!email) {
     console.error("이메일이 유효하지 않습니다.");
     return;
@@ -180,12 +179,11 @@ function insertUserData(email, password, name, addr, detailAddr,
     email: email,
     password: password,
     name: name,
+    postCode:postCode,
     addr: addr,
     detailAddr: detailAddr,
     tel: tel,
     req: req,
-    def: def,
-    isAdmin: isAdmin
   }).then(() => {
     console.log("사용자 정보가 성공적으로 저장되었습니다.");
   }).catch((error) => {
@@ -201,6 +199,7 @@ function insertUserDataWithSocial(email, displayName) {
     email: email,
     name: displayName,
     password:'N/A', 
+    postCode:'',
     addr: '',
     detailAddr: '',
     tel: '',
@@ -240,7 +239,7 @@ export async function selectUserData(email) {
 }
 
 export async function updateUserData(user) {
-  const { email, password, name, addr, detailAddr, tel, req } = user;
+  const { email, password, name, postCode, addr, detailAddr, tel, req } = user;
   try {
     // email이 정의되어 있을 때만 업데이트를 시도합니다.
     if (email) {
@@ -248,6 +247,7 @@ export async function updateUserData(user) {
       await update(ref(database, `users/${sanitizedEmail}`), {
         name,
         password,
+        postCode,
         addr,
         detailAddr,
         tel,

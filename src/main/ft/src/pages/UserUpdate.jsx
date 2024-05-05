@@ -37,6 +37,7 @@ export default function UserUpdate() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [name, setName] = useState('');
+  const [postCode, setPostCode] = useState('');
   const [addr, setAddr] = useState('');
   const [detailAddr, setDetailAddr] = useState('');
   const [tel, setTel] = useState('');
@@ -57,9 +58,10 @@ export default function UserUpdate() {
   // 왜냐하면 유저 정보 업데이트는 유저가 진짜 그 유저가 맞는지 확인 후에 하기 때문에
   useEffect(() => {
     if (userInfo) {
-      const { email, name, addr, detailAddr, tel, req } = userInfo;
+      const { email, name, postCode, addr, detailAddr, tel, req } = userInfo;
       setEmail(email || '');
       setName(name || '');
+      setPostCode(postCode || '');
       setAddr(addr || '');
       setDetailAddr(detailAddr || '');
       setTel(tel || '');
@@ -74,6 +76,7 @@ export default function UserUpdate() {
   const handleComplete = data => {
     let fullAddress = data.address; // 선택된 주소
     let extraAddress = '';
+    let postCode = data.zonecode; // 우편번호
 
     if (data.addressType === 'R') {
       if (data.bname !== '') {
@@ -84,16 +87,19 @@ export default function UserUpdate() {
       }
       fullAddress += extraAddress !== '' ? ` (${extraAddress})` : '';
     }
-
     // 주소 설정
     setAddr(fullAddress);
+    setPostCode(postCode);
   }
+
+
+
 
   // 사용자 정보 업데이트 함수
   const handleUpdate = async () => {
     // 필수 정보가 모두 입력되었는지 확인
     if (!email || !password || !confirmPassword || !name
-      || !addr || !detailAddr || !tel) {
+      || !postCode || !addr || !detailAddr || !tel) {
       alert('모든 필수 정보를 입력해주세요.');
       return;
     }
@@ -235,6 +241,15 @@ export default function UserUpdate() {
                   >
                     Find Postal Code
                   </Button>
+                </Grid>
+                
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="postCode"
+                    value={postCode}
+                    onChange={(e) => setPostCode(e.target.value)} // 우편번호 입력 시 상태 업데이트
+                  />
                 </Grid>
 
                 <Grid item xs={12}>

@@ -16,7 +16,6 @@ export default function UserInfo() {
   const auth = getAuth();
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -34,7 +33,6 @@ export default function UserInfo() {
         try {
           const info = await selectUserData(currentUserEmail);
           setUserInfo(info);
-          setIsAdmin(info && info.isAdmin === 1);
         } catch (error) {
           console.error('사용자 정보를 불러오는 중 에러:', error);
         }
@@ -79,6 +77,8 @@ export default function UserInfo() {
                 <InfoItem label="Name" value={userInfo?.name} />
               
                 <InfoItem label="Phone" value={userInfo?.tel} />
+
+                <InfoItem label="Phone" value={userInfo?.postCode} />
                
                 <InfoItem label="Address" value={userInfo?.addr} />
                 
@@ -87,12 +87,6 @@ export default function UserInfo() {
                 <InfoItem label="Delivery Request" value={userInfo?.req} />
               
                 <InfoItem label="Email Verified" value={userInfo?.emailVerified ? 'Yes' : 'No'} />
-               
-                {isAdmin && (
-                  <Typography variant="body1" color="error">
-                    <strong>Admin:</strong> Yes
-                  </Typography>
-                )}
               </Grid>
             </Grid>
             <Divider sx={{ my: 3 }} />
