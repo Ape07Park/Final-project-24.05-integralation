@@ -92,9 +92,6 @@ export default function UserUpdate() {
     setPostCode(postCode);
   }
 
-
-
-
   // 사용자 정보 업데이트 함수
   const handleUpdate = async () => {
     // 필수 정보가 모두 입력되었는지 확인
@@ -115,10 +112,11 @@ export default function UserUpdate() {
       email: email,
       password: password,
       name: name,
+      postCode: postCode,
       addr: addr,
       detailAddr: detailAddr,
       tel: tel,
-      req: req,
+      req: req
     };
 
     try {

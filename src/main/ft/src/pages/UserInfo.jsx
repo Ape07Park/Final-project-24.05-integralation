@@ -78,7 +78,7 @@ export default function UserInfo() {
               
                 <InfoItem label="Phone" value={userInfo?.tel} />
 
-                <InfoItem label="Phone" value={userInfo?.postCode} />
+                <InfoItem label="postCode" value={userInfo?.postCode} />
                
                 <InfoItem label="Address" value={userInfo?.addr} />
                 

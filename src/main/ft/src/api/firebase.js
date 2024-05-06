@@ -1,10 +1,11 @@
 import { initializeApp } from "firebase/app";
+import { adminInitializeApp } from 'firebase-admin/app';
 import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider,
   signInWithPopup, signOut, updateProfile, signInWithEmailAndPassword,
-  onAuthStateChanged, signInWithRedirect, OAuthProvider, deleteUser    } from "firebase/auth";
-import { v4 as uuid } from 'uuid';
+  onAuthStateChanged, OAuthProvider, deleteUser    } from "firebase/auth";
 import axios from 'axios';
 import {getDatabase, ref, set, get, remove, update } from "firebase/database";
+
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -120,6 +121,11 @@ export function authRegister({ email, password, name, postCode, addr, detailAddr
         req );
         console.log("User added to Database");
     })
+    // insert mysql
+    // .then(() => {
+    //   insertUserDataToMySql()
+    // })
+
     .then(() => {logout()})
 
     .catch((error) => {
@@ -203,17 +209,13 @@ function insertUserDataWithSocial(email, displayName) {
     addr: '',
     detailAddr: '',
     tel: '',
-    req: '',
-    def: 0,
-    isAdmin: 0
+    req: ''
   }).then(() => {
     console.log("사용자 정보가 성공적으로 저장되었습니다.");
   }).catch((error) => {
     console.error("사용자 정보 저장 중 오류가 발생했습니다:", error);
   });
 }
-
-// email이 undefined
 
 export async function selectUserData(email) {
 
@@ -274,6 +276,72 @@ export async function deleteUserData(email) {
   }
 }
 /*========================= DAO 끝 =========================*/
+
+/*========================= MySQL DAO =========================*/
+
+// export function insertUserDataToMySql() {
+// const admin = require('firebase-admin');
+// const mysql = require('mysql');
+
+// // Firebase Admin SDK 초기화
+// const serviceAccount = process.env.REACT_APP_FIREBASE_SERVICE_ACCOUNT_KEY_PASS;
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount),
+//   databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL
+// });
+
+// // MySQL 연결 설정
+// const mysqlConfig = {
+//   host: process.env.REACT_APP_MYSQL_HOST,
+//   user: process.env.REACT_APP_MYSQL_USER,
+//   password: process.env.REACT_APP_MYSQL_PASSWORD,
+//   database: process.env.REACT_APP_MYSQL_DB
+// };
+
+// // MySQL 연결 생성
+// const connection = mysql.createConnection(mysqlConfig);
+
+// // Firebase Authentication에서 사용자 이메일 가져오기
+// async function getUserEmail(uid) {
+//   try {
+//     const userRecord = await admin.auth().getUser(uid);
+//     return userRecord.email;
+//   } catch (error) {
+//     console.error('Error fetching user data:', error);
+//     throw error;
+//   }
+// }
+
+// // MySQL에 사용자 이메일 저장하기
+// async function saveUserEmailToMySQL(uid) {
+//   try {
+//     const userEmail = await getUserEmail(uid);
+//     const sql = 'INSERT INTO users (uid, email) VALUES (?, ?)';
+//     connection.query(sql, [uid, userEmail], (err, result) => {
+//       if (err) throw err;
+//       console.log('User email saved to MySQL:', result);
+//     });
+//   } catch (error) {
+//     console.error('Error saving user email to MySQL:', error);
+//   }
+// }
+
+// // Firebase Authentication 이벤트 리스너 설정 (예: 사용자가 로그인할 때마다)
+// admin.auth().onAuthStateChanged(async (user) => {
+//   if (user) {
+//     console.log('User logged in:', user.uid);
+//     await saveUserEmailToMySQL(user.uid);
+//   } else {
+//     console.log('User logged out');
+//   }
+// });
+
+// connection.end()
+// }
+
+
+
+/*========================= MySQL DAO 끝 =========================*/
 
 /*========================= 인증 상태, 관리자 확인 끝 ==================*/
 
