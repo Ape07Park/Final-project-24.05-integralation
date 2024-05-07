@@ -164,7 +164,7 @@ const handleComplete = data => {
           >
 
             <Typography component="h1" variant="h5">
-              회원가입 - * 표시 입력 필수
+              회원가입
             </Typography>
 
             <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
@@ -177,11 +177,12 @@ const handleComplete = data => {
                     name="email"
                     fullWidth
                     id="email"
-                    label="이메일 *"
+                    label="이메일"
                     autoFocus
                     value={userInfo.email}
                     onChange={handleChange}
                     onBlur={handleEmailBlur}
+                    required
                   />
                 </Grid>
 
@@ -189,12 +190,13 @@ const handleComplete = data => {
                   <TextField
                     fullWidth
                     name="password"
-                    label="비밀번호 *"
+                    label="비밀번호"
                     type="password"
                     id="password"
                     autoComplete="new-password"
                     value={userInfo.password}
                     onChange={handleChange}
+                    required
                   />
                 </Grid>
 
@@ -203,12 +205,13 @@ const handleComplete = data => {
                   <TextField
                     fullWidth
                     name="confirmPassword"
-                    label="비밀번호 확인 *"
+                    label="비밀번호 확인"
                     type="password"
                     id="confirmPassword"
                     autoComplete="confirmPassword"
                     value={userInfo.confirmPassword}
                     onChange={handleChange}
+                    required
                   />
                 </Grid>
 
@@ -217,11 +220,12 @@ const handleComplete = data => {
                   <TextField
                     fullWidth
                     id="name"
-                    label="이름 *"
+                    label="이름"
                     name="name"
                     autoComplete="name"
                     value={userInfo.name}
                     onChange={handleChange}
+                    required
                   />
                 </Grid>
 
@@ -243,11 +247,12 @@ const handleComplete = data => {
                   <TextField
                     fullWidth
                     id="postCode"
-                    label="우편번호 *"
+                    label="우편번호"
                     name="postCode"
                     autoComplete="sample6_postcode"
                     value={userInfo.postCode}
                     readOnly
+                    required                   
                   />
                 </Grid>
 
@@ -256,11 +261,12 @@ const handleComplete = data => {
                   <TextField
                     fullWidth
                     id="addr"
-                    label="주소 *"
+                    label="주소"
                     name="addr"
                     autoComplete="sample6_postcode"
                     value={userInfo.addr}
                     readOnly
+                    required                  
                   />
                 </Grid>
 
@@ -269,12 +275,13 @@ const handleComplete = data => {
                   <TextField
                     fullWidth
                     name='detailAddr'
-                    label="상세주소 *"
+                    label="상세주소"
                     type="text"
                     id="sample6_detailAddress"
                     autoComplete="sample6_deailAddress"
                     value={userInfo.detailAddr}
                     onChange={handleChange}
+                    required
                   />
                 </Grid>
 
@@ -283,12 +290,13 @@ const handleComplete = data => {
                   <TextField
                     fullWidth
                     name="tel"
-                    label="전화번호 *"
+                    label="전화번호"
                     type="tel"
                     id="tel"
                     maxLength="13"
                     value={userInfo.tel}
                     onChange={handleChange}
+                    required
                   />
                 </Grid>
 

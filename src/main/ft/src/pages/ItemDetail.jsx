@@ -497,6 +497,11 @@ export default function ItemDetail() {
   
     fetchItemWishCount();
   }, [iid]);
+
+  const handleOrder = () => {
+    navigate("/order");
+  }
+
   return (
     <Grid container spacing={2} className="itemDetail">
       {/* 왼쪽 여백 */}
@@ -618,7 +623,8 @@ export default function ItemDetail() {
               총 가격: {totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원
             </Typography>
             {/* 주문 및 장바구니 버튼 */}
-            <Button variant="contained" color="primary" style={{ marginBottom: '10px' }}>주문하기</Button>
+            <Button variant="contained" color="primary" style={{ marginBottom: '10px' }} 
+            onClick={handleOrder}>주문하기</Button> 
             <Button variant="contained" color="primary" style={{ marginBottom: '10px', marginLeft:5 }} onClick={handleAddToCart}>장바구니</Button>
             <Button variant="contained" color="primary" style={{ marginBottom: '10px', marginLeft:5, backgroundColor: '#808080' }}>비회원 주문하기</Button>
             <br/>

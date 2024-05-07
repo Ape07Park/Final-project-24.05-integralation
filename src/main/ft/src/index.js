@@ -17,6 +17,7 @@ import UserInfo from './pages/UserInfo';
 import UserUpdate from './pages/UserUpdate';
 import Kakao from './api/kakao';
 import WishItemList from './pages/WishItemList';
+import Order from './pages/OrderPage';
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
       { path: 'userUpdate', element: <UserUpdate/> },
       { path: 'callback/kakaotalk', element: <Kakao/> },
       { path: 'wish/list', element: <WishItemList/> },
+      { path: 'order', element: <Order/> },
     ]
   }
 ]);

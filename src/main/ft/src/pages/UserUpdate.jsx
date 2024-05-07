@@ -192,40 +192,44 @@ export default function UserUpdate() {
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Email *"
+                    label="Email"
                     value={email}
                     InputProps={{
                       readOnly: true, // readOnly 속성을 true로 설정하여 수정 불가능하게 함
                     }}
+                    required
                   />
                 </Grid>
 
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Password *"
+                    label="Password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)} // 비밀번호 입력 시 상태 업데이트
+                    required
                   />
                 </Grid>
 
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Confirm Password *"
+                    label="Confirm Password"
                     type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)} // 비밀번호 확인 입력 시 상태 업데이트
+                    required
                   />
                 </Grid>
 
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Name *"
+                    label="Name"
                     value={name}
                     onChange={(e) => setName(e.target.value)} // 이름 입력 시 상태 업데이트
+                    required
                   />
                 </Grid>
 
@@ -240,40 +244,44 @@ export default function UserUpdate() {
                     Find Postal Code
                   </Button>
                 </Grid>
-                
+
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
                     label="postCode"
                     value={postCode}
                     onChange={(e) => setPostCode(e.target.value)} // 우편번호 입력 시 상태 업데이트
+                    required
                   />
                 </Grid>
 
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Address *"
+                    label="Address"
                     value={addr}
                     onChange={(e) => setAddr(e.target.value)} // 주소 입력 시 상태 업데이트
+                    required
                   />
                 </Grid>
 
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Detail Address *"
+                    label="Detail Address"
                     value={detailAddr}
                     onChange={(e) => setDetailAddr(e.target.value)} // 상세 주소 입력 시 상태 업데이트
+                    required
                   />
                 </Grid>
 
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Phone Number *"
+                    label="Phone Number"
                     value={tel}
                     onChange={handleTelChange} // 전화번호 입력 시 상태 업데이트
+                    required
                   />
                 </Grid>
 
@@ -305,12 +313,15 @@ export default function UserUpdate() {
                       <MenuItem value="직접 입력">직접 입력</MenuItem>
                     </Select>
                   </FormControl>
-                  <TextField
-                    fullWidth
-                    label="Delivery Request *"
-                    value={req} // 선택한 값이 req로 전달되도록 수정
-                    onChange={(e) => setReq(e.target.value)} // 배송 요청 입력 시 상태 업데이트
-                  />
+                  {/* 직접 입력이 선택됐을 때만 TextField 표시 */}
+                  {messageType === '직접 입력' && (
+                    <TextField
+                      fullWidth
+                      label="Delivery Request"
+                      value={req} // 선택한 값이 req로 전달되도록 수정
+                      onChange={(e) => setReq(e.target.value)} // 배송 요청 입력 시 상태 업데이트
+                    />
+                  )}
                 </Grid>
               </Grid>
               {/* 사용자 정보 업데이트 버튼 */}

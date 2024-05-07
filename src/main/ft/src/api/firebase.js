@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { adminInitializeApp } from 'firebase-admin/app';
+
 import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider,
   signInWithPopup, signOut, updateProfile, signInWithEmailAndPassword,
   onAuthStateChanged, OAuthProvider, deleteUser    } from "firebase/auth";
@@ -339,8 +339,6 @@ export async function deleteUserData(email) {
 // connection.end()
 // }
 
-
-
 /*========================= MySQL DAO 끝 =========================*/
 
 /*========================= 인증 상태, 관리자 확인 끝 ==================*/
@@ -374,7 +372,7 @@ export async function getAdminUser(user) {
       // 관리자 여부 확인 후 맞으면 true 
       const isAdmin = admins.includes(user.email);   
       return { ...user, isAdmin };
-    }
+    } 
     return user;
   } catch (error) {
     console.error("Error getting admin user:", error);

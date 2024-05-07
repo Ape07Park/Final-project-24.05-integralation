@@ -29,23 +29,32 @@ public class CartController {
 
 	@PostMapping
 	public ResponseEntity<Boolean> addToCart(@RequestBody List<CartItemRequest> cartItems) {
-
+		// 받아온 상품 목록(cartItems)을 순회하면서 처리합니다.
 		for (CartItemRequest item : cartItems) {
+			System.out.println(item);
+			// 해당 상품 ID에 해당하는 장바구니 상품을 조회합니다.
 			CartItem existedItem = cartService.findCartItemByIid(item.getIid());
+
 			if (existedItem != null) {
-				int updatedCount = existedItem.getCount() + 1;
-				existedItem.setCount(updatedCount);
-				existedItem.calculateTotalPrice();
-				// existedItem.setEmail(user.getEmail);
+				// 이미 장바구니에 있는 상품인 경우
+				int updatedCount = existedItem.getCount() + 1; // 수량을 1 증가시킵니다.
+				existedItem.setCount(updatedCount); // 증가된 수량을 설정합니다.
+				existedItem.calculateTotalPrice(); // 상품의 총 가격을 다시 계산합니다.
+				existedItem.setEmail(existedItem.getEmail());
+				// 장바구니에 있는 상품의 수량을 업데이트합니다.
 				cartService.updateCartItem(item.getIid(), updatedCount);
 			} else {
+				// 장바구니에 없는 상품인 경우, 새로 추가합니다.
 				if (cartService.addToCart(item)) {
+					// 장바구니 추가가 성공한 경우 true를 반환합니다.
 					return ResponseEntity.ok(true);
 				} else {
+					// 장바구니 추가가 실패한 경우 BadRequest 상태코드를 반환합니다.
 					return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
 				}
 			}
 		}
+		// 모든 상품을 성공적으로 처리한 경우 true를 반환합니다.
 		return ResponseEntity.ok(true);
 	}
 
@@ -53,29 +62,26 @@ public class CartController {
 	public ResponseEntity<String> listCartItems(@PathVariable String email) {
 		List<CartItem> cartItems = cartService.listCartItems(email);
 		if (cartItems == null || cartItems.isEmpty()) {
-	        return ResponseEntity.notFound().build(); // 장바구니에 아이템이 없는 경우
-	    }
-		
-		JSONArray jsonArray = new JSONArray();
-		for (CartItem item : cartItems) {
-			JSONObject jObj = new JSONObject();
-			ItemOption lot = itemService.getItemsOptionIoid(item.getIoid());
-			jObj.put("iid", item.getIid());
-			jObj.put("name", item.getName());
-			jObj.put("salePrice", item.getSalePrice());
-			String saleDateStr = item.getSaleDate().toString();
-			jObj.put("saleDate", saleDateStr); // 날짜를 문자열로 변환하여 추가
-			String regDateStr = item.getRegDate().toString();
-			jObj.put("regDate", regDateStr);
-			jObj.put("price", item.getPrice());
-			jObj.put("img1", item.getImg1());
-			jObj.put("email", item.getEmail());
-			jObj.put("count", item.getCount());
-			jObj.put("totalPrice", item.getTotalPrice());
-			jObj.put("opcount", lot.getCount());
-			jsonArray.add(jObj);
+			return ResponseEntity.notFound().build(); // 장바구니에 아이템이 없는 경우
 		}
 
+		JSONArray jsonArray = new JSONArray();
+		for (CartItem item : cartItems) {
+			if (item.getIid() != 0) {
+				JSONObject jObj = new JSONObject();
+				jObj.put("iid", item.getIid());
+				jObj.put("name", item.getName());
+				jObj.put("salePrice", item.getSalePrice());
+				jObj.put("price", item.getPrice());
+				jObj.put("img1", item.getImg1());
+				jObj.put("email", item.getEmail());
+				jObj.put("count", item.getCount());
+				jObj.put("totalPrice", item.getTotalPrice());
+//				jObj.put("option", item.getOption());
+
+				jsonArray.add(jObj);
+			}
+		}
 		System.out.println(jsonArray);
 		// ResponseEntity를 사용하여 JSON 배열을 반환
 		return new ResponseEntity<>(jsonArray.toString(), HttpStatus.OK);
@@ -88,13 +94,13 @@ public class CartController {
 	}
 
 	@PostMapping("/delete")
-	public ResponseEntity<String> deleteCartItem(@RequestParam int cid) {
-		cartService.deleteCartItem(cid);
+	public ResponseEntity<String> deleteCartItem(@RequestParam int iid) {
+		cartService.deleteCartItem(iid);
 		return ResponseEntity.ok("카트 아이템이 성공적으로 삭제되었습니다");
 	}
 
 	@PostMapping("/deleteAll")
-	public ResponseEntity<String> deleteAllCartItems() {
+	public ResponseEntity<String> deleteCart(@RequestParam int cid) {
 		cartService.deleteAllCarts();
 		return ResponseEntity.ok("모든 카트 아이템이 성공적으로 삭제되었습니다");
 	}
