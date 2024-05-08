@@ -48,6 +48,12 @@ export default function ItemDetail() {
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [itemWishCount, setItemWishCount] = useState(0);
 
+  const [orderItems, setOrderItems] = useState([]);
+  
+
+ 
+
+
   useEffect(() => {
     const fetchItemData = async () => {
       try {
@@ -498,9 +504,39 @@ export default function ItemDetail() {
     fetchItemWishCount();
   }, [iid]);
 
+  // =================== order item 관련 ======================
+
   const handleOrder = () => {
-    navigate("/order");
+  if (!userInfo || !userInfo.email) {
+    // 사용자가 로그인되어 있지 않은 경우, 로그인 페이지로 리다이렉트
+    window.location.href = '/signIn'; // 로그인 페이지 URL을 실제로 사용하는 주소로 변경해주세요
+    return;
   }
+
+  // Ensure that selectedOptions has at least one option selected
+  if (selectedOptions.length === 0) {
+    alert("옵션을 선택해주세요");
+    return;
+  }
+
+  const orderItems = selectedOptions.map(option => ({
+    iid: item.iid, // db
+    ioid: option.ioid, // db
+    option: option.option, // db
+    name:item.name, // db
+    img:item.img1, // db
+    count: option.count, // db
+    price: item.price, // db
+  }));
+
+  // orderItems를 로컬 스토리지에 저장
+  localStorage.setItem('orderItems', JSON.stringify(orderItems)); //  객체나 배열을 JSON 문자열로 변환
+
+  // Order 페이지로 이동할 때 orderItems 상태를 함께 전달
+  navigate("/order", { state: { orderItems } });
+};    
+
+  // =================== order item 관련 끝======================
 
   return (
     <Grid container spacing={2} className="itemDetail">

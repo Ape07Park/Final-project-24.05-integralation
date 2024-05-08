@@ -36,7 +36,8 @@ public interface OrderDao {
 	Order getOrderByOid(int oid);
 	
 	// 주문 생성
-	@Insert("insert into `order` values (default, #{email}, #{status}, #{name}, #{postCode}, #{addr}, #{detailAddr},"
+	@Insert("insert into `order` values (default, #{email}, default, #{name},"
+			+ " #{postCode}, #{addr}, #{detailAddr},"
 			+ " #{tel}, #{req}, #{way}, #{totalPrice}, default, default")
 		void insertOrder(Order order);
 	
@@ -44,13 +45,7 @@ public interface OrderDao {
 	@Update("update `order` set isDeleted = 1 where oid = #{oid}")
 		void deleteOrder(int oid);
 	
-	
-	
-	
-	
-	
-	
-	
+		
 	/*
 	 * orderItem
 	 */
