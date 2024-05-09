@@ -1,6 +1,5 @@
 package com.example.ft.entity;
 
-import java.time.LocalDate; 
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
@@ -16,20 +15,16 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder   // 원하는 데이터만 골라서 처리 하겠다.
-
-public class Order {
-	private int oid;         
-	private String email;    
-	private String status;    
-	private String name;   
-	private String postCode;
-	private String addr;    
-	private String detailAddr;    
-	private String tel;    
-	private String req;    
-	private String way;    
+public class OrderHistory {
+	private int oid;           
+	private String status;   
 	private int totalPrice; 
+	private int count;
+	private int price;
+	private String name;   
+	private String img;
 	private LocalDateTime regDate;
-	private int isDeleted;  
+	
+	// 주문 날짜 추가할 것, option 추가할 것 
+	
 }
-

@@ -1,13 +1,16 @@
 package com.example.ft.dao;
 
-import java.util.List;
+import java.util.List; 
 
 import org.apache.ibatis.annotations.Insert; 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import com.example.ft.entity.Order;
+import com.example.ft.entity.OrderHistory;
 import com.example.ft.entity.OrderItem;
 
 /*
@@ -25,27 +28,23 @@ public interface OrderDao {
 	/*
 	 * order
 	 */
-	// 
-	
-	// 주문한 것들 조회
-	@Select("SELECT * FROM `order` WHERE email=#{email} AND isDeleted=0 ORDER BY regDate DESC")
-	List<Order> getOrderListByEmail(String email);
 	
 	// 주문 1개 가져오기
 	@Select("select * from `order` where oid=#{oid} and isDeleted=0")
 	Order getOrderByOid(int oid);
 	
 	// 주문 생성
-	@Insert("insert into `order` values (default, #{email}, default, #{name},"
-			+ " #{postCode}, #{addr}, #{detailAddr},"
-			+ " #{tel}, #{req}, #{way}, #{totalPrice}, default, default")
-		void insertOrder(Order order);
+	@Insert(" INSERT INTO `order` (email, status, name, postCode, addr, detailAddr, tel, req, "
+			+ " way, totalPrice, regDate, isDeleted) " +
+	        " VALUES (#{email}, '결재 완료', #{name}, #{postCode}, #{addr}, #{detailAddr}, #{tel}, #{req}, "
+	        + " 1, #{totalPrice}, default, default)")	
+	@Options(useGeneratedKeys = true, keyProperty = "oid") // 생성된 키 반환(return)
+	void insertOrder(Order order);
 	
 	// 주문 삭제
 	@Update("update `order` set isDeleted = 1 where oid = #{oid}")
 		void deleteOrder(int oid);
-	
-		
+			
 	/*
 	 * orderItem
 	 */
@@ -58,8 +57,21 @@ public interface OrderDao {
 			+  " WHERE oiid=#{oiid} and orderItem.isDeleted = 0")
 	List<OrderItem> getOrderItemListByOiid(int Oiid);
 	
-	@Insert("insert into orderItem values (default, #{oid}, #{iid}, #{ioid}, #{count}"
-			+ " ,#{price}, default")
-		void insertOrderItem(OrderItem orderItem);
+	// 주문 아이템 생성 및 order의 oid를 사용하여 삽입
+	@Insert(" INSERT INTO orderItem (oid, iid, ioid, count, price, isDeleted ) " +
+	        " VALUES (#{oid}, #{iid}, #{ioid}, #{count}, #{price}, default)")
+	void insertOrderItemWithOid(OrderItem orderItem); // 수정된 부분
+	
+	/*
+	 * orderHistory
+	 */
 			
+	// 주문 내역들 email로 가져오기
+	@Select("SELECT o.oid, o.status, o.totalPrice, oi.count, oi.price, i.name, i.img1  " +
+			"FROM `order` o " +
+			"JOIN orderItem oi ON o.oid = oi.oid " +
+			"JOIN item i ON oi.iid = i.iid " +
+			"WHERE o.email=#{email} AND o.isDeleted=0 AND oi.isDeleted=0 " +
+			"ORDER BY o.regDate DESC")
+	List<OrderHistory> getOrderHistoryList(String email);
 }

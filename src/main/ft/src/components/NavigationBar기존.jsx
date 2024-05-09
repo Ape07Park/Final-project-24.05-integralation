@@ -21,16 +21,18 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import ListIcon from '@mui/icons-material/List';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
+
 import LoginIcon from '@mui/icons-material/Login'; // login icon
 import LogoutIcon from '@mui/icons-material/Logout'; // logout icon
 import PersonAddIcon from '@mui/icons-material/PersonAdd'; // signUp
+
+
 import { Link } from 'react-router-dom';
 import '../css/nav.css';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import { Collapse, Stack } from '@mui/material';
+import { Collapse } from '@mui/material';
 import { useNavigate } from 'react-router-dom'; // useNavigate 추가
 import { useAuthContext } from "../context/AuthContext";
-import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -78,6 +80,7 @@ export default function NavigationBar() {
   const [isLoggedIn, setIsLoggedIn] = React.useState(false); // 기본적으로 로그아웃 상태
 
   // ============== user 관련 함수들 =================
+  const isAdmin = user && user.isAdmin == true;
 
   // 로그인 
   const handleLogin = () => {
@@ -101,10 +104,6 @@ export default function NavigationBar() {
     navigate('/userInfo');
   };
   // ============== user 관련 함수들 끝 =================
-
-  const handleToCart = () => {
-    navigate('/cartPage');
-  };
 
   const toggleDrawer = (newOpen) => () => {
     setDrawerOpen(newOpen);
@@ -148,6 +147,20 @@ export default function NavigationBar() {
             <ListItemIcon>
               <WhatshotIcon />
             </ListItemIcon>
+              {/* Render admin options if user is an admin */}
+      {isAdmin && (
+        <>
+          <ListItem disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                <ListIcon />
+              </ListItemIcon>
+              <ListItemText primary="Admin Option 1" />
+            </ListItemButton>
+          </ListItem>
+        </>
+      )}
+
             <ListItemText primary="특가" />
           </ListItemButton>
         </ListItem>
@@ -227,16 +240,9 @@ export default function NavigationBar() {
     }
   };
 
-  // asdsad
-  const handleHistory = (event) => {
-    event.preventDefault(); // 기본 이벤트 방지
-      navigate(`/OrderHistoryList/${user.email}`); // navigate 함수로 페이지 이동
-    
-  };
-
   return (
     <Box sx={{ flexGrow: 1, marginBottom: 2 }}>
-      <StyledAppBar position="static" className="styled-app-bar">
+      <StyledAppBar position="static">
         <Toolbar>
           <div>
             <Button onClick={toggleDrawer(true)} color="inherit"><MenuIcon /></Button>
@@ -244,17 +250,13 @@ export default function NavigationBar() {
               {DrawerList}
             </Drawer>
           </div>
+          <Link to={'/wish/list'}>찜</Link>
           <Box sx={{ flexGrow: 1 }} />
           <Typography
             variant="h6"
             noWrap
             component="div"
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              flex: '1'
-            }}
+            sx={{ display: { xs: 'none', sm: 'block' }, textAlign: 'center', fontWeight: 'bolder' }}
           >
             <Link to={'/'} className='mainPageLink'>FUNiture</Link>
           </Typography>
@@ -271,57 +273,31 @@ export default function NavigationBar() {
                 />
               </Search>
             </form>
-            <IconButton size="small" color="inherit" onClick={handleHistory}>
-                  <Stack direction="column" alignItems="center">
-                    <LoginIcon />
-                    <Typography variant="body2" sx={{ fontSize: '0.7rem' }}>주문내역</Typography>
-                  </Stack>
-                </IconButton>
-            <IconButton size="small" color="inherit" onClick={handleToCart}>
-              <Stack direction="column" alignItems="center">
-                <Badge badgeContent={1} color="error">
-                  <ShoppingCartIcon />
-                </Badge>
-                <Typography variant="body2" sx={{ fontSize: '0.7rem' }}>장바구니</Typography>
-              </Stack>
+
+            <IconButton size="small" color="inherit">
+              <Badge badgeContent={1} color="error">
+                <ShoppingCartIcon />
+              </Badge>
+              <Typography sx={{ marginLeft: '0.5rem' }}>장바구니</Typography>
             </IconButton>
+
             {isLoggedIn ? (
               <>
-                <IconButton size="small" color="inherit" onClick={handleLogout}>
-                  <Stack direction="column" alignItems="center">
-                    <LogoutIcon />
-                    <Typography variant="body2" sx={{ fontSize: '0.7rem' }}>로그아웃</Typography>
-                  </Stack>
-                </IconButton>
-                <IconButton size="small" color="inherit" onClick={handleUserInfo}>
-                  <Stack direction="column" alignItems="center">
-                    <AssignmentIndIcon />
-                    <Typography variant="body2" sx={{ fontSize: '0.7rem' }}>마이페이지</Typography>
-                  </Stack>
-                </IconButton>
+                <Button color="inherit" onClick={handleLogout} startIcon={<LogoutIcon />}>
+                  로그아웃
+                </Button>
+                <Button color="inherit" onClick={handleUserInfo}>
+                  마이페이지
+                </Button>
               </>
             ) : (
               <>
-                {/* <Button color="inherit" onClick={handleLogin} startIcon={<LoginIcon />}>
+                <Button color="inherit" onClick={handleLogin} startIcon={<LoginIcon />}>
                   로그인
                 </Button>
                 <Button color="inherit" onClick={handleSignUp} startIcon={<PersonAddIcon />}>
                   회원가입
-                </Button> */}
-                 
-
-                <IconButton size="small" color="inherit" onClick={handleLogin}>
-                  <Stack direction="column" alignItems="center">
-                    <LoginIcon />
-                    <Typography variant="body2" sx={{ fontSize: '0.7rem' }}>로그인</Typography>
-                  </Stack>
-                </IconButton>
-                <IconButton size="small" color="inherit" onClick={handleSignUp}>
-                  <Stack direction="column" alignItems="center">
-                    <PersonAddIcon />
-                    <Typography variant="body2" sx={{ fontSize: '0.7rem' }}>회원가입</Typography>
-                  </Stack>
-                </IconButton>
+                </Button>
               </>
             )}
           </Box>

@@ -30,7 +30,7 @@ import {
 
 import { useDaumPostcodePopup } from 'react-daum-postcode';
 import axios from 'axios';
-import { selectUserData, updateUserData } from '../api/firebase';
+import { selectUserData } from '../api/firebase';
 import { useNavigate } from 'react-router-dom';
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
 
@@ -54,7 +54,7 @@ const Order = () => {
 
   const navigate = useNavigate();
   const auth = getAuth();
-  
+
   // ======== 로그인한 유저정보 불러오기 ==========
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -120,7 +120,6 @@ const Order = () => {
 
   // ======== 아이템 총 금액 계산 끝 ==========
 
-
   // ======== order로 통합하기 ==========
 
   // order로 통합하기 
@@ -144,26 +143,49 @@ const Order = () => {
       alert('모든 필수 정보를 입력해주세요.');
       return;
     }
-    // 입력된 정보를 객체로 만듦
-    const orderData = {
-      orderItem: orderItems,    
-        name: name,
-        postCode: postCode,
-        addr: addr,
-        detailAddr: detailAddr,
-        tel: tel,
-        req: req,   
-      totalPrice: totalPrice // 총 결제 금액 추가
-    };
 
-    // 서버로 주문 정보 보내기
     try {
-      const response = await axios.post('/ft/order/insert', orderData);
-      console.log(response);
+        // 입력된 정보를 객체로 만듦
+        const order = {
+            email: currentUserEmail,
+            name: name,
+            postCode: postCode,
+            addr: addr,
+            detailAddr: detailAddr,
+            tel: tel,
+            req: req,
+            totalPrice: totalPrice // 총 결제 금액 추가
+        };
+    
+        const orderItemData = orderItems.map(orderItem => ({
+            iid: orderItem.iid,
+            ioid: orderItem.ioid,
+            count: orderItem.count,
+            price: orderItem.price,
+            oid: null // oid를 초기화합니다.
+        }));
+
+        console.log(orderItemData);
+
+        // 서버로 전송할 데이터 구조 수정
+        const data = {
+            order: order,  // 주문 정보
+            orderItems: orderItemData  // 주문 아이템 정보
+        };
+
+        // 서버로 데이터 전송
+        const response = await axios.post('/ft/order/insert', data);
+        
+        console.log(response);
+
+        // 모든 주문이 성공적으로 생성되었을 때 메시지 출력
+        alert('주문이 성공적으로 생성되었습니다.');
+        
     } catch (error) {
-      console.error('주문 처리 중 오류:', error);
+        console.error('주문 처리 중 오류:', error);
+        alert('주문 생성 중 오류가 발생했습니다.');
     }
-  };
+};
 
   useEffect(() => {
     // 주문 아이템이 변경될 때마다 총 결제 금액을 다시 계산
@@ -176,7 +198,7 @@ const Order = () => {
     calculateTotalPayment();
   }, [orderItems]);
 
-// ======== order로 통합하기 끝 ==========
+  // ======== order로 통합하기 끝 ==========
 
 
 
@@ -291,39 +313,6 @@ const Order = () => {
   // =========================== 받는 사람 정보 보내기 함수 ======================
 
 
-
-  // 받는 사람 업데이트 함수
-  const handleSend = async () => {
-    // 필수 정보가 모두 입력되었는지 확인
-    if (!name || !postCode || !addr || !detailAddr || !tel) {
-      alert('모든 필수 정보를 입력해주세요.');
-      return;
-    }
-    // 입력된 정보를 객체로 만듦
-    const recipientInfo = {
-      name: name,
-      postCode: postCode,
-      addr: addr,
-      detailAddr: detailAddr,
-      tel: tel,
-      req: req
-    };
-
-
-
-    axios
-      .post('/ft/order/insertRecipient', recipientInfo)
-      .then(res => {
-        console.log(res);
-        navigate(-1);
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-  };
-
-  // =========================== 받는 사람 정보 보내기 함수 끝 ======================
-
   // ================ 받는 사람 정보 입력 ===================
 
   // Daum 우편번호 팝업 관련 함수
@@ -423,7 +412,7 @@ const Order = () => {
 
   return (
     <>
-      <Container fixed sx={{ mb : 5 }}>
+      <Container fixed sx={{ mb: 5 }}>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={8}>
             <Typography variant="h4" sx={{ marginBottom: 2 }}>
@@ -454,7 +443,7 @@ const Order = () => {
 
                         <Checkbox
                           checked={selectedItems.some((selectedItem) => selectedItem.iid === item.iid && selectedItem.option === item.option)}
-                          // onChange={() => handleToggleItem(item.iid, item.option)}
+                        // onChange={() => handleToggleItem(item.iid, item.option)}
                         />
 
 
@@ -601,21 +590,14 @@ const Order = () => {
                 />
               )}
             </Grid>
-            <Button
-              variant='contained'
-              fullWidth
-              onClick={handleSend}
-              sx={{ mb: 3 }}
-            >
-              전송
-            </Button>
+
             <Divider
               sx={{ mt: 2, mb: 2 }}
             />
             <Button
               variant='contained'
               fullWidth
-              // onClick={redirectItem}
+            // onClick={redirectItem}
             >
               쇼핑 계속하기
             </Button>

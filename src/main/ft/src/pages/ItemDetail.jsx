@@ -526,12 +526,12 @@ export default function ItemDetail() {
     name:item.name, // db
     img:item.img1, // db
     count: option.count, // db
-    price: item.price, // db
+    price: item.salePrice && new Date(item.saleDate) > new Date() ? item.salePrice : item.price
   }));
 
   // orderItems를 로컬 스토리지에 저장
   localStorage.setItem('orderItems', JSON.stringify(orderItems)); //  객체나 배열을 JSON 문자열로 변환
-
+  console.log(orderItems);
   // Order 페이지로 이동할 때 orderItems 상태를 함께 전달
   navigate("/order", { state: { orderItems } });
 };    
