@@ -1,11 +1,10 @@
 import { initializeApp } from "firebase/app";
-
 import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider,
   signInWithPopup, signOut, updateProfile, signInWithEmailAndPassword,
-  onAuthStateChanged, OAuthProvider, deleteUser    } from "firebase/auth";
+  onAuthStateChanged, signInWithRedirect, OAuthProvider, deleteUser    } from "firebase/auth";
+import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 import {getDatabase, ref, set, get, remove, update } from "firebase/database";
-
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -96,8 +95,8 @@ export function logout() {
 // --------------------- #login 끝 ----------------------
 
 /*========================= # Authentication =========================*/
-export function authRegister({ email, password, name, postCode, addr, detailAddr, 
-  tel, req}) { //  사용처에서 obj로 처리하기에 그것에 맞춰서 제공 
+export function authRegister({ email, password, name, addr, detailAddr, 
+  tel, req, def, isAdmin}) { //  사용처에서 obj로 처리하기에 그것에 맞춰서 제공 
   console.log('firebase:register():', email, password);
   createUserWithEmailAndPassword(auth, email, password) 
 
@@ -108,24 +107,20 @@ export function authRegister({ email, password, name, postCode, addr, detailAddr
         email: email,
         password:password,
         name: name,
-        postCode:postCode,
         addr: addr,
         detailAddr: detailAddr,
         tel: tel,
         req: req,
+        def: def,
+        isAdmin: isAdmin
       })
-      console.log("User profile updated");
+      console.log("User profile  updated");
     })
     .then(() => {
-      insertUserData(email, password, name, postCode, addr, detailAddr, tel, 
-        req );
+      insertUserData(email, password, name, addr, detailAddr, tel, 
+        req, def, isAdmin );
         console.log("User added to Database");
     })
-    // insert mysql
-    // .then(() => {
-    //   insertUserDataToMySql()
-    // })
-
     .then(() => {logout()})
 
     .catch((error) => {
@@ -173,8 +168,8 @@ export function authRemoveUser() {
 /*========================= # Authentication 끝=========================*/
 
 /*========================= DAO =========================*/
-function insertUserData(email, password, name, postCode, addr, detailAddr, 
-  tel, req, ) {
+function insertUserData(email, password, name, addr, detailAddr, 
+  tel, req, def, isAdmin) {
   if (!email) {
     console.error("이메일이 유효하지 않습니다.");
     return;
@@ -185,11 +180,12 @@ function insertUserData(email, password, name, postCode, addr, detailAddr,
     email: email,
     password: password,
     name: name,
-    postCode:postCode,
     addr: addr,
     detailAddr: detailAddr,
     tel: tel,
     req: req,
+    def: def,
+    isAdmin: isAdmin
   }).then(() => {
     console.log("사용자 정보가 성공적으로 저장되었습니다.");
   }).catch((error) => {
@@ -205,17 +201,20 @@ function insertUserDataWithSocial(email, displayName) {
     email: email,
     name: displayName,
     password:'N/A', 
-    postCode:'',
     addr: '',
     detailAddr: '',
     tel: '',
-    req: ''
+    req: '',
+    def: 0,
+    isAdmin: 0
   }).then(() => {
     console.log("사용자 정보가 성공적으로 저장되었습니다.");
   }).catch((error) => {
     console.error("사용자 정보 저장 중 오류가 발생했습니다:", error);
   });
 }
+
+// email이 undefined
 
 export async function selectUserData(email) {
 
@@ -229,7 +228,6 @@ export async function selectUserData(email) {
   return get(ref(database, `users/${sanitizedEmail}`))
     .then(snapshot => {
       if (snapshot.exists()) {
-        console.log(snapshot.val());
         return snapshot.val();
       } 
       return null;
@@ -241,7 +239,7 @@ export async function selectUserData(email) {
 }
 
 export async function updateUserData(user) {
-  const { email, password, name, postCode, addr, detailAddr, tel, req } = user;
+  const { email, password, name, addr, detailAddr, tel, req } = user;
   try {
     // email이 정의되어 있을 때만 업데이트를 시도합니다.
     if (email) {
@@ -249,7 +247,6 @@ export async function updateUserData(user) {
       await update(ref(database, `users/${sanitizedEmail}`), {
         name,
         password,
-        postCode,
         addr,
         detailAddr,
         tel,
@@ -276,70 +273,6 @@ export async function deleteUserData(email) {
   }
 }
 /*========================= DAO 끝 =========================*/
-
-/*========================= MySQL DAO =========================*/
-
-// export function insertUserDataToMySql() {
-// const admin = require('firebase-admin');
-// const mysql = require('mysql');
-
-// // Firebase Admin SDK 초기화
-// const serviceAccount = process.env.REACT_APP_FIREBASE_SERVICE_ACCOUNT_KEY_PASS;
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount),
-//   databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL
-// });
-
-// // MySQL 연결 설정
-// const mysqlConfig = {
-//   host: process.env.REACT_APP_MYSQL_HOST,
-//   user: process.env.REACT_APP_MYSQL_USER,
-//   password: process.env.REACT_APP_MYSQL_PASSWORD,
-//   database: process.env.REACT_APP_MYSQL_DB
-// };
-
-// // MySQL 연결 생성
-// const connection = mysql.createConnection(mysqlConfig);
-
-// // Firebase Authentication에서 사용자 이메일 가져오기
-// async function getUserEmail(uid) {
-//   try {
-//     const userRecord = await admin.auth().getUser(uid);
-//     return userRecord.email;
-//   } catch (error) {
-//     console.error('Error fetching user data:', error);
-//     throw error;
-//   }
-// }
-
-// // MySQL에 사용자 이메일 저장하기
-// async function saveUserEmailToMySQL(uid) {
-//   try {
-//     const userEmail = await getUserEmail(uid);
-//     const sql = 'INSERT INTO users (uid, email) VALUES (?, ?)';
-//     connection.query(sql, [uid, userEmail], (err, result) => {
-//       if (err) throw err;
-//       console.log('User email saved to MySQL:', result);
-//     });
-//   } catch (error) {
-//     console.error('Error saving user email to MySQL:', error);
-//   }
-// }
-
-// // Firebase Authentication 이벤트 리스너 설정 (예: 사용자가 로그인할 때마다)
-// admin.auth().onAuthStateChanged(async (user) => {
-//   if (user) {
-//     console.log('User logged in:', user.uid);
-//     await saveUserEmailToMySQL(user.uid);
-//   } else {
-//     console.log('User logged out');
-//   }
-// });
-
-// connection.end()
-// }
-
-/*========================= MySQL DAO 끝 =========================*/
 
 /*========================= 인증 상태, 관리자 확인 끝 ==================*/
 
@@ -372,7 +305,7 @@ export async function getAdminUser(user) {
       // 관리자 여부 확인 후 맞으면 true 
       const isAdmin = admins.includes(user.email);   
       return { ...user, isAdmin };
-    } 
+    }
     return user;
   } catch (error) {
     console.error("Error getting admin user:", error);

@@ -14,8 +14,7 @@ import com.example.ft.entity.Board;
 public interface BoardDao {
 
 	@Select("select * from board where bid=#{bid} and isDeleted=0")   
-	Board getBoardByBid(int bid);    // 돌려받는 값 
-	// 테이블이름이 뭐냐?,board에서 조건where bid에서 가져오는데 그리고 삭제된거는 가져오지마
+	Board getBoardByBid(int bid);   
 	
 	@Select("select * from board where isDeleted=0 and type=#{type} and iid=#{iid} order by regDate desc")
 	List<Board> getBoardList(String type, int iid);
@@ -26,10 +25,13 @@ public interface BoardDao {
 	void insertBoard(Board board);
 	
 	@Update("update Board set iid=#{iid}, type=#{type}, typeQnA=#{typeQnA}, title=#{title},"
-			+ " content=#{content}, img=#{img} where bid=#{bid}")  // 변경할 수 있는것들
+			+ " content=#{content}, img=#{img} where bid=#{bid}")  
 	void updateBoard(Board board);
 	
 	@Update("update Board set isDeleted=1 where bid=#{bid}")
 	void deleteBoard(int bid);
+	
+	@Select("select * from board where type='QnA' and isDeleted=0")
+	List<Board> getQnAList();
 
 }

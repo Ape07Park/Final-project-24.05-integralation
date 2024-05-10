@@ -26,6 +26,12 @@ public class OrderServiceImpl implements OrderService {
 		return orderDao.getOrderByOid(oid);
 	}
 	
+	// 주문 했던 것들 리스트로 다 띄우기 
+	@Override
+	public List<Order> getOrderListByEmail(String email) {
+		return orderDao.getOrderListByEmail(email);
+	}
+	
 	@Override
 	public void insertOrder(Order order) {
 		orderDao.insertOrder(order);
@@ -50,21 +56,32 @@ public class OrderServiceImpl implements OrderService {
 	    orderDao.insertOrderItemWithOid(orderItem); // 수정 필요
 	}
 
-
-	@Override
-	public List<Order> getOrderListByEmail(String email) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * orderHistory
-	 */
-	
-	// 주문 했던 것들 리스트로 다 띄우기 
+	// 주문 했던 것들 리스트로 다 띄우기  - 사용 중
 	@Override
 	public List<OrderHistory> getOrderHistoryList(String email) {
 		return orderDao.getOrderHistoryList(email);
 	}
 	
+	//
+	@Override
+	public void statusCheckUpdate(String orderId) {
+		String status = "주문완료";
+		orderDao.statusCheckUpdate(status, orderId);
+	}
+
+	@Override
+	public Order oderIdCheck(String orderId) {
+		return orderDao.oderIdCheck(orderId);
+	}
+
+	@Override
+	public int getOid(String orderId) {
+		return orderDao.getOid(orderId);
+	}
+
+	@Override
+	public List<OrderItem> getOrderItems(int oid) {
+		return orderDao.getOrderItems(oid);
+	}
+	//
 }

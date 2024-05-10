@@ -38,6 +38,8 @@ public interface ItemService {
 	
 	void optionDeleted(int ioidsToDelete);
 	
+	void inventoryCalculation(int ioid, int count);
+	
 	// itemTag
 	int[] getItemTagItid(int iid);
 	

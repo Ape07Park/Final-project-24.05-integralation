@@ -2,47 +2,12 @@ import React, { useEffect, useState } from 'react';
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
 import Pagination from '@mui/material/Pagination';
-import { Grid } from '@mui/material';
 import StarRatings from './StarRating';
-import axios from 'axios';
 import Rating from './Rating';
 import ImgModal from './ImgModal';
 import ReviewEditModal from './ReviewEditModal'; // 추가: 리뷰 수정 모달
 import { selectUserData } from '../api/firebase';
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
-
-// CSS
-const styles = {
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh', // Adjust height as needed
-  },
-  productReviews: {
-    width: '80%', // Adjust width as needed
-  },
-  imageReviews: {
-    whiteSpace: 'nowrap',
-  },
-  imageReview: {
-    display: 'inline-block',
-    marginRight: '3%', // 이미지 사이의 간격 조정
-  },
-  review: {
-    display: 'flex',
-    alignItems: 'center',
-    marginRight: '1%', // 리뷰 사이의 간격 조정
-  },
-  thumb: {
-    cursor: 'pointer',
-    marginRight: '0.5%', // 따봉 아이콘과 텍스트 사이의 간격 조정
-  },
-  bar: {
-    borderRadius: '20px', // 막대 그래프 모양을 둥글게 조정
-    height: '2%', // 막대 그래프 두께 조정
-  },
-};
 
 // 리뷰 작성 폼 컴포넌트
 const ReviewForm = () => {
@@ -234,7 +199,7 @@ const ProductReviews = ({ reviews, item, reloadReviewData }) => {
       {/* 리뷰 목록 */}
       <div className="reviews" style={{ width: '100%' }}>
         {currentReviews.map(review => (
-          <div style={reviewCardStyle}>
+          <div key={review.vid} style={reviewCardStyle}>
             {/* 리뷰 내용 */}
             <div>
               <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1%' }}>

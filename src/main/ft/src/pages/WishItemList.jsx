@@ -75,7 +75,6 @@ export default function ItemList() {
 
   return (
     <>
-      <Button onClick={() => { navigate(`/admin/itemlist/`) }}>어드민</Button>
       <Grid container spacing={2} className="itemList">
         {list.map((item, index) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={index} marginBottom={10}>

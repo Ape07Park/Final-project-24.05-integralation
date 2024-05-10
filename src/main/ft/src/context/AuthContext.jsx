@@ -46,7 +46,6 @@ export function AuthContextProvider({ children }) {
         // 사용자가 인증된 경우, 관리자 정보를 가져와서 사용자 객체에 추가
         const adminUser = await getAdminUser(user); // 사용자의 관리자 여부 확인
         setUser(adminUser); // 관리자 여부가 추가된 사용자 객체를 상태에 설정
-        console.log(adminUser);
       } else {
         setUser(null); // 사용자가 로그아웃한 경우, 사용자 객체를 null로 설정
       }

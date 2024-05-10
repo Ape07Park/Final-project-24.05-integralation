@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -27,10 +27,13 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd'; // signUp
 import { Link } from 'react-router-dom';
 import '../css/nav.css';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import { Collapse, Stack } from '@mui/material';
+import { Collapse } from '@mui/material';
 import { useNavigate } from 'react-router-dom'; // useNavigate 추가
 import { useAuthContext } from "../context/AuthContext";
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import { Stack } from '@mui/material';
+import { selectUserData } from '../api/firebase';
+import { onAuthStateChanged, getAuth } from 'firebase/auth';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -78,6 +81,7 @@ export default function NavigationBar() {
   const [isLoggedIn, setIsLoggedIn] = React.useState(false); // 기본적으로 로그아웃 상태
 
   // ============== user 관련 함수들 =================
+  const isAdmin = user && user.isAdmin == true;
 
   // 로그인 
   const handleLogin = () => {
@@ -101,10 +105,6 @@ export default function NavigationBar() {
     navigate('/userInfo');
   };
   // ============== user 관련 함수들 끝 =================
-
-  const handleToCart = () => {
-    navigate('/cartPage');
-  };
 
   const toggleDrawer = (newOpen) => () => {
     setDrawerOpen(newOpen);
@@ -141,13 +141,28 @@ export default function NavigationBar() {
   // 변경: AccountCircle 아이콘을 세션 로그인 상태에 따라 다르게 렌더링
 
   const DrawerList = (
-    <Box sx={{ width: 350 }} role="presentation">
+    <Box sx={{ width: 350,}} role="presentation" >
       <List>
         <ListItem disablePadding>
-          <ListItemButton>
+        {isAdmin && (
+        <>
+          <ListItem disablePadding>
+            <ListItemButton component={Link} to={'admin/itemlist'} onClick={() => setDrawerOpen(false)}>
+              <ListItemIcon>
+                <ListIcon/>
+              </ListItemIcon>
+              <ListItemText primary="Admin Option 1" />
+            </ListItemButton>
+          </ListItem>
+        </>
+      )}
+      </ListItem>
+      <ListItem disablePadding>
+          <ListItemButton onClick={() => setDrawerOpen(false)}>
             <ListItemIcon>
               <WhatshotIcon />
             </ListItemIcon>
+              {/* Render admin options if user is an admin */}
             <ListItemText primary="특가" />
           </ListItemButton>
         </ListItem>
@@ -216,6 +231,10 @@ export default function NavigationBar() {
     backgroundColor: 'gray',
     height: '120px',
     justifyContent: 'center',
+    position: 'fixed', // Add this line to make the app bar fixed
+    top: 0, // Add this line to fix the app bar at the top of the viewport
+    width: '100%', // Add this line to make the app bar cover the full width
+    zIndex: 1000, // Add this line to ensure the app bar appears above other content
   });
 
   // 검색 버튼 클릭 시 실행되는 함수
@@ -227,16 +246,50 @@ export default function NavigationBar() {
     }
   };
 
-  // asdsad
-  const handleHistory = (event) => {
-    event.preventDefault(); // 기본 이벤트 방지
-      navigate(`/OrderHistoryList/${user.email}`); // navigate 함수로 페이지 이동
-    
+  const handleToCart = () => {
+    navigate('/cart');
   };
 
+  const wishList = () => {
+    if (!userInfo || !userInfo.email) {
+      // 사용자가 로그인되어 있지 않은 경우, 로그인 페이지로 리다이렉트
+      window.location.href = '/signIn'; 
+      return;
+    }
+    window.location.href = '/wish/list';
+  }
+
+  const [currentUserEmail, setCurrentUserEmail] = useState(null);
+  const [userInfo, setUserInfo] = useState(null);
+  const auth = getAuth();
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setCurrentUserEmail(user.email);
+      } else {
+        setCurrentUserEmail(null);
+      }
+    });
+  }, [auth]);
+
+  useEffect(() => {
+    if (currentUserEmail) {
+      const fetchUserInfo = async () => {
+        try {
+          const info = await selectUserData(currentUserEmail);
+          setUserInfo(info);
+        } catch (error) {
+          console.error('사용자 정보를 불러오는 중 에러:', error);
+        }
+      };
+      fetchUserInfo();
+    }
+  }, [currentUserEmail]);
+
   return (
-    <Box sx={{ flexGrow: 1, marginBottom: 2 }}>
-      <StyledAppBar position="static" className="styled-app-bar">
+    <Box sx={{ flexGrow: 1, marginBottom: 2, paddingTop: '130px',  }}>
+      <StyledAppBar position="static">
         <Toolbar>
           <div>
             <Button onClick={toggleDrawer(true)} color="inherit"><MenuIcon /></Button>
@@ -244,6 +297,7 @@ export default function NavigationBar() {
               {DrawerList}
             </Drawer>
           </div>
+          <Link onClick={wishList}>찜</Link>
           <Box sx={{ flexGrow: 1 }} />
           <Typography
             variant="h6"
@@ -271,15 +325,10 @@ export default function NavigationBar() {
                 />
               </Search>
             </form>
-            <IconButton size="small" color="inherit" onClick={handleHistory}>
-                  <Stack direction="column" alignItems="center">
-                    <LoginIcon />
-                    <Typography variant="body2" sx={{ fontSize: '0.7rem' }}>주문내역</Typography>
-                  </Stack>
-                </IconButton>
+
             <IconButton size="small" color="inherit" onClick={handleToCart}>
               <Stack direction="column" alignItems="center">
-                <Badge badgeContent={1} color="error">
+                <Badge badgeContent={0} color="error">
                   <ShoppingCartIcon />
                 </Badge>
                 <Typography variant="body2" sx={{ fontSize: '0.7rem' }}>장바구니</Typography>
@@ -308,8 +357,6 @@ export default function NavigationBar() {
                 <Button color="inherit" onClick={handleSignUp} startIcon={<PersonAddIcon />}>
                   회원가입
                 </Button> */}
-                 
-
                 <IconButton size="small" color="inherit" onClick={handleLogin}>
                   <Stack direction="column" alignItems="center">
                     <LoginIcon />
@@ -324,6 +371,7 @@ export default function NavigationBar() {
                 </IconButton>
               </>
             )}
+            
           </Box>
         </Toolbar>
       </StyledAppBar>

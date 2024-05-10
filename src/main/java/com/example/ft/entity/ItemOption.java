@@ -21,5 +21,4 @@ public class ItemOption {
 	private String option;
 	private int count;
 	private int isDeleted;
-	
 }

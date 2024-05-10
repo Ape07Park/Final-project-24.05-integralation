@@ -61,6 +61,9 @@ public interface ItemDao {
 	@Update("update itemoption set isDeleted=1 where ioid=#{ioid}")
 	void optionDeleted(int ioid);
 	
+	@Update("update itemoption set count= count-#{count} where ioid=#{ioid}")
+	void inventoryCalculation(int ioid, int count);
+	
 	// itemTag
 	@Select("select itid from itemTag where iId=#{iid} and isDeleted=0")
 	int[] getItemTagItid(int iid);

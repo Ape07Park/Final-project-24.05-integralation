@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button, Modal, Typography, Grid, TextField } from "@mui/material";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-export default function SaleModal({ open, onClose, iid, cost, price}) {
+export default function SaleModal({ open, onClose, iid, cost, price, ordSaleDate, ordSalePrice}) {
   const [salePrice, setSalePrice] = useState('');
   const [saleDate, setSaleDate] = useState(new Date());
+
+  useEffect(() => {
+    setSalePrice(ordSalePrice)
+  },[ordSalePrice])
 
   const handleChange = (event) => {
     if (event.target.name === 'salePrice') {
@@ -65,9 +69,10 @@ export default function SaleModal({ open, onClose, iid, cost, price}) {
                 selected={saleDate}
                 onChange={handleDateChange}
                 dateFormat="yyyy-MM-dd HH:mm"
-                placeholderText="세일 시작일 선택"
+                placeholderText="세일 기간 선택"
                 showTimeInput
                 className="form-control"
+                value={ordSaleDate}
               />
             </Grid>
             <Grid item xs={12} textAlign="right">

@@ -19,7 +19,7 @@ export default function ItemUpdate() {
 
   // 초기값을 받아오는 useEffect
   useEffect(() => {
-    axios.get(`/ft/item/detail/${iid}`)
+    axios.get(`/ft/item/detail/${iid}/em`)
       .then(response => {
         const { item, options: fetchedOptions, tags: fetchedTags } = response.data;
   

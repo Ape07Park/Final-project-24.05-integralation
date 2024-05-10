@@ -16,6 +16,7 @@ import lombok.ToString;
 @ToString
 @Builder
 public class CartItem {
+	private int cid;
 	private int iid; // 상품 ID
 	private int ioid; // 상품옵션 ID
 	private String email; // 사용자 이메일
@@ -27,6 +28,7 @@ public class CartItem {
 	private double totalPrice; // 상품 총 가격
 	private LocalDateTime saleDate;
 	private LocalDateTime regDate;
+	private String option;
 
 	public void calculateTotalPrice() {
 		LocalDateTime time = LocalDateTime.now();

@@ -27,10 +27,10 @@ import {
   Select,
   Divider, // 추가
 } from "@mui/material";
-
+import { nanoid } from "nanoid";
 import { useDaumPostcodePopup } from 'react-daum-postcode';
 import axios from 'axios';
-import { selectUserData } from '../api/firebase';
+import { selectUserData, updateUserData } from '../api/firebase';
 import { useNavigate } from 'react-router-dom';
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
 
@@ -49,11 +49,14 @@ const Order = () => {
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
 
-
-
-
   const navigate = useNavigate();
   const auth = getAuth();
+
+  const [orderId, setOrderId] = useState(null);
+  
+  useEffect(() => {
+    setOrderId(nanoid())
+  }, [])
 
   // ======== 로그인한 유저정보 불러오기 ==========
   useEffect(() => {
@@ -154,7 +157,8 @@ const Order = () => {
             detailAddr: detailAddr,
             tel: tel,
             req: req,
-            totalPrice: totalPrice // 총 결제 금액 추가
+            totalPrice: totalPrice, // 총 결제 금액 추가
+            orderId: orderId,
         };
     
         const orderItemData = orderItems.map(orderItem => ({
@@ -173,10 +177,7 @@ const Order = () => {
             orderItems: orderItemData  // 주문 아이템 정보
         };
 
-        // 서버로 데이터 전송
-        const response = await axios.post('/ft/order/insert', data);
-        
-        console.log(response);
+        navigate('/checkout', { state: { orderData: data } });
 
         // 모든 주문이 성공적으로 생성되었을 때 메시지 출력
         alert('주문이 성공적으로 생성되었습니다.');
@@ -185,7 +186,8 @@ const Order = () => {
         console.error('주문 처리 중 오류:', error);
         alert('주문 생성 중 오류가 발생했습니다.');
     }
-};
+  };
+
 
   useEffect(() => {
     // 주문 아이템이 변경될 때마다 총 결제 금액을 다시 계산
@@ -197,90 +199,6 @@ const Order = () => {
 
     calculateTotalPayment();
   }, [orderItems]);
-
-  // ======== order로 통합하기 끝 ==========
-
-
-
-
-
-
-
-
-
-
-
-  // const fetchCartItems = async () => {
-  //   try {
-  //     const response = await axios.get(`/ft/api/carts/list/${currentUserEmail}`);
-  //     setCartItems(response.data);
-  //   } catch (error) {
-  //     console.error('장바구니 목록을 불러오는데 실패했습니다:', error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   const calculateTotalPrice = () => {
-  //     const totalPrice = cartItems.reduce((acc, item) => acc + item.totalPrice, 0);
-  //     setTotalCount(totalPrice);
-  //   };
-
-  //   calculateTotalPrice();
-  // }, [cartItems]);
-
-  // const handleToggleItem = (itemId, itemOption) => {
-  //   const selectedItem = cartItems.find((item) => item.iid === itemId && item.option === itemOption);
-  //   const isSelected = selectedItems.some((item) => item.cid === selectedItem.cid);
-
-  //   if (isSelected) {
-  //     setSelectedItems((prevItems) => prevItems.filter((item) => item.cid !== selectedItem.cid));
-  //   } else {
-  //     setSelectedItems((prevItems) => [...prevItems, selectedItem]);
-  //   }
-  // };
-
-  // // 카트 아이템 삭제
-  // const handleDeleteItem = (cid) => {
-  //   axios
-  //     .delete(`/ft/api/v2/carts/delete/${currentUserEmail}`, {
-  //       data: [cid] // 삭제할 아이템의 ID를 배열로 전달
-  //     })
-  //     .then((response) => {
-  //       if (response.data === true) {
-  //         // 성공적으로 삭제된 경우
-  //         const updatedItems = cartItems.filter((item) => item.cid !== cid);
-  //         setCartItems(updatedItems);
-  //         console.log('상품이 성공적으로 삭제되었습니다.');
-  //       } else {
-  //         console.error('상품 삭제 실패: 서버 응답 오류');
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error('상품 삭제 실패:', error);
-  //     });
-  // };
-  // // 전체 아이템 삭제 요청
-  // const handleDeleteAllItems = () => {
-  //   axios
-  //     .post(`/ft/api/v2/carts/delete/${currentUserEmail}`)
-  //     .then((response) => {
-  //       if (response.data === true) {
-  //         // 성공적으로 삭제된 경우
-  //         setCartItems([]); // 장바구니를 비웁니다.
-  //         console.log('모든 상품이 성공적으로 삭제되었습니다.');
-  //       } else {
-  //         console.error('상품 삭제 실패: 서버 응답 오류');
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error('상품 삭제 실패:', error);
-  //     });
-  // };
-
-  // const redirectItem = () => {
-  //   navigate('../CartPage');
-  // };
-
   // ----------------------- user 관련 -------------------------------
 
   // =================== 자동으로 구매자 정보 들어가게 함 ============
@@ -377,39 +295,6 @@ const Order = () => {
     }
   };
 
-  // ================ 받는 사람 정보 입력 끝 ===================
-
-  // ================ 아이템 정보  ===================
-
-  // 주문 아이템 렌더링
-  // const renderCartItemRows = () => {
-  //   return cartItems.map((item) => (
-  //     <TableRow key={`${item.iid}-${item.option}`}>
-  //       <TableCell>
-  //         <Checkbox
-  //           checked={selectedItems.some((selectedItem) => selectedItem.cid === item.cid)}
-  //           // onChange={() => handleToggleItem(item.iid, item.option)}
-  //         />
-  //       </TableCell>
-  //       <TableCell>{item.img1}</TableCell>
-  //       <TableCell>{item.name}</TableCell>
-  //       <TableCell>{item.price}원</TableCell>
-  //       <TableCell>{item.option}</TableCell>
-  //       <TableCell>
-  //         <Input
-  //           type="number"
-  //           value={item.count}
-  //           // onChange={(e) => handleQuantityChange(item.cid, item.iid, item.ioid, e.target.value)}
-  //           inputProps={{ min: 1, max: item.stockCount }}
-  //         />
-  //       </TableCell>
-  //       <TableCell>{item.totalPrice}원</TableCell>
-  //     </TableRow>
-  //   ));
-  // };
-
-  // ================ 아이템 정보 끝  ===================
-
   return (
     <>
       <Container fixed sx={{ mb: 5 }}>
@@ -439,19 +324,15 @@ const Order = () => {
                   {orderItems.map((item, index) => (
                     <TableRow key={index}>
                       <TableCell>
-
-
                         <Checkbox
                           checked={selectedItems.some((selectedItem) => selectedItem.iid === item.iid && selectedItem.option === item.option)}
-                        // onChange={() => handleToggleItem(item.iid, item.option)}
                         />
-
-
                       </TableCell>
                       <TableCell>
                         <CardMedia
                           component="img"
                           height="50"
+                          
                           image={item.img} // 이미지 주소로 수정
                           alt={item.name}
                         />
@@ -494,7 +375,6 @@ const Order = () => {
                 required
               />
             </Grid>
-
             <Grid item xs={12}>
               <Button
                 fullWidth
@@ -591,17 +471,10 @@ const Order = () => {
               )}
             </Grid>
 
-            <Divider
-              sx={{ mt: 2, mb: 2 }}
-            />
-            <Button
-              variant='contained'
-              fullWidth
-            // onClick={redirectItem}
-            >
-              쇼핑 계속하기
-            </Button>
-          </Grid>
+              <Divider
+                sx={{ mt: 2, mb: 2 }}
+              />
+            </Grid>
 
           <Grid item xs={12} sm={4}>
             <Typography variant="h4" sx={{ marginBottom: 2 }}>

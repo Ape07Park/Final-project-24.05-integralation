@@ -7,7 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import CountDown from "../components/CountDown";
 import { Items, getItemDetail } from "../components/Items";
 import Rating from "../components/Rating";
-import '../css/itemList.css'; // 분리된 CSS 파일 import
+import '../css/itemList.css'; 
 
 export default function ItemList() {
   const [isLoading, setIsLoading] = useState(true);
@@ -67,7 +67,7 @@ export default function ItemList() {
                   {item.salePrice !== 0 && item.salePrice && new Date(item.saleDate) > new Date() ? (
                     <>
                       <Typography variant="body2">{((item.price - item.salePrice) / item.price * 100).toFixed(0)}%</Typography>
-                      <Typography variant="body2" className="strike-through">{item.price.toLocaleString()}원</Typography>
+                      <Typography variant="body2"  style={{ textDecoration: 'line-through', fontSize: '0.9rem', marginTop: '0.4px' }}>{item.price.toLocaleString()}원</Typography>
                       <Typography variant="body2" className="price">{item.salePrice.toLocaleString()}원</Typography>
                     </>
                   ) : (

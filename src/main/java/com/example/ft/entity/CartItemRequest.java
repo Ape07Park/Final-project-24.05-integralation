@@ -21,7 +21,7 @@ public class CartItemRequest {
 	private int ioid;
 	private int count;
 
-	public CartItem toCartItem(int price, int salePrice, LocalDateTime saleDate, LocalDateTime regDate) {
+	public CartItem toCartItem(int price, int salePrice, LocalDateTime saleDate, LocalDateTime regDate, String option) {
         CartItem cartItem = new CartItem();
         cartItem.setIid(this.iid);
         cartItem.setEmail(this.email);
@@ -30,16 +30,8 @@ public class CartItemRequest {
         cartItem.setSalePrice(salePrice);
         cartItem.setSaleDate(saleDate);
         cartItem.setRegDate(regDate);
+        cartItem.setOption(option);
         cartItem.calculateTotalPrice(); // 총 가격 계산
         return cartItem;
     }
 }
-
-// public class CartOption {
-//     // cart_option
-//     private  int cartOptionId;
-//     private int userId;
-//     private int iid;
-//     private String size;
-//     private String color;
-// }

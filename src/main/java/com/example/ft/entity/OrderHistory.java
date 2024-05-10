@@ -14,17 +14,17 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder   // 원하는 데이터만 골라서 처리 하겠다.
+@Builder  
 public class OrderHistory {
+	private int iid;
 	private int oid;           
 	private String status;   
 	private int totalPrice; 
 	private int count;
 	private int price;
 	private String name;   
-	private String img;
-	private LocalDateTime regDate;
-	
-	// 주문 날짜 추가할 것, option 추가할 것 
+	private String img1;
+	private String option;
+	private LocalDateTime regDate;	
 	
 }

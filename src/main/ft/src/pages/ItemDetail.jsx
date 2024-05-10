@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef  } from "react";
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Input from '@mui/material/Input';
@@ -10,7 +10,6 @@ import axios from 'axios';
 import { CardContent, CardMedia, Snackbar, Typography } from '@mui/material';
 import CountDown from "../components/CountDown";
 import Rating from "../components/Rating";
-import { useNavigate } from 'react-router-dom';
 import ReviewForm from "../components/ReviewForm";
 import InquiryContent from "../components/InquiryContent";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -48,11 +47,9 @@ export default function ItemDetail() {
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [itemWishCount, setItemWishCount] = useState(0);
 
-  const [orderItems, setOrderItems] = useState([]);
-  
-
- 
-
+  useEffect(() => {
+    window.scrollTo(0, 0); // 페이지가 로드될 때마다 맨 위로 스크롤
+  }, []); // 빈 배열을 전달하여 컴포넌트가 마운트될 때 한 번만 실행
 
   useEffect(() => {
     const fetchItemData = async () => {
@@ -73,7 +70,13 @@ export default function ItemDetail() {
           totalSta: item.totalSta,
         };
         setItem(formattedItem);
-  
+
+        const formattedTags = tags ? tags.map(tag => ({
+          itid: tag.itid,
+          tag: tag.tag,
+        })) : [];
+        setTags(formattedTags);
+
         const formattedOptions = options ? options.map(option => ({
           ioid: option.ioid,
           option: option.option,
@@ -82,19 +85,8 @@ export default function ItemDetail() {
           price: option.price, 
         })) : [];
         setOptions(formattedOptions);
-  
-        const formattedTags = tags ? tags.map(tag => ({
-          itid: tag.itid,
-          tag: tag.tag,
-        })) : [];
-        setTags(formattedTags);
-  
-        if (value === 1){
-          setIsWish(true)
-        } else{
-          setIsWish(false)
-        }
-  
+
+        setIsWish(value === 1);
         setIsLoading(false);
       } catch (error) {
         console.error('상품 정보를 불러오는 중 에러:', error);
@@ -105,10 +97,13 @@ export default function ItemDetail() {
     fetchItemData();
   }, [iid, currentUserEmail]);
 
-  const increaseQuantity = (index) => {
+  const increaseQuantity = (index, stock) => {
     const updatedSelectedOptions = [...selectedOptions];
-    updatedSelectedOptions[index].count += 1;
-    setSelectedOptions(updatedSelectedOptions);
+    const currentQuantity = updatedSelectedOptions[index].count;
+    if (currentQuantity < stock) { // 최대값 설정
+      updatedSelectedOptions[index].count += 1;
+      setSelectedOptions(updatedSelectedOptions);
+    }
   };
 
   const decreaseQuantity = (index) => {
@@ -152,21 +147,26 @@ export default function ItemDetail() {
   }, [selectedOptions]);
 
   const handleAddToCart = () => {
-    if (!userInfo || !userInfo.email) {
-      // 사용자가 로그인되어 있지 않은 경우, 로그인 페이지로 리다이렉트
-      window.location.href = '/signIn'; // 로그인 페이지 URL을 실제로 사용하는 주소로 변경해주세요
-      return;
-    }
-    const cartItems = selectedOptions.map(option => ({
+    const cartItem = {
       iid: item.iid,
-      ioid: option.ioid,
-      count: option.count,
-      email: userInfo.email,
-    }));
-    console.log(cartItems);
-    axios.post('/ft/api/carts', cartItems)
+      email: currentUserEmail,
+      optionList: selectedOptions,
+    };
+  
+    axios.post('/ft/api/v2/carts', cartItem)
       .then(response => {
-        console.log('장바구니에 상품이 추가되었습니다.');
+        console.log(response);
+        if(response.data) {
+          const addToCartConfirmation = window.confirm('장바구니에 상품이 추가되었습니다.\n장바구니로 이동하시겠습니까?');
+          if (addToCartConfirmation) {
+            navigate('/cart');
+          }
+        } else if(selectedOptions.length === 0) {
+          alert('옵션을 선택해주세요.')   
+        } else{
+          console.log(options);
+          alert('이미 장바구니에 있습니다.')    
+        }
       })
       .catch(error => {
         console.error('장바구니 추가 실패:', error);
@@ -177,7 +177,7 @@ export default function ItemDetail() {
   useEffect(() => {
     const handleScroll = () => {
       const nav = document.querySelector('nav');
-      const navOffsetTop = nav.offsetTop;
+      const navOffsetTop = nav.offsetTop -250;  // 상단 고정되는 시간
 
       if (window.scrollY >= navOffsetTop) {
         setIsNavFixed(true);
@@ -494,7 +494,6 @@ export default function ItemDetail() {
         const response = await axios.get(`/ft/wish/count/${iid}`);
 
         const itemWishCount = response.data;
-        console.log("Item wish count:", itemWishCount);
         setItemWishCount(itemWishCount);
       } catch (error) {
         console.error('아이템 찜 수를 불러오는 중 에러:', error);
@@ -507,36 +506,36 @@ export default function ItemDetail() {
   // =================== order item 관련 ======================
 
   const handleOrder = () => {
-  if (!userInfo || !userInfo.email) {
-    // 사용자가 로그인되어 있지 않은 경우, 로그인 페이지로 리다이렉트
-    window.location.href = '/signIn'; // 로그인 페이지 URL을 실제로 사용하는 주소로 변경해주세요
-    return;
-  }
-
-  // Ensure that selectedOptions has at least one option selected
-  if (selectedOptions.length === 0) {
-    alert("옵션을 선택해주세요");
-    return;
-  }
-
-  const orderItems = selectedOptions.map(option => ({
-    iid: item.iid, // db
-    ioid: option.ioid, // db
-    option: option.option, // db
-    name:item.name, // db
-    img:item.img1, // db
-    count: option.count, // db
-    price: item.salePrice && new Date(item.saleDate) > new Date() ? item.salePrice : item.price
-  }));
-
-  // orderItems를 로컬 스토리지에 저장
-  localStorage.setItem('orderItems', JSON.stringify(orderItems)); //  객체나 배열을 JSON 문자열로 변환
-  console.log(orderItems);
-  // Order 페이지로 이동할 때 orderItems 상태를 함께 전달
-  navigate("/order", { state: { orderItems } });
-};    
-
-  // =================== order item 관련 끝======================
+    if (!userInfo || !userInfo.email) {
+      // 사용자가 로그인되어 있지 않은 경우, 로그인 페이지로 리다이렉트
+      window.location.href = '/signIn'; 
+      return;
+    }
+  
+    // Ensure that selectedOptions has at least one option selected
+    if (selectedOptions.length === 0) {
+      alert("옵션을 선택해주세요");
+      return;
+    }
+  
+    const orderItems = selectedOptions.map(option => ({
+      iid: item.iid, // db
+      ioid: option.ioid, // db
+      option: option.option, // db
+      name:item.name, // db
+      img:item.img1, // db
+      count: option.count, // db
+      price: item.salePrice && new Date(item.saleDate) > new Date() ? item.salePrice : item.price
+    }));
+  
+    // orderItems를 로컬 스토리지에 저장
+    localStorage.setItem('orderItems', JSON.stringify(orderItems)); //  객체나 배열을 JSON 문자열로 변환
+    console.log(orderItems);
+    // Order 페이지로 이동할 때 orderItems 상태를 함께 전달
+    navigate("/order", { state: { orderItems } });
+  };    
+  
+    // =================== order item 관련 끝======================
 
   return (
     <Grid container spacing={2} className="itemDetail">
@@ -619,7 +618,12 @@ export default function ItemDetail() {
               >
                 <MenuItem value='' disabled>옵션 선택</MenuItem>
                 {options.map(option => (
-                  <MenuItem key={option.option} value={option.option} style={{ justifyContent: 'space-between' }}>
+                  <MenuItem 
+                    key={option.option} 
+                    value={option.option} 
+                    style={{ justifyContent: 'space-between' }}
+                    disabled={option.stock === 0}
+                  >
                     <span>{option.option}</span>
                     <span>{option.stock}개</span>
                   </MenuItem>
@@ -637,7 +641,7 @@ export default function ItemDetail() {
                   boxShadow={2}
                   bgcolor="#f5f5f5"
                   border="1px solid #ccc"
-                  style={{ width: '65%', marginTop: 5, minHeight: 50 }} 
+                  style={{ width: '75%', marginTop: 5, minHeight: 50 }} 
                 >
                   <Typography variant="body1" style={{ flexGrow: 1 }}>
                     {option.option}
@@ -648,8 +652,9 @@ export default function ItemDetail() {
                     readOnly
                     style={{ width: `${(option.count.toString().length + 1) * 10}px`, margin: '0 5px' }} 
                     disableUnderline 
+                    inputProps={{ min: 0, max: 5 }}
                   />
-                  <Button onClick={() => increaseQuantity(index)}>+</Button>
+                  <Button onClick={() => increaseQuantity(index, option.stock)}>+</Button>
                   <Button onClick={() => removeOption(index)}>X</Button>
                 </Box>
               ))}
@@ -667,12 +672,12 @@ export default function ItemDetail() {
             {/* 공유 및 찜하기 버튼 */}
             <Button variant="contained" color="primary" style={{ marginBottom: '10px' }} onClick={handleCopyLink}>공유하기</Button>
             <Button variant="contained" color="primary" style={{ marginBottom: '10px', marginLeft:5, backgroundColor: 'transparent', color: 'black', }} onClick={handleLikeClick}>
-              찜 {iswish ? <FavoriteIcon style={{ color: 'red', width: 18 }} /> : <FavoriteBorderIcon style={{width:18}}/>} {itemWishCount}
+              {iswish ? <FavoriteIcon style={{ color: 'red', width: 18 }} /> : <FavoriteBorderIcon style={{width:18}}/>} {itemWishCount}
             </Button>
           </CardContent>
         </Card>
       </Grid>
-      <nav style={{ backgroundColor: '#f8f9fa', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)', padding: '10px 0', textAlign: 'center', width: '100%', position: isNavFixed ? 'sticky' : 'relative', top: isNavFixed ? 0 : 'auto', left: 0, zIndex: 1000 }}>
+      <nav style={{ backgroundColor: '#f8f9fa', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)', padding: '10px 0', textAlign: 'center', width: '100%', position: isNavFixed ? 'sticky' : 'relative', top: isNavFixed ? 120 : 'auto', left: 0, zIndex: 1000 }}>
         <ul style={{ display: 'flex', justifyContent: 'center', listStyleType: 'none', padding: 0 }}>
           {['detail', 'review', 'qna'].map((id) => (
             <li key={id} style={{ margin: '0 20px' }}>
@@ -689,7 +694,7 @@ export default function ItemDetail() {
           <Grid container spacing={2} justifyContent="center">
             <Grid item xs={12} style={{ padding: 50, textAlign: 'center' }}>
               <img src={item.img2} alt={item.img2} style={{ width: '90%' }} />
-              <img src={item.img2} alt={item.img2} style={{ width: '90%' }} />
+              <img src={item.img3} alt={item.img3} style={{ width: '90%' }} />
             </Grid>
           </Grid>
         </section>
@@ -700,7 +705,7 @@ export default function ItemDetail() {
             <Grid item xs={12} style={{ paddingLeft: 100 , paddingRight: 100 }}>
               <Button variant="contained" color="primary" size="small" style={{ marginRight: 10 }} onClick={() => openModal(iid)}>리뷰작성</Button>
               <ReviewForm isOpen={isModalOpen} handleClose={closeModal} iid={iid} /> 
-              <ProductReviews reloadReviewData={reloadReviewData} reviews={reviews} item={item}/>
+              <ProductReviews reloadReviewData={reloadReviewData} reviews={reviews} item={item} />
             </Grid>
           </Grid>
         </section>

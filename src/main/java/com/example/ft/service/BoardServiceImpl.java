@@ -42,4 +42,10 @@ public class BoardServiceImpl implements BoardService{
 		
 	}
 
+	@Override
+	public List<Board> getQnAList() {
+		return boardDao.getQnAList();
+	}
+	
+	
 }

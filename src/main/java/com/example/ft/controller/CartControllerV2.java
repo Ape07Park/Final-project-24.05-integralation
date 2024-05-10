@@ -1,12 +1,11 @@
 package com.example.ft.controller;
 
+import com.example.ft.dto.CartItemRequestDto;
+import com.example.ft.dto.CartItemResponseDto;
+import com.example.ft.service.CartServiceV2;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import com.example.ft.entity.CartItemRequestDto;
-import com.example.ft.entity.CartItemResponseDto;
-import com.example.ft.service.CartServiceV2;
 
 import java.util.List;
 

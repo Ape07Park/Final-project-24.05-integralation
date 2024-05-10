@@ -1,3 +1,6 @@
+# for SpringSecurity
+application.properties
+
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar

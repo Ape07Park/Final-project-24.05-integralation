@@ -90,6 +90,11 @@ public class ItemServiceImpl implements ItemService{
 		itemDao.optionDeleted(ioid);
 	}
 	
+	@Override
+	public void inventoryCalculation(int ioid, int count) {
+		itemDao.inventoryCalculation(ioid, count);
+	}
+	
 	// itemTag
 	@Override
 	public int[] getItemTagItid(int iid) {
@@ -115,5 +120,7 @@ public class ItemServiceImpl implements ItemService{
 	public void tagDeleted(int itid) {
 		itemDao.tagDeleted(itid);
 	}
+
+
 	
 }

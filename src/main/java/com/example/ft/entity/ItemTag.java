@@ -20,5 +20,4 @@ public class ItemTag {
 	private int iid;
 	private String tag;
 	private int isDeleted;
-	
 }

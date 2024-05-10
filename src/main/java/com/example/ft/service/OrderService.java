@@ -16,7 +16,6 @@ public interface OrderService {
 	
 	Order getOrderByOid(int oid);
 	
-	// 주문 집어넣기
 	void insertOrder(Order order);
 	
 	void deleteOrder(int oid);
@@ -25,15 +24,29 @@ public interface OrderService {
 	 * orderItem
 	 */
 	
-	// 주문 아이템 집어넣기
-	void insertOrderItemWithOid(OrderItem orderItem);
-	
 	List<OrderItem> getOrderItemListByOiid(int oiid);
-		
-	/*
-	 * OrderHistory
-	 */
+	
+	void insertOrderItemWithOid(OrderItem orderItem);
 	
 	// email로 주문 내역 가져오기
 	List<OrderHistory> getOrderHistoryList(String email);
+	
+	/*
+	 * OrderData
+	 */
+	//
+	// status 변경하기
+	void statusCheckUpdate(String orderId);
+	
+	// oid 추출
+	int getOid(String orderId);
+	
+	// 오더Id 확인
+	Order oderIdCheck(String orderId);
+	
+	// oid로 orderItem list
+	List<OrderItem> getOrderItems(int oid);
+	
+	//
+//	void insertOrderData(OrderData orderData);
 }

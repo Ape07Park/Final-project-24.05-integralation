@@ -28,18 +28,24 @@ public interface OrderDao {
 	/*
 	 * order
 	 */
+	// 
+	
+	// 주문한 것들 조회
+	@Select("SELECT * FROM `order` WHERE email=#{email} AND isDeleted=0 ORDER BY regDate DESC")
+	List<Order> getOrderListByEmail(String email);
 	
 	// 주문 1개 가져오기
 	@Select("select * from `order` where oid=#{oid} and isDeleted=0")
 	Order getOrderByOid(int oid);
 	
-	// 주문 생성
+	// 주문 생성(orderId 추가)
 	@Insert(" INSERT INTO `order` (email, status, name, postCode, addr, detailAddr, tel, req, "
-			+ " way, totalPrice, regDate, isDeleted) " +
-	        " VALUES (#{email}, '결재 완료', #{name}, #{postCode}, #{addr}, #{detailAddr}, #{tel}, #{req}, "
-	        + " 1, #{totalPrice}, default, default)")	
-	@Options(useGeneratedKeys = true, keyProperty = "oid") // 생성된 키 반환(return)
+			+ " way, totalPrice, regDate, isDeleted, orderId) " +
+	        " VALUES (#{email}, default, #{name}, #{postCode}, #{addr}, #{detailAddr}, #{tel}, #{req}, "
+	        + " default, #{totalPrice}, default, default, #{orderId})")	
+	@Options(useGeneratedKeys = true, keyProperty = "oid") // 생성된 키 반환
 	void insertOrder(Order order);
+	//
 	
 	// 주문 삭제
 	@Update("update `order` set isDeleted = 1 where oid = #{oid}")
@@ -57,21 +63,37 @@ public interface OrderDao {
 			+  " WHERE oiid=#{oiid} and orderItem.isDeleted = 0")
 	List<OrderItem> getOrderItemListByOiid(int Oiid);
 	
+	// 주문 내역들 email로 가져오기 - 사용 중
+		@Select(" SELECT o.oid, o.status, o.totalPrice, o.regDate, "
+				+ " oi.count, oi.price, i.name, i.img1, i.iid, itemOption.option " +
+				" FROM `order` o " +
+				" JOIN orderItem oi ON o.oid = oi.oid " +
+				" JOIN item i ON oi.iid = i.iid " +
+				" JOIN itemOption ON oi.iid = itemOption.iid AND oi.ioid = itemOption.ioid " +
+				" WHERE o.email=#{email} AND o.isDeleted=0 AND oi.isDeleted=0 " +
+				" ORDER BY o.regDate DESC")
+		List<OrderHistory> getOrderHistoryList(String email);
+	
+	//
 	// 주문 아이템 생성 및 order의 oid를 사용하여 삽입
 	@Insert(" INSERT INTO orderItem (oid, iid, ioid, count, price, isDeleted ) " +
 	        " VALUES (#{oid}, #{iid}, #{ioid}, #{count}, #{price}, default)")
 	void insertOrderItemWithOid(OrderItem orderItem); // 수정된 부분
 	
-	/*
-	 * orderHistory
-	 */
-			
-	// 주문 내역들 email로 가져오기
-	@Select("SELECT o.oid, o.status, o.totalPrice, oi.count, oi.price, i.name, i.img1  " +
-			"FROM `order` o " +
-			"JOIN orderItem oi ON o.oid = oi.oid " +
-			"JOIN item i ON oi.iid = i.iid " +
-			"WHERE o.email=#{email} AND o.isDeleted=0 AND oi.isDeleted=0 " +
-			"ORDER BY o.regDate DESC")
-	List<OrderHistory> getOrderHistoryList(String email);
+	// 오더ID로 찾아서 status변경
+	@Select("update `order` set status=#{status} where orderId=#{orderId}")
+	void statusCheckUpdate(String status, String orderId);
+	
+	// 오더ID 중복체크
+	@Select("SELECT * from `order` where orderId=#{orderId}")
+	Order oderIdCheck(String orderId);
+	
+	// oid 추출
+	@Select("select oid from `order` where orderId=#{orderId}")
+	int getOid(String orderId);
+	
+	// oid로 oderItem 추출
+	@Select("select * from orderItem where oid=#{oid}")
+	List<OrderItem> getOrderItems(int oid);
+	//
 }

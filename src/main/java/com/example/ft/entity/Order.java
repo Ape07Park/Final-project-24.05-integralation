@@ -31,5 +31,6 @@ public class Order {
 	private int totalPrice; 
 	private LocalDateTime regDate;
 	private int isDeleted;  
+	private String orderId;  
 }
 

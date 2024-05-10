@@ -15,4 +15,6 @@ public interface BoardService {
 	void updateBoard(Board board); // 게시물 수정할 때 사용
 	
 	void deleteBoard(int bid);  // 게시물 삭제 (잠시 사용 중지 상태로 변경)
+	
+	List<Board> getQnAList();
 }

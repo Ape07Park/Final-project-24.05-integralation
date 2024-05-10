@@ -113,7 +113,6 @@ public class BoardController {
 			Review review = Review.builder()
 							.vid(boardData.getVid()).sta(boardData.getSta())
 							.build();
-			System.out.println(boardData.getVid());
 			reviewService.updateReview(review);
 			int totalSta = reviewService.totalStaIid(boardData.getIid());
 			Item item = Item.builder()
@@ -128,5 +127,25 @@ public class BoardController {
 	public String boardDelete(@PathVariable int bid) {
 		boardService.deleteBoard(bid);
 		return "삭제되었습니다.";
+	}
+	
+	@GetMapping("/QnAList")
+	public JSONArray list() {
+		JSONArray jArr = new JSONArray();
+		List<Board> list = boardService.getQnAList();
+		for(Board board : list) {
+			JSONObject jObj = new JSONObject();
+			jObj.put("bid",board.getBid());
+			jObj.put("iid",board.getIid());
+			jObj.put("email",board.getEmail());
+			jObj.put("type",board.getType());
+			jObj.put("typeQnA",board.getTypeQnA());
+			jObj.put("title",board.getTitle());
+			jObj.put("regDate",board.getRegDate());
+			jObj.put("content",board.getContent());
+			jObj.put("img",board.getImg());
+			jArr.add(jObj);
+		}
+		return jArr;
 	}
 }

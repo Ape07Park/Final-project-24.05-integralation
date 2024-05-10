@@ -1,11 +1,11 @@
 import React from "react";
-import ItemInsert from "./pages/ItemInsert";
 import { Outlet } from 'react-router-dom';
 import { AuthContextProvider } from './context/AuthContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import NavigationBar from "./components/NavigationBar";
 import Footer from "./components/Footer";
-import Order from "./pages/OrderPage"
+import ApiTest from "./pages/apitest";
+
 const queryClient = new QueryClient();
 
 export default function App() {
@@ -13,7 +13,8 @@ export default function App() {
     <AuthContextProvider>
       <QueryClientProvider client={queryClient}>
         <NavigationBar/>
-        <Outlet/>      
+        {/* <ApiTest/> */}
+        <Outlet />
         <Footer />
       </QueryClientProvider>
     </AuthContextProvider>

@@ -147,6 +147,7 @@ export default function NavigationBar() {
             <ListItemIcon>
               <WhatshotIcon />
             </ListItemIcon>
+            
               {/* Render admin options if user is an admin */}
       {isAdmin && (
         <>

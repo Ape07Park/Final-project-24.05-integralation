@@ -1,0 +1,22 @@
+.MuiButton-root {
+    margin-top: 6px !important;
+    margin-bottom: 6px !important;
+}
+
+.linkButton {
+    display: block;
+    /* 버튼을 블록 요소로 변경하여 너비 설정이 적용되도록 합니다. */
+    width: 50%;
+    /* 버튼 너비를 50%로 설정합니다. */
+    margin: 0 auto;
+    /* 가운데 정렬을 위해 좌우 마진을 자동으로 설정합니다. */
+    margin-bottom: 10px;
+    /* 버튼 아래 여백을 추가하여 줄바꿈이 일어나도록 합니다. */
+}
+
+/* 
+.table td {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+} */

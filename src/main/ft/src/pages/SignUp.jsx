@@ -4,6 +4,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDaumPostcodePopup } from 'react-daum-postcode';
 
 // mui 
+import { IconButton } from '@mui/material';
+import GoogleIcon from '@mui/icons-material/Google';
+
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -35,8 +38,8 @@ const defaultTheme = createTheme();
 // 기능
 export default function SignUp() {
   const [userInfo, setUserInfo] = useState({
-    email: '', password: '', confirmPassword: '', name: '', postCode:'', addr: '',
-    detailAddr: '', tel: '', req: ''
+    email: '', password: '', confirmPassword: '', name: '', addr: '',
+    detailAddr: '', tel: '', req: '', def: '', isAdmin: 0 // isAdmin 초기값 추가
   });
 
   const navigate = useNavigate();
@@ -73,8 +76,7 @@ export default function SignUp() {
     e.preventDefault(); // 기본 제출 동작 방지
 
     // 필수 정보가 입력되었는지 확인
-    if (!userInfo.email || !userInfo.password || !userInfo.confirmPassword || !userInfo.name || 
-      !userInfo.addr || !userInfo.addr || !userInfo.detailAddr || !userInfo.tel || !userInfo.req) {
+    if (!userInfo.email || !userInfo.password || !userInfo.confirmPassword || !userInfo.name || !userInfo.addr || !userInfo.detailAddr || !userInfo.tel || !userInfo.req || !userInfo.def) {
       alert("모든 필수 정보를 입력해주세요.");
       return;
     }
@@ -123,31 +125,28 @@ export default function SignUp() {
   }
 
   // Daum 우편번호 팝업 열기 함수
-const openPostcode = useDaumPostcodePopup("//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js");
+  const openPostcode = useDaumPostcodePopup("//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js");
 
-// Daum 우편번호 팝업에서 주소 선택 시 호출되는 완료 핸들러
-const handleComplete = data => {
-  let fullAddress = data.address; // 선택된 주소
-  let extraAddress = '';
-  let postCode = data.zonecode; // 우편번호
+  // Daum 우편번호 팝업에서 주소 선택 시 호출되는 완료 핸들러
+  const handleComplete = data => {
+    let fullAddress = data.address; // 선택된 주소
+    let extraAddress = '';
 
-  if (data.addressType === 'R') {
-    if (data.bname !== '') {
-      extraAddress += data.bname;
+    if (data.addressType === 'R') {
+      if (data.bname !== '') {
+        extraAddress += data.bname;
+      }
+      if (data.buildingName !== '') {
+        extraAddress += extraAddress !== '' ? `, ${data.buildingName}` : data.buildingName;
+      }
+      fullAddress += extraAddress !== '' ? ` (${extraAddress})` : '';
     }
-    if (data.buildingName !== '') {
-      extraAddress += extraAddress !== '' ? `, ${data.buildingName}` : data.buildingName;
-    }
-    fullAddress += extraAddress !== '' ? ` (${extraAddress})` : '';
-  }
 
-  setUserInfo({
-    ...userInfo,
-    addr: fullAddress, // 선택된 주소를 사용자 정보에 업데이트
-    postCode: postCode // 우편번호를 사용자 정보에 업데이트
-  });
-};
-
+    setUserInfo({
+      ...userInfo,
+      addr: fullAddress // 선택된 주소를 사용자 정보에 업데이트
+    });
+  };
 
   return (
     <>
@@ -164,7 +163,7 @@ const handleComplete = data => {
           >
 
             <Typography component="h1" variant="h5">
-              회원가입
+              회원가입 - * 표시 입력 필수
             </Typography>
 
             <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
@@ -177,12 +176,11 @@ const handleComplete = data => {
                     name="email"
                     fullWidth
                     id="email"
-                    label="이메일"
+                    label="이메일 *"
                     autoFocus
                     value={userInfo.email}
                     onChange={handleChange}
                     onBlur={handleEmailBlur}
-                    required
                   />
                 </Grid>
 
@@ -190,13 +188,12 @@ const handleComplete = data => {
                   <TextField
                     fullWidth
                     name="password"
-                    label="비밀번호"
+                    label="비밀번호 *"
                     type="password"
                     id="password"
                     autoComplete="new-password"
                     value={userInfo.password}
                     onChange={handleChange}
-                    required
                   />
                 </Grid>
 
@@ -205,13 +202,12 @@ const handleComplete = data => {
                   <TextField
                     fullWidth
                     name="confirmPassword"
-                    label="비밀번호 확인"
+                    label="비밀번호 확인 *"
                     type="password"
                     id="confirmPassword"
                     autoComplete="confirmPassword"
                     value={userInfo.confirmPassword}
                     onChange={handleChange}
-                    required
                   />
                 </Grid>
 
@@ -220,12 +216,11 @@ const handleComplete = data => {
                   <TextField
                     fullWidth
                     id="name"
-                    label="이름"
+                    label="이름 *"
                     name="name"
                     autoComplete="name"
                     value={userInfo.name}
                     onChange={handleChange}
-                    required
                   />
                 </Grid>
 
@@ -246,27 +241,12 @@ const handleComplete = data => {
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    id="postCode"
-                    label="우편번호"
-                    name="postCode"
-                    autoComplete="sample6_postcode"
-                    value={userInfo.postCode}
-                    readOnly
-                    required                   
-                  />
-                </Grid>
-
-                {/*우편번호*/}
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
                     id="addr"
-                    label="주소"
+                    label="우편번호 *"
                     name="addr"
                     autoComplete="sample6_postcode"
                     value={userInfo.addr}
                     readOnly
-                    required                  
                   />
                 </Grid>
 
@@ -275,13 +255,12 @@ const handleComplete = data => {
                   <TextField
                     fullWidth
                     name='detailAddr'
-                    label="상세주소"
+                    label="상세주소 *"
                     type="text"
                     id="sample6_detailAddress"
                     autoComplete="sample6_deailAddress"
                     value={userInfo.detailAddr}
                     onChange={handleChange}
-                    required
                   />
                 </Grid>
 
@@ -290,13 +269,12 @@ const handleComplete = data => {
                   <TextField
                     fullWidth
                     name="tel"
-                    label="전화번호"
+                    label="전화번호 *"
                     type="tel"
                     id="tel"
                     maxLength="13"
                     value={userInfo.tel}
                     onChange={handleChange}
-                    required
                   />
                 </Grid>
 
@@ -312,6 +290,29 @@ const handleComplete = data => {
                     hidden
                     onChange={handleChange}
                   />
+                </Grid>
+
+                {/* 기본 배송 여부 선택 */}
+                <Grid item xs={12}>
+                  <RadioGroup
+                    row
+                    name='def'
+                    value={userInfo.def}
+                    onChange={handleChange}
+                  >
+                    <FormControlLabel
+                      value="Y"
+                      control={<Radio />}
+                      label="예"
+                      checked={userInfo.def === "Y"}
+                    />
+                    <FormControlLabel
+                      value="N"
+                      control={<Radio />}
+                      label="아니요"
+                      checked={userInfo.def === "N"}
+                    />
+                  </RadioGroup>
                 </Grid>
               </Grid>
             </Box>

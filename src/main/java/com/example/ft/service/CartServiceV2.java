@@ -1,10 +1,10 @@
 package com.example.ft.service;
 
+import com.example.ft.dto.CartItemRequestDto;
+import com.example.ft.dto.CartItemResponseDto;
+
 
 import java.util.List;
-
-import com.example.ft.entity.CartItemRequestDto;
-import com.example.ft.entity.CartItemResponseDto;
 
 public interface CartServiceV2 {
 
