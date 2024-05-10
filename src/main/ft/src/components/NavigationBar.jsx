@@ -34,6 +34,7 @@ import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import { Stack } from '@mui/material';
 import { selectUserData } from '../api/firebase';
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
+import StorageIcon from '@mui/icons-material/Storage';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -287,6 +288,11 @@ export default function NavigationBar() {
     }
   }, [currentUserEmail]);
 
+  const handleToOrderHistory = () => {
+    navigate('/OrderHistoryList');
+  };
+
+
   return (
     <Box sx={{ flexGrow: 1, marginBottom: 2, paddingTop: '130px',  }}>
       <StyledAppBar position="static">
@@ -325,6 +331,15 @@ export default function NavigationBar() {
                 />
               </Search>
             </form>
+
+            <IconButton size="small" color="inherit" onClick={handleToOrderHistory}>
+              <Stack direction="column" alignItems="center">
+                <Badge badgeContent={0} color="error">
+                  <StorageIcon />
+                </Badge>
+                <Typography variant="body2" sx={{ fontSize: '0.7rem' }}>주문내역</Typography>
+              </Stack>
+            </IconButton>
 
             <IconButton size="small" color="inherit" onClick={handleToCart}>
               <Stack direction="column" alignItems="center">

@@ -246,6 +246,10 @@ export default function NavigationBar() {
     navigate('/cart');
   };
 
+  const handleToOrderHistory = () => {
+    navigate('/OrderHistoryList');
+  };
+
   return (
     <Box sx={{ flexGrow: 1, marginBottom: 2, paddingTop: '103px',  }}>
       <StyledAppBar position="static">
@@ -284,6 +288,14 @@ export default function NavigationBar() {
                 />
               </Search>
             </form>
+            <IconButton size="small" color="inherit" onClick={handleToOrderHistory}>
+              <Stack direction="column" alignItems="center">
+                <Badge badgeContent={0} color="error">
+                  <ShoppingCartIcon />
+                </Badge>
+                <Typography variant="body2" sx={{ fontSize: '0.7rem' }}>주문내역</Typography>
+              </Stack>
+            </IconButton>
 
             <IconButton size="small" color="inherit" onClick={handleToCart}>
               <Stack direction="column" alignItems="center">
