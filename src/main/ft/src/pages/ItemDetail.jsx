@@ -512,12 +512,14 @@ export default function ItemDetail() {
       return;
     }
   
-    // Ensure that selectedOptions has at least one option selected
+    // 옵션 선택 여부 확인 
     if (selectedOptions.length === 0) {
       alert("옵션을 선택해주세요");
       return;
     }
-  
+    
+  // 필요한 데이터 만을 받아 새 객체 생성해 orderItems배열에 저장 
+  // option, item에서 각각 가져오는 것은 option이 담지 못하는 가격 등의 정보가 item에 있기에
     const orderItems = selectedOptions.map(option => ({
       iid: item.iid, // db
       ioid: option.ioid, // db
@@ -528,7 +530,7 @@ export default function ItemDetail() {
       price: item.salePrice && new Date(item.saleDate) > new Date() ? item.salePrice : item.price
     }));
   
-    // orderItems를 로컬 스토리지에 저장
+    // orderItems를 로컬 스토리지에 저장 , 이유는 데이터 보존을 위해
     localStorage.setItem('orderItems', JSON.stringify(orderItems)); //  객체나 배열을 JSON 문자열로 변환
     console.log(orderItems);
     // Order 페이지로 이동할 때 orderItems 상태를 함께 전달
