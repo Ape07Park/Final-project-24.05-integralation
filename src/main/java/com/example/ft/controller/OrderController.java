@@ -3,6 +3,8 @@ package com.example.ft.controller;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.plaf.synth.SynthOptionPaneUI;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -69,17 +71,17 @@ public class OrderController {
 			if (order == null) {
 				// 주문 생성
 				orderService.insertOrder(orderRequest.getOrder());
-				
+
 				// 주문 생성 후 생성된 oid를 가져와서 주문 아이템을 삽입
 				int oid = orderRequest.getOrder().getOid();
-				
+
 				// 주문 아이템을 가져와서 oid를 설정합니다.
 				List<OrderItem> orderItemsData = orderRequest.getOrderItems();
-				
+
 				for (OrderItem orderItem : orderItemsData) {
-					OrderItem newOrderItem = OrderItem.builder().oid(oid).iid(orderItem.getIid()).ioid(orderItem.getIoid())
-							.count(orderItem.getCount()).price(orderItem.getPrice()).build();
-					
+					OrderItem newOrderItem = OrderItem.builder().oid(oid).iid(orderItem.getIid())
+							.ioid(orderItem.getIoid()).count(orderItem.getCount()).price(orderItem.getPrice()).build();
+
 					// 주문 아이템을 삽입합니다.
 					orderService.insertOrderItemWithOid(newOrderItem);
 				}
@@ -91,25 +93,24 @@ public class OrderController {
 	}
 
 	// 주문 삭제
-	@PostMapping("/delete")
-	public ResponseEntity<String> deleteOrder(@RequestParam int oid) {
-		try {
-			// 주문 서비스를 호출하여 주문을 삭제
-			orderService.deleteOrder(oid);
-			// 주문이 성공적으로 삭제되었음을 클라이언트에게 알림
-			return ResponseEntity.ok("주문이 성공적으로 삭제되었습니다.");
-		} catch (Exception e) {
-			// 주문 삭제에 실패한 경우, 에러 메시지와 함께 500 Internal Server Error 응답 반환
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("주문 삭제에 실패했습니다.");
-		}
-	}
+//	@PostMapping("/delete")
+//	public ResponseEntity<String> deleteOrder(@RequestParam int oid) {
+//		try {
+//			// 주문 서비스를 호출하여 주문을 삭제
+//			orderService.deleteOrder(oid);
+//			// 주문이 성공적으로 삭제되었음을 클라이언트에게 알림
+//			return ResponseEntity.ok("주문이 성공적으로 삭제되었습니다.");
+//		} catch (Exception e) {
+//			// 주문 삭제에 실패한 경우, 에러 메시지와 함께 500 Internal Server Error 응답 반환
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("주문 삭제에 실패했습니다.");
+//		}
+//	}
 
 	// 특정 사용자의 주문 목록 가져오기
 	@PostMapping("/historyList")
 	public ResponseEntity<?> getOrderListByEmail(@RequestBody Map<String, String> data) { // 이메일 json으로 받음. 그래서 map
 		String email = data.get("email"); // 이메일 가져오기
-		
-		System.out.println(email);
+
 		if (email == null || email.isEmpty()) {
 			return ResponseEntity.badRequest().body("이메일을 제공해주세요.");
 		}
@@ -117,12 +118,77 @@ public class OrderController {
 		// 사용자 이메일을 이용하여 주문 목록을 조회합니다.
 		List<OrderHistory> orderList = orderService.getOrderHistoryList(email);
 
-		System.out.println(orderList);
-
 		if (orderList.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
 
 		return ResponseEntity.ok(orderList);
 	}
+
+	// admin으로 모든 사용자의 주문 목록 가져오기
+	@PostMapping("/admin/historyList")
+	public ResponseEntity<?> getOrderListForAdmin(@RequestBody Map<String, String> data) {
+
+		String adminEmail = data.get("email"); // adminEmail이라는 key를 통해 admin의 이메일을 받음
+
+		if (!adminEmail.equals("admin@gmail.com")) {
+			return ResponseEntity.badRequest().body("관리자 이메일을 제공해주세요.");
+		}
+
+		List<OrderHistory> allOrderList = orderService.getOrderHistoryListForAdmin();
+
+		if (allOrderList.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+
+		return ResponseEntity.ok(allOrderList);
+
+	}
+
+	//
+	@PostMapping("/statusUpdate")
+	public String statusUpdate(@RequestBody Order order) {
+		String status = (order.getStatus().equals("배송완료") ? "배송완료" : "배송중");
+		Order orderData = Order.builder().status(status).oid(order.getOid()).build();
+		orderService.statusUpdate(orderData);
+		return "update";
+	}
+
+	// 운송장 번호 업데이트
+    @PostMapping("/orderWayUpdate")
+    public ResponseEntity<?> updateOrderWay(@RequestBody Map<String, String> data) {
+        int oid = Integer.parseInt(data.get("oid"));
+        String way = data.get("way");
+        System.out.println(oid);
+        System.out.println(way);
+
+        if (way == null || way.isEmpty()) {
+            return ResponseEntity.badRequest().body("운송장 번호를 제공해주세요.");
+        }
+
+        try {
+            // 주문 정보 업데이트
+            orderService.orderWayUpdate(oid, way);
+            System.out.println("송장번호 업데이트");
+            return ResponseEntity.ok("운송장 번호가 업데이트되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("운송장 번호 업데이트에 실패했습니다.");
+        }
+    }
+    
+    @PostMapping("/orderDelete")
+    public ResponseEntity<?> deleteOrder(@RequestBody Map<String, String> data) {
+        int oid = Integer.parseInt(data.get("oid"));
+       
+        System.out.println(oid);  
+
+        try {
+            // 주문 정보 업데이트
+            orderService.deleteOrder(oid);
+            System.out.println("주문 취소");
+            return ResponseEntity.ok("주문 취소 되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("주문 취소에 실패했습니다.");
+        }
+    }
 }

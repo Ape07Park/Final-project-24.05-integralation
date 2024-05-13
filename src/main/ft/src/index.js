@@ -24,6 +24,8 @@ import { FailPage } from './components/toss/Fail';
 import { CheckoutPage } from './components/toss/Checkout';
 import Order from './pages/OrderPage';
 import OrderHistoryList from './pages/OrderHistoryList';
+import AdminOrderHistoryList from './pages/AdminOrderHistoryList'
+import AdminOrderHistoryList2 from './pages/AdminOrderHistoryList2'
 
 const router = createBrowserRouter([
   {
@@ -51,6 +53,8 @@ const router = createBrowserRouter([
       { path: 'success', element: <SuccessPage/> },
       { path: 'fail', element: <FailPage/> },
       { path: 'checkout', element: <CheckoutPage/> },
+      { path: 'admin/order/list', element: <AdminOrderLists /> },
+      { path: 'admin/order/list2', element: <AdminOrderLists2 /> },
     ]
   }
 ]);
@@ -75,6 +79,15 @@ function ItemUpdateAdminRoutes() {
   return user && user.isAdmin ? <ItemUpdate /> : <ItemList />;
 }
 
+function AdminOrderLists() {
+  const { user } = useAuthContext(); 
+  return user && user.isAdmin ? <AdminOrderHistoryList /> : <OrderHistoryList />;
+}
+
+function AdminOrderLists2() {
+  const { user } = useAuthContext(); 
+  return user && user.isAdmin ? <AdminOrderHistoryList2 /> : <OrderHistoryList />;
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

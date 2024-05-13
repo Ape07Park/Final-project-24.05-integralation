@@ -295,19 +295,18 @@ export function onUserStateChanged(callback) {
 
 // ====================
 
-// # 유저를 인자로 넣어 db에 있는 email과 인자로 넣은 이메일이 일치 시 
-// isAdmin = true를 부여 
+// # 관리자 가져오기 함수 
 
-export async function getAdminUser(user) { 
+export async function getAdminUser(user) {
   try {
-    const snapshot = await get(ref(database, 'admin')); // db의 admin 테이블 가져오기 
-    if (snapshot.exists()) { 
-      const admins = snapshot.val(); // admin 테이블의 값을 admins에 저장
+    const snapshot = await get(ref(database, 'admin'));
+    if (snapshot.exists()) {
+      const admins = snapshot.val();
       // 관리자 여부 확인 후 맞으면 true 
       const isAdmin = admins.includes(user.email);   
-      return { ...user, isAdmin }; // user의 속성에 isAdmin 추가  
+      return { ...user, isAdmin };
     }
-    return user; 
+    return user;
   } catch (error) {
     console.error("Error getting admin user:", error);
     return user; // 에러 발생 시 기본 사용자 정보 반환

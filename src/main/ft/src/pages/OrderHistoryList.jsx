@@ -17,6 +17,9 @@ import {
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
 import { selectUserData } from '../api/firebase';
 import { useNavigate } from 'react-router-dom';
+import TrackerComponent from '../components/TrackerComponent';
+
+const t_key = process.env.REACT_APP_SWEETTRACKER_KEY;
 
 const OrderHistoryList = () => {
 
@@ -24,10 +27,8 @@ const OrderHistoryList = () => {
   const [currentUserEmail, setCurrentUserEmail] = useState(null); // 현재 사용자 이메일
   const [userInfo, setUserInfo] = useState(null); // 사용자 정보
   const navigate = useNavigate(); // 페이지 이동을 위한 Hook
-
   // Firebase Auth 객체 생성
   const auth = getAuth();
-
   // 주문 목록 관련 상태
   const [orders, setOrders] = useState([]); // 주문 목록
 
@@ -102,6 +103,20 @@ const OrderHistoryList = () => {
     return acc;
   }, {});
 
+  const DeliveryTracker = (t_invoice) => {      
+      const carrier_id = 'kr.cjlogistics';
+      
+      // 창 크기와 위치를 설정합니다.
+      const width = 400;
+      const height = 600;
+      const left = (window.innerWidth - width) / 2;
+      const top = (window.innerHeight - height) / 2;
+      const specs = `width=${width}, height=${height}, left=${left}, top=${top}`;
+
+      // 새 창을 엽니다.
+      window.open(`https://tracker.delivery/#/${carrier_id}/${t_invoice}`, "_blank", specs);
+  };
+
   return (
     <Container fixed sx={{ mt: 5, mb: 5 }}>
       {/* 페이지 제목 */}
@@ -126,7 +141,7 @@ const OrderHistoryList = () => {
                   <TableCell>상품 이미지</TableCell>
                   <TableCell>상품명</TableCell>
                   <TableCell>개수</TableCell>
-                  <TableCell>총 가격</TableCell>
+                  <TableCell>가격</TableCell>
                   <TableCell>주문 날짜</TableCell>
                   <TableCell>배송조회</TableCell>
                   <TableCell>주문취소/반품</TableCell>
@@ -159,15 +174,21 @@ const OrderHistoryList = () => {
 
                     {/* 개수 */}
                     <TableCell>{order.count}</TableCell>
-
+                    
                     {/* 총 가격 */}
-                    <TableCell>{order.totalPrice.toLocaleString()}원</TableCell>
+                    <TableCell>{order.price.toLocaleString()}원</TableCell>
 
                     {/* 주문 날짜 */}
                     <TableCell>{order.regDate.substring(0, 10)}</TableCell>
 
                     {/* 배송조회 */}
-                    <TableCell>{order.status}</TableCell>
+                    <TableCell>
+                      {order.way ? (
+                        <div onClick={() => DeliveryTracker(order.way)} style={{cursor: 'pointer'}}>
+                          <TrackerComponent order={order}/>
+                        </div>
+                      ) : order.status}
+                    </TableCell>
 
                     {/* 주문취소/반품 버튼 */}
                     <TableCell>

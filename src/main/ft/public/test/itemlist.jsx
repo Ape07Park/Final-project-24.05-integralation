@@ -1,3 +1,4 @@
+//무한스크롤
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';

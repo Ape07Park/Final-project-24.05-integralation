@@ -6,17 +6,16 @@ import NavigationBar from "./components/NavigationBar";
 import Footer from "./components/Footer";
 import ApiTest from "./pages/apitest";
 
-const queryClient = new QueryClient();
+
 
 export default function App() {
   return (
     <AuthContextProvider>
-      <QueryClientProvider client={queryClient}>
         <NavigationBar/>
         {/* <ApiTest/> */}
         <Outlet />
         <Footer />
-      </QueryClientProvider>
+
     </AuthContextProvider>
   );
 }

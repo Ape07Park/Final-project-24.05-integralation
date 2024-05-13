@@ -288,6 +288,4 @@ public class ItemController {
 	    itemService.saleItem(item);
 	    return "Success";
 	}
-	
-	
 }

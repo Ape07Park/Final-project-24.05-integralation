@@ -4,11 +4,6 @@ import {
   Button,
   Card,
   Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   Grid,
   Typography,
   Table,
@@ -18,7 +13,6 @@ import {
   TableContainer,
   TableRow,
   Checkbox,
-  Input,
   CardMedia,
   TextField,
   MenuItem,
@@ -29,8 +23,8 @@ import {
 } from "@mui/material";
 import { nanoid } from "nanoid";
 import { useDaumPostcodePopup } from 'react-daum-postcode';
-import axios from 'axios';
-import { selectUserData, updateUserData } from '../api/firebase';
+
+import { selectUserData } from '../api/firebase';
 import { useNavigate } from 'react-router-dom';
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
 

@@ -3,24 +3,8 @@ import { selectUserData } from '../api/firebase';
 import axios from 'axios';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import {
-  Box,
-  Button,
-  Card,
-  Container,
-  Grid,
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Checkbox,
-  Input,
-  CardMedia,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material';
+import { Box, Button, Card, Container, Grid, Typography, Table, TableBody, TableCell, TableHead, TableRow,
+        Checkbox, Input, CardMedia, useMediaQuery, useTheme, } from '@mui/material';
 
 import '../css/cartPage.css';
 
@@ -219,7 +203,7 @@ const CartPage = () => {
           />
         </TableCell>
         <TableCell>{item.name}</TableCell>
-        <TableCell>{item.price}원</TableCell>
+        <TableCell>{item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell>
         {!isSmallScreen &&
           <TableCell>{item.option}</TableCell>
         }
@@ -231,7 +215,7 @@ const CartPage = () => {
             inputProps={{ min: 1, max: item.stockCount }}
           />
         </TableCell>
-        <TableCell>{item.totalPrice}원</TableCell>
+        <TableCell>{item.totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell>
         <TableCell>
           <Button onClick={() => handleDeleteItem(item.cid)} variant="contained" color="error">
             X
@@ -315,7 +299,7 @@ const CartPage = () => {
                 variant="subtitle1"
                 sx={{ mt: 1, whiteSpace: 'nowrap' }}
               >
-                총 상품 가격: {totalCount.toFixed(0)}원
+                총 상품 가격: {totalCount.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원
               </Typography>
               <Button
                 variant="contained"
