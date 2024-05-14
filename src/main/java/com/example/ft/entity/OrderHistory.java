@@ -28,5 +28,6 @@ public class OrderHistory {
 	private String option;
 	private LocalDateTime regDate;
 	private String way;
+	private int isDeleted;
 	
 }

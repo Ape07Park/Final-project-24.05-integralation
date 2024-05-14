@@ -90,32 +90,22 @@ const AdminOrderHistoryList2 = () => {
 
   // Group orders by status
   const groupOrdersByStatus = () => {
-    return orders.reduce((acc, order) => {
+    const groupedOrders = orders.reduce((acc, order) => {
       if (!acc[order.status]) {
         acc[order.status] = [];
       }
       acc[order.status].push(order);
       return acc;
     }, {});
-  };
 
-  // Sort orders by status
-  const sortOrdersByStatus = () => {
-    const groupedOrders = groupOrdersByStatus();
-    const sortedOrders = Object.entries(groupedOrders)
-      .sort((a, b) => {
-        // Custom sorting logic based on order status
-        const statusPriority = {
-          '주문 확인 중': 1,
-          '주문 완료': 2,
-          '배송 완료': 3, // Change the priority
-          '배송중': 4 // Adjust other priorities accordingly
-        };
-        return statusPriority[a[0]] - statusPriority[b[0]];
-      })
-      .map(([status, orderList]) => ({ status, orderList }));
-    setOrders(sortedOrders.flatMap(entry => entry.orderList));
-    setSortedByStatus(true);
+    // Move '주문 완료' status to the front
+    if (groupedOrders['주문 완료']) {
+      const completedOrders = groupedOrders['주문 완료'];
+      delete groupedOrders['주문 완료'];
+      groupedOrders['주문 완료'] = completedOrders;
+    }
+
+    return groupedOrders;
   };
 
   const DeliveryTracker = (t_invoice) => {
@@ -141,17 +131,19 @@ const AdminOrderHistoryList2 = () => {
     }
   };
 
+  const sortOrdersByOid = () => {
+    navigate("/admin/order/list")
+  }
+
   return (
     <Container fixed sx={{ mt: 5, mb: 5 }}>
       <Typography variant="h4" sx={{ marginBottom: 3 }} style={{ textAlign: "center" }}>
         주문 내역
       </Typography>
 
-      {!sortedByStatus && (
-        <Button onClick={sortOrdersByStatus} variant='contained'>
-          배송 상태별 정렬
-        </Button>
-      )}
+      <Button onClick={sortOrdersByOid} variant='contained'>
+        주문번호별  정렬
+      </Button>
 
       {Object.entries(groupOrdersByStatus()).map(([status, orderList]) => (
         <div key={status}>
@@ -172,6 +164,7 @@ const AdminOrderHistoryList2 = () => {
                   <TableCell>운송장 번호</TableCell>
                   <TableCell>배송조회</TableCell>
                   <TableCell>주문취소/반품</TableCell>
+                  <TableCell>주문취소</TableCell>
                 </TableRow>
               </TableHead>
 
@@ -229,6 +222,14 @@ const AdminOrderHistoryList2 = () => {
                         </>
                       )}
                     </TableCell>
+
+                    <TableCell style={{color:'red', textAlign:'center'}}>
+                      <>
+                        <Typography variant='h4'>
+                      {order.isDeleted}
+                        </Typography>
+                      </>
+                      </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

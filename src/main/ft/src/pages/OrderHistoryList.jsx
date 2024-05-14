@@ -23,60 +23,44 @@ const t_key = process.env.REACT_APP_SWEETTRACKER_KEY;
 
 const OrderHistoryList = () => {
 
-  // 사용자 정보 관련 상태
-  const [currentUserEmail, setCurrentUserEmail] = useState(null); // 현재 사용자 이메일
-  const [userInfo, setUserInfo] = useState(null); // 사용자 정보
-  const navigate = useNavigate(); // 페이지 이동을 위한 Hook
-  // Firebase Auth 객체 생성
+  const [currentUserEmail, setCurrentUserEmail] = useState(null);
+  const [userInfo, setUserInfo] = useState(null);
+  const navigate = useNavigate();
   const auth = getAuth();
-  // 주문 목록 관련 상태
-  const [orders, setOrders] = useState([]); // 주문 목록
+  const [orders, setOrders] = useState([]);
 
-  // Firebase Auth 상태가 변경될 때 실행되는 useEffect
   useEffect(() => {
-    // Firebase Auth 상태 변화 관찰
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        // 사용자가 로그인한 경우 현재 사용자의 이메일을 상태에 설정
         setCurrentUserEmail(user.email);
       } else {
-        // 사용자가 로그아웃한 경우 현재 사용자의 이메일 상태를 null로 설정
         setCurrentUserEmail(null);
       }
     });
   }, [auth]);
 
-  // 현재 사용자 이메일이 변경될 때 실행되는 useEffect
   useEffect(() => {
     if (currentUserEmail) {
-      // 현재 사용자 이메일이 존재하는 경우, 해당 이메일로 사용자 정보를 불러오는 함수 호출
       const fetchUserInfo = async () => {
         try {
-          // Firebase Firestore에서 현재 사용자의 정보를 불러옴
           const info = await selectUserData(currentUserEmail);
-          // 불러온 정보를 상태에 설정
           setUserInfo(info);
         } catch (error) {
           console.error('사용자 정보를 불러오는 중 에러:', error);
         }
       };
-      // 함수 호출
       fetchUserInfo();
     }
   }, [currentUserEmail]);
 
-  // 서버에 주문 내역을 요청하는 useEffect
   useEffect(() => {
     if (currentUserEmail) {
       const fetchOrderHistory = async () => {
         try {
-          // 현재 사용자 이메일을 서버로 전송하여 해당 사용자의 주문 내역을 요청
           const response = await axios.post('/ft/order/historyList', { email: currentUserEmail });
-          // 받은 주문 내역을 상태에 설정
           setOrders(response.data);
           console.log(response);
         } catch (error) {
-          // 요청 중 에러 발생 시 에러 메시지 출력
           if (error.response) {
             console.error('주문 내역을 불러오는데 실패했습니다:', error.response.status, error.response.data);
           } else if (error.request) {
@@ -84,18 +68,16 @@ const OrderHistoryList = () => {
           } else {
             console.error('주문 내역을 불러오는데 실패했습니다:', error.message);
           }
-          // 에러 발생 시 주문 목록을 빈 배열로 설정
           setOrders([]);
         }
       };
-      // 함수 호출
       fetchOrderHistory();
     }
   }, [currentUserEmail]);
 
-  // 날짜별로 그룹화한 주문 목록 생성
-  const groupedOrders = orders.reduce((acc, order) => {
-    const date = order.regDate.substring(0, 10); // 날짜 부분만 추출
+  // 날짜 별로 그룹화된 주문 목록 생성
+  const groupedOrdersByDate = orders.reduce((acc, order) => {
+    const date = order.regDate.substring(0, 10); // extract only the date part
     if (!acc[date]) {
       acc[date] = [];
     }
@@ -103,107 +85,156 @@ const OrderHistoryList = () => {
     return acc;
   }, {});
 
-  const DeliveryTracker = (t_invoice) => {      
-      const carrier_id = 'kr.cjlogistics';
-      
-      // 창 크기와 위치를 설정합니다.
-      const width = 400;
-      const height = 600;
-      const left = (window.innerWidth - width) / 2;
-      const top = (window.innerHeight - height) / 2;
-      const specs = `width=${width}, height=${height}, left=${left}, top=${top}`;
-
-      // 새 창을 엽니다.
-      window.open(`https://tracker.delivery/#/${carrier_id}/${t_invoice}`, "_blank", specs);
+  // 주문번호로 그룹화된 주문 목록 생성
+  const getGroupedOrdersByOrderId = () => {
+    return orders.reduce((acc, order) => {
+      if (!acc[order.oid]) {
+        acc[order.oid] = [];
+      }
+      acc[order.oid].push(order);
+      return acc;
+    }, {});
   };
+
+  // 주문번호를 높은 순으로 정렬하여 반환
+  const sortedOrdersByOrderId = () => {
+    return Object.entries(getGroupedOrdersByOrderId())
+      .sort(([orderIdA], [orderIdB]) => orderIdB - orderIdA) // sort by order id in descending order
+      .map(([orderId, orderList]) => ({
+        orderId,
+        orderList,
+        totalPrice: orderList.reduce((total, item) => total + item.price, 0), // calculate total price for each order
+      }));
+  };
+
+  const DeliveryTracker = (t_invoice) => {      
+    const carrier_id = 'kr.cjlogistics';
+    
+    // 창 크기와 위치를 설정합니다.
+    const width = 400;
+    const height = 600;
+    const left = (window.innerWidth - width) / 2;
+    const top = (window.innerHeight - height) / 2;
+    const specs = `width=${width}, height=${height}, left=${left}, top=${top}`;
+
+    // 새 창을 엽니다.
+    window.open(`https://tracker.delivery/#/${carrier_id}/${t_invoice}`, "_blank", specs);
+};
+
+const handleDelete = async (orderId) => {
+  const confirmDelete = window.confirm("정말로 주문을 취소하시겠습니까?");
+  if (!confirmDelete) return; // 사용자가 취소를 선택한 경우 함수 종료
+
+  try {
+    await axios.post('/ft/order/orderDelete', { oid: orderId });
+    console.log('주문 삭제 완료');
+    // 여기서 필요하다면 상태를 업데이트하거나 다른 작업을 수행할 수 있습니다.
+  } catch (error) {
+    console.error('주문 삭제 실패:', error);
+  }
+};
 
   return (
     <Container fixed sx={{ mt: 5, mb: 5 }}>
-      {/* 페이지 제목 */}
       <Typography variant="h4" sx={{ marginBottom: 3 }} style={{textAlign:"center"}}>
         주문 내역
       </Typography>
 
-      {/* 날짜별 주문 목록 표시 */}
-      {Object.entries(groupedOrders).map(([date, orders]) => (
+      {/* 날짜별로 주문 목록 표시 */}
+      {Object.entries(groupedOrdersByDate).map(([date, orders]) => (
         <div key={date}>
           {/* 날짜 표시 */}
           <Typography variant="h6" sx={{ marginBottom: 1 }}>
             {date}
           </Typography>
 
-          {/* 주문 목록 테이블 */}
-          <TableContainer>
-            <Table>
-              {/* 테이블 헤더 */}
-              <TableHead>
-                <TableRow>
-                  <TableCell>상품 이미지</TableCell>
-                  <TableCell>상품명</TableCell>
-                  <TableCell>개수</TableCell>
-                  <TableCell>가격</TableCell>
-                  <TableCell>주문 날짜</TableCell>
-                  <TableCell>배송조회</TableCell>
-                  <TableCell>주문취소/반품</TableCell>
-                </TableRow>
-              </TableHead>
+          {/* 주문번호 별로 주문 목록 표시 */}
+          {sortedOrdersByOrderId().map(({ orderId, orderList, totalPrice }) => {
+            const ordersForThisDate = orderList.filter(order => order.regDate.substring(0, 10) === date);
+            if (ordersForThisDate.length === 0) return null;
+            return (
+              <div key={orderId}>
+                {/* 주문 번호 표시 */}
+                <Typography variant="subtitle1" sx={{ marginBottom: 1 }}>
+                  주문 번호: {orderId}
+                </Typography>
 
-              {/* 테이블 바디 */}
-              <TableBody>
-                {orders.map((order, index) => (
-                  <TableRow key={index}>
-                    {/* 상품 이미지 */}
-                    <TableCell>
-                      <img
-                        src={order.img1}
-                        alt={order.name}
-                        style={{ width: 50, height: 50, cursor: 'pointer' }}
-                        onClick={() => { navigate(`/item/detail/${order.iid}`) }}
-                      />
-                    </TableCell>
+                {/* 총 가격 표시 */}
+                <Typography variant="subtitle2" sx={{ marginBottom: 1 }}>
+                  총 가격: {totalPrice.toLocaleString()}원
+                </Typography>
 
-                    {/* 상품명 */}
-                    <TableCell
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => { navigate(`/item/detail/${order.iid}`) }}
-                    >
-                      {order.name.length > 10 ? order.name.substring(0, 10) + '...' : order.name}
-                      <br />
-                      ({order.option})
-                    </TableCell>
+                {/* 주문 목록 테이블 */}
+                <TableContainer>
+                  <Table>
+                    {/* 테이블 헤더 */}
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>상품 이미지</TableCell>
+                        <TableCell>상품명</TableCell>
+                        <TableCell>개수</TableCell>
+                        <TableCell>가격</TableCell>
+                        <TableCell>배송조회</TableCell>
+                        <TableCell>주문취소/반품</TableCell>
+                      </TableRow>
+                    </TableHead>
 
-                    {/* 개수 */}
-                    <TableCell>{order.count}</TableCell>
-                    
-                    {/* 총 가격 */}
-                    <TableCell>{order.price.toLocaleString()}원</TableCell>
+                    {/* 테이블 바디 */}
+                    <TableBody>
+                      {ordersForThisDate.map((order, index) => (
+                        <TableRow key={index}>
+                          {/* 상품 이미지 */}
+                          <TableCell>
+                            <img
+                              src={order.img1}
+                              alt={order.name}
+                              style={{ width: 50, height: 50, cursor: 'pointer' }}
+                              onClick={() => { navigate(`/item/detail/${order.iid}`) }}
+                            />
+                          </TableCell>
 
-                    {/* 주문 날짜 */}
-                    <TableCell>{order.regDate.substring(0, 10)}</TableCell>
+                          {/* 상품명 */}
+                          <TableCell
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => { navigate(`/item/detail/${order.iid}`) }}
+                          >
+                            {order.name.length > 10 ? order.name.substring(0, 10) + '...' : order.name}
+                            <br />
+                            ({order.option})
+                          </TableCell>
 
-                    {/* 배송조회 */}
-                    <TableCell>
-                      {order.way ? (
-                        <div onClick={() => DeliveryTracker(order.way)} style={{cursor: 'pointer'}}>
-                          <TrackerComponent order={order}/>
-                        </div>
-                      ) : order.status}
-                    </TableCell>
+                          {/* 개수 */}
+                          <TableCell>{order.count}</TableCell>
+                          
+                          {/* 가격 */}
+                          <TableCell>{order.price.toLocaleString()}원</TableCell>
 
-                    {/* 주문취소/반품 버튼 */}
-                    <TableCell>
-                      <Button variant="contained" color="error" onClick={() => console.log('주문취소/반품 버튼 클릭')}>
-                        주문취소/반품
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                          {/* 배송조회 */}
+                          <TableCell>
+                            {order.way ? (
+                              <div onClick={() => DeliveryTracker(order.way)} style={{cursor: 'pointer'}}>
+                                <TrackerComponent order={order}/>
+                              </div>
+                            ) : order.status}
+                          </TableCell>
 
-          {/* 날짜 간 간격 */}
-          <Divider sx={{ my: 3 }} />
+                          {/* 주문취소/반품 버튼 */}
+                          <TableCell>
+                            <Button variant="contained" color="error" onClick={() => handleDelete(order.oid)}>
+                              주문취소/반품
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+
+                {/* 주문 간 간격 */}
+                <Divider sx={{ my: 3 }} />
+              </div>
+            );
+          })}
         </div>
       ))}
     </Container>

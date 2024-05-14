@@ -100,11 +100,11 @@ public interface OrderDao {
 	 */
 
 	// 모든 주문 내역 가져오기
-	@Select(" SELECT o.oid, o.email, o.status, o.totalPrice, o.regDate, o.way, "
+	@Select(" SELECT o.oid, o.email, o.status, o.totalPrice, o.regDate, o.way, o.isDeleted, "
 			+ " oi.count, oi.price, i.name, i.img1, i.iid, itemOption.option  " + " FROM `order` o "
 			+ " JOIN orderItem oi ON o.oid = oi.oid " + " JOIN item i ON oi.iid = i.iid "
 			+ " JOIN itemOption ON oi.iid = itemOption.iid AND oi.ioid = itemOption.ioid "
-			+ " WHERE o.isDeleted=0 AND oi.isDeleted=0 " + " ORDER BY o.regDate DESC")
+			+ " ORDER BY o.regDate DESC")
 	List<OrderHistory> getOrderHistoryListForAdmin();
 	 
 	// 운송장 번호 삽입하기 update way

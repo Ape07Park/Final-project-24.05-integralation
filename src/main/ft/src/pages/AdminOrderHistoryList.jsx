@@ -1,9 +1,6 @@
-
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
-  Box,
   Container,
   Typography,
   Table,
@@ -15,7 +12,7 @@ import {
   TableContainer,
   Button,
 } from "@mui/material";
-import { Modal } from '@mui/material';
+
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
 import { selectUserData } from '../api/firebase';
 import { useNavigate } from 'react-router-dom';
@@ -97,15 +94,23 @@ const AdminOrderHistoryList = () => {
         acc[order.oid] = [];
       }
       acc[order.oid].push(order);
+      
+      console.log(acc);
       return acc;
     }, {});
   };
+
 
   // 주문번호를 높은 순으로 정렬하여 반환
   const sortedOrders = () => {
     return Object.entries(getGroupedOrders())
       .sort(([orderIdA], [orderIdB]) => orderIdB - orderIdA) // 주문번호를 내림차순으로 정렬
-      .map(([orderId, orderList]) => ({ orderId, orderList }));
+      .map(([orderId, orderList]) => ({
+        orderId,
+        orderList,
+        totalPrice: orderList.reduce((total, item) => total + item.price, 0), // 각 주문의 총 가격 계산
+        
+      }));
   };
 
   // 배송 조회 상태에 따라 정렬하는 리스트로 이동
@@ -136,6 +141,8 @@ const AdminOrderHistoryList = () => {
     }
   };
 
+  
+
   return (
     <Container fixed sx={{ mt: 5, mb: 5 }}>
       <Typography variant="h4" sx={{ marginBottom: 3 }} style={{ textAlign: "center" }}>
@@ -143,13 +150,17 @@ const AdminOrderHistoryList = () => {
       </Typography>
 
       <Button onClick={sortOrdersByStatus} variant='contained'>
-        배송 조회별 정렬
+        배송 상태별 정렬
       </Button>
 
-      {sortedOrders().map(({ orderId, orderList }) => (
+      {sortedOrders().map(({ orderId, orderList, totalPrice }) => (
         <div key={orderId}>
           <Typography variant="h6" sx={{ marginBottom: 1 }}>
             주문 번호: {orderId}
+          </Typography>
+
+          <Typography variant="subtitle1" sx={{ marginBottom: 1 }}>
+            총 가격: {totalPrice.toLocaleString()}원
           </Typography>
 
           <TableContainer>
@@ -161,10 +172,11 @@ const AdminOrderHistoryList = () => {
                   <TableCell>개수</TableCell>
                   <TableCell>가격</TableCell>
                   <TableCell>주문자</TableCell>
-                  <TableCell>주문 날짜</TableCell>
-                  <TableCell>운송장 번호</TableCell>
+                  <TableCell>주문날짜</TableCell>
+                  <TableCell>송장 번호</TableCell>
                   <TableCell>배송조회</TableCell>
                   <TableCell>주문취소/반품</TableCell>
+                  <TableCell>주문취소 여부</TableCell>
                 </TableRow>
               </TableHead>
 
@@ -239,6 +251,13 @@ const AdminOrderHistoryList = () => {
                       )}
                     </TableCell>
 
+                    <TableCell style={{color:'red', textAlign:'center'}}>
+                      <>
+                        <Typography variant='h4'>
+                      {order.isDeleted}
+                        </Typography>
+                      </>
+                      </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
