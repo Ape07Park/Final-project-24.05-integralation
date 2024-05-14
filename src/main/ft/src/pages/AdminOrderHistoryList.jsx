@@ -11,6 +11,8 @@ import {
   Divider,
   TableContainer,
   Button,
+  Box,
+  Stack,
 } from "@mui/material";
 
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
@@ -27,13 +29,11 @@ const AdminOrderHistoryList = () => {
   const navigate = useNavigate();
   const auth = getAuth();
   const [orders, setOrders] = useState([]);
-  const [sortedByStatus, setSortedByStatus] = useState(false); // 배송 조회 상태에 따라 정렬 여부
-
   const [openModal, setOpenModal] = useState(false);
-  const [selectedOrderId, setSelectedOrderId] = useState(null); // 선택된 주문 ID 상태
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
 
   const handleOpenModal = (orderId) => {
-    setSelectedOrderId(orderId); // 선택된 주문 ID 설정
+    setSelectedOrderId(orderId);
     setOpenModal(true);
   };
 
@@ -87,35 +87,28 @@ const AdminOrderHistoryList = () => {
     }
   }, [currentUserEmail]);
 
-  // 주문번호로 그룹화된 주문 목록 반환
   const getGroupedOrders = () => {
     return orders.reduce((acc, order) => {
       if (!acc[order.oid]) {
         acc[order.oid] = [];
       }
       acc[order.oid].push(order);
-      
-      console.log(acc);
       return acc;
     }, {});
   };
 
-
-  // 주문번호를 높은 순으로 정렬하여 반환
   const sortedOrders = () => {
     return Object.entries(getGroupedOrders())
-      .sort(([orderIdA], [orderIdB]) => orderIdB - orderIdA) // 주문번호를 내림차순으로 정렬
+      .sort(([orderIdA], [orderIdB]) => orderIdB - orderIdA)
       .map(([orderId, orderList]) => ({
         orderId,
         orderList,
-        totalPrice: orderList.reduce((total, item) => total + item.price, 0), // 각 주문의 총 가격 계산
-        
+        totalPrice: orderList.reduce((total, item) => total + item.price, 0),
       }));
   };
 
-  // 배송 조회 상태에 따라 정렬하는 리스트로 이동
   const sortOrdersByStatus = () => {
-    navigate("/admin/order/list2")
+    navigate("/admin/order/list2");
   };
 
   const DeliveryTracker = (t_invoice) => {
@@ -130,60 +123,99 @@ const AdminOrderHistoryList = () => {
 
   const handleDelete = async (orderId) => {
     const confirmDelete = window.confirm("정말로 주문을 취소하시겠습니까?");
-    if (!confirmDelete) return; // 사용자가 취소를 선택한 경우 함수 종료
+    if (!confirmDelete) return;
 
     try {
       await axios.post('/ft/order/orderDelete', { oid: orderId });
       console.log('주문 삭제 완료');
-      // 여기서 필요하다면 상태를 업데이트하거나 다른 작업을 수행할 수 있습니다.
     } catch (error) {
       console.error('주문 삭제 실패:', error);
     }
   };
 
-  
-
   return (
     <Container fixed sx={{ mt: 5, mb: 5 }}>
-      <Typography variant="h4" sx={{ marginBottom: 3 }} style={{ textAlign: "center" }}>
-        주문 내역
+      <Typography variant="h4" align="center" sx={{ mb: 3 }}>
+        주문 관리
       </Typography>
 
-      <Button onClick={sortOrdersByStatus} variant='contained'>
+      <Button onClick={sortOrdersByStatus} variant="contained" sx={{ mb: 2 }}>
         배송 상태별 정렬
       </Button>
 
+      <hr />
+
       {sortedOrders().map(({ orderId, orderList, totalPrice }) => (
-        <div key={orderId}>
-          <Typography variant="h6" sx={{ marginBottom: 1 }}>
-            주문 번호: {orderId}
-          </Typography>
+        <Box key={orderId} sx={{ mb: 3 }}>
+          <Stack direction="row" spacing={2} alignItems="center">
+            <Typography variant="h6">
+              주문 번호: {orderId}
+            </Typography>
 
-          <Typography variant="subtitle1" sx={{ marginBottom: 1 }}>
-            총 가격: {totalPrice.toLocaleString()}원
-          </Typography>
+            <Typography variant="body2">
+              주문자: {orderList[0].email}
+            </Typography>
 
+            <Typography variant="body2">
+              주문날짜: {orderList[0].regDate.substring(0, 10)}
+            </Typography>
+
+            <Typography variant="body2">
+              총 가격: {totalPrice.toLocaleString()}원
+            </Typography>
+
+            <Typography variant="body2" onClick={() => DeliveryTracker(orderList[0].way)} style={{ cursor: 'pointer' }}>
+              배송상태: {orderList[0].status}
+            </Typography>
+
+            <WayModal
+              open={openModal && selectedOrderId === orderId}
+              onClose={handleCloseModal}
+              order={orderList[0]}
+            />
+
+            <Typography variant="body2">
+              {orderList.some(order => order.way) ? (
+                <>송장 번호: {orderList[0].way}</>
+              ) : (
+                <Button size="small" variant="contained" onClick={() => handleOpenModal(orderId)}>
+                  송장 입력
+                </Button>
+              )}
+            </Typography>
+
+            <Typography>
+              {orderList[0].status !== '주문완료' ? (
+                <Button size="small" variant="contained" color="error" onClick={() => handleDelete(orderId)}>
+                  주문취소
+                </Button>
+              ) : (
+                <>
+                  <Divider orientation="vertical" flexItem />
+                  <Button size="small" variant="contained" color="error" onClick={() => handleDelete(orderId)}>
+                    주문취소
+                  </Button>
+                </>
+              )}
+            </Typography>
+          </Stack>
+
+          {/* Order details */}
           <TableContainer>
             <Table>
               <TableHead>
                 <TableRow>
                   <TableCell>상품 이미지</TableCell>
                   <TableCell>상품명</TableCell>
-                  <TableCell>개수</TableCell>
-                  <TableCell>가격</TableCell>
-                  <TableCell>주문자</TableCell>
-                  <TableCell>주문날짜</TableCell>
-                  <TableCell>송장 번호</TableCell>
-                  <TableCell>배송조회</TableCell>
-                  <TableCell>주문취소/반품</TableCell>
-                  <TableCell>주문취소 여부</TableCell>
+                  <TableCell align="center">개수</TableCell>
+                  <TableCell align="center">가격</TableCell>
+                  <TableCell align="center">주문 취소 여부</TableCell> {/* Aligning text to center */}
                 </TableRow>
               </TableHead>
 
               <TableBody>
                 {orderList.map((order, index) => (
                   <TableRow key={index}>
-
                     <TableCell>
                       <img
                         src={order.img1}
@@ -193,80 +225,33 @@ const AdminOrderHistoryList = () => {
                       />
                     </TableCell>
 
-                    <TableCell
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => { navigate(`/item/detail/${order.iid}`) }}
-                    >
+                    <TableCell style={{ cursor: 'pointer' }} onClick={() => { navigate(`/item/detail/${order.iid}`) }}>
                       {order.name.length > 10 ? order.name.substring(0, 10) + '...' : order.name}
                       <br />
                       ({order.option})
                     </TableCell>
 
-                    <TableCell>{order.count}</TableCell>
+                    <TableCell align="center">{order.count}</TableCell> {/* Aligning text to center */}
+                    <TableCell align="center">{order.price.toLocaleString()}원</TableCell> {/* Aligning text to center */}
 
-                    <TableCell>{order.price.toLocaleString()}원</TableCell>
-
-                    <TableCell>{order.email}</TableCell>
-
-                    <TableCell>{order.regDate.substring(0, 10)}</TableCell>
-
-                    <TableCell>
-                      <WayModal
-                        open={openModal && selectedOrderId === orderId} // 선택된 주문에만 모달이 열리도록 설정
-                        onClose={handleCloseModal}
-                        order={order}
-                      />
-                      {order.way ? (
-                        <span onClick={() => handleOpenModal(orderId)} style={{ cursor: 'pointer' }}>
-                          {order.way}
-                        </span>
-                      ) : (
-                        <Button variant="contained" onClick={() => handleOpenModal(orderId)}>
-                          운송장 입력
-                        </Button>
-                      )}
+                    <TableCell align="center" style={{ color: 'red' }}> {/* Aligning text to center */}
+                      <Typography variant='h4'>{order.isDeleted}</Typography>
                     </TableCell>
-
-                    <TableCell>
-                      {order.way ? (
-                        <div onClick={() => DeliveryTracker(order.way)} style={{ cursor: 'pointer' }}>
-                          <TrackerComponent order={order} />
-                        </div>
-                      ) : order.status}
-                    </TableCell>
-
-                    <TableCell>
-                      {order.status !== '주문완료' && (
-                        <Button variant="contained" color="error" onClick={() => handleDelete(orderId)}>
-                          주문취소
-                        </Button>
-                      )}
-                      {order.status === '주문완료' && (
-                        <>
-                          <Divider orientation="vertical" flexItem />
-                          <Button variant="contained" color="error" onClick={() => handleDelete(orderId)}>
-                            주문취소
-                          </Button>
-                        </>
-                      )}
-                    </TableCell>
-
-                    <TableCell style={{color:'red', textAlign:'center'}}>
-                      <>
-                        <Typography variant='h4'>
-                      {order.isDeleted}
-                        </Typography>
-                      </>
-                      </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </TableContainer>
 
-          <Divider sx={{ my: 3 }} />
-        </div>
+          <Divider />
+        </Box>
       ))}
+
+      {sortedOrders().length === 0 && (
+        <Typography variant="h6" align="center">
+          주문 내역이 없습니다.
+        </Typography>
+      )}
     </Container>
   );
 };

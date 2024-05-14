@@ -70,7 +70,7 @@ const CartPage = () => {
   const handleToggleItem = (itemId, itemOption) => {
     const selectedItem = cartItems.find((item) => item.iid === itemId && item.option === itemOption);
     const isSelected = selectedItems.some((item) => item.cid === selectedItem.cid);
-
+      // cid => oid
     if (isSelected) {
       setSelectedItems((prevItems) => prevItems.filter((item) => item.cid !== selectedItem.cid));
     } else {
@@ -78,7 +78,7 @@ const CartPage = () => {
     }
   };
 
-  // 전체 선택 버튼
+  // 전체 선택 버튼  cartItems -> orderHistory
   const handleToggleAllItems = () => {
     if (selectedItems.length === cartItems.length) {
       // If all items are selected, clear the selection
