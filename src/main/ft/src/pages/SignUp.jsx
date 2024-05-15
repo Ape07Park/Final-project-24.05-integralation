@@ -2,11 +2,6 @@ import React, { useState } from "react";
 import { authRegister, loginWithGoogle, loginWithKakao } from '../api/firebase';
 import { Link, useNavigate } from "react-router-dom";
 import { useDaumPostcodePopup } from 'react-daum-postcode';
-
-// mui 
-import { IconButton } from '@mui/material';
-import GoogleIcon from '@mui/icons-material/Google';
-
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';

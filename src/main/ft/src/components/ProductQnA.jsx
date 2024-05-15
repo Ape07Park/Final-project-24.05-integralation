@@ -6,9 +6,10 @@ import BuildIcon from '@mui/icons-material/Build';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import QnAEditModal from '../components/QnAEditModal';
-import axios from 'axios';
 import { selectUserData } from '../api/firebase';
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
+import { fetchReplies } from '../api/replyApi';
+import { deleteBoard } from '../api/boardApi';
 
 export default function ProductQnA({ posts, reloadQnAData }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -56,9 +57,8 @@ export default function ProductQnA({ posts, reloadQnAData }) {
           const status = {};
           for (const post of posts) {
             if (post && post.bid) {
-              const response = await axios.get(`/ft/reply/list/${post.bid}`);
-              const repliesData = response.data;
-              status[post.bid] = repliesData.length > 0;
+              const response = await fetchReplies(post.bid);
+              status[post.bid] = response.length > 0;
             }
           }
           setReplyStatus(status);
@@ -86,9 +86,8 @@ export default function ProductQnA({ posts, reloadQnAData }) {
     setExpandedPost(expandedPost === index ? null : index);
     try {
       if (post && post.bid) { // 유효한 객체 및 bid인지 확인
-        const response = await axios.get(`/ft/reply/list/${post.bid}`);
-        const repliesData = response.data; // 가져온 답변 목록
-        setReplies(repliesData);
+        const response = await fetchReplies(post.bid);
+        setReplies(response);
       } else {
         console.error('유효하지 않은 게시물입니다.');
       }
@@ -114,7 +113,7 @@ export default function ProductQnA({ posts, reloadQnAData }) {
     const confirmDelete = window.confirm('정말로 이 게시물을 삭제하시겠습니까?');
     if (confirmDelete) {
       try {
-        const response = await axios.post(`/ft/board/delete/${post.bid}`);
+        const response = await deleteBoard(post.bid);
         console.log('포스트가 성공적으로 삭제되었습니다.', response);
         reloadQnAData();
       } catch (error) {

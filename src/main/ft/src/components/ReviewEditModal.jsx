@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Typography, Grid, TextField } from "@mui/material";
 import { Button } from 'react-bootstrap';
 import '../css/reviewForm.css';
-import axios from 'axios'; 
 import { uploadImage } from "../api/cloudinary";
 import { selectUserData } from '../api/firebase';
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
+import { updateBoard } from '../api/boardApi';
 
 const ReviewEditModal = ({ open, handleClose, review, item }) => {
   const [editedReview, setEditedReview] = useState('');
@@ -76,9 +76,9 @@ const ReviewEditModal = ({ open, handleClose, review, item }) => {
       email: userInfo.email, 
     };
 
-    axios.post('/ft/board/update', formData)
+    updateBoard(formData)
       .then(response => {
-        console.log('Review updated successfully:', response.data);
+        console.log('Review updated successfully:', response);
         handleClose();
       })
       .catch(error => {

@@ -1,21 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
-
 import Button from '@mui/material/Button';
 import { updateUserData } from '../api/firebase'; // updateUserData 함수 import
 import { useLocation, useNavigate, Link } from 'react-router-dom'; // useHistory 대신 useNavigate 사용
 import { useDaumPostcodePopup } from 'react-daum-postcode';
-
 import CssBaseline from '@mui/material/CssBaseline';
-
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
-// 디자인
+const defaultTheme = createTheme();
+
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -29,8 +27,6 @@ function Copyright(props) {
   );
 }
 
-const defaultTheme = createTheme();
-
 export default function UserUpdate() {
   // 사용자 정보 관련 상태 설정
   const [email, setEmail] = useState('');
@@ -41,10 +37,8 @@ export default function UserUpdate() {
   const [detailAddr, setDetailAddr] = useState('');
   const [tel, setTel] = useState('');
   const [req, setReq] = useState('');
-
   const [messageType, setMessageType] = useState('');
   const [customMessage, setCustomMessage] = useState('');
-
   // 현재 페이지의 URL 정보를 가져오기 위해 useLocation 훅 사용
   const location = useLocation();
   // 페이지 이동을 위한 함수 가져오기

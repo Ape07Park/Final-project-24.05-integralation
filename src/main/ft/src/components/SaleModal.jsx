@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Button, Modal, Typography, Grid, TextField } from "@mui/material";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { addItemSale } from '../api/itemApi';
 
 export default function SaleModal({ open, onClose, iid, cost, price, ordSaleDate, ordSalePrice}) {
   const [salePrice, setSalePrice] = useState('');
@@ -36,8 +37,7 @@ export default function SaleModal({ open, onClose, iid, cost, price, ordSaleDate
         saleDate: formattedSaleDate
       };
   
-      axios
-        .post('/ft/item/sale', formData)
+      addItemSale(formData)
         .then(res => {
           console.log(res);
           setSalePrice(null)
@@ -72,7 +72,6 @@ export default function SaleModal({ open, onClose, iid, cost, price, ordSaleDate
                 placeholderText="세일 기간 선택"
                 showTimeInput
                 className="form-control"
-                value={ordSaleDate}
               />
             </Grid>
             <Grid item xs={12} textAlign="right">

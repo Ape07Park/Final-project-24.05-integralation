@@ -26,6 +26,11 @@ public class ItemServiceImpl implements ItemService{
 	public List<Item> getItemList() {
 		return itemDao.getItemList();
 	}
+	
+	@Override
+	public List<Item> getItemNewList() {
+		return itemDao.getItemNewList();
+	}
 
 	@Override
 	public List<Item> getSearchItemList(String query) {

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { login, loginWithKakao, loginWithGoogle } from '../api/firebase';
 import { useNavigate, Link } from "react-router-dom";
-// mui
 import { IconButton } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
 import Button from '@mui/material/Button';
@@ -13,7 +12,6 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Stack from '@mui/material/Stack';
-
 
 function Copyright(props) {
   return (

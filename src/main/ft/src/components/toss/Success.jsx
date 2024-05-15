@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
@@ -7,7 +7,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 export function SuccessPage({orderData}) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  console.log(orderData);
+  const [countdown, setCountdown] = useState(5);
+
   useEffect(() => {
     const confirm = async () => {
       const orderId = searchParams.get('orderId');
@@ -19,7 +20,7 @@ export function SuccessPage({orderData}) {
         amount,
         paymentKey,
       };
-
+      
       try {
         const response = await fetch('ft/confirm', {
           method: 'POST',
@@ -46,8 +47,22 @@ export function SuccessPage({orderData}) {
     confirm();
   }, [navigate, searchParams]);
 
+  useEffect(() =>{
+    const interval  = setInterval (() =>{
+      setCountdown((prevCountdown) => prevCountdown - 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (countdown === 0) {
+      navigate('/'); // Replace '/' with your home page path
+    }
+  }, [countdown, navigate]);
+  
   return (
-    <Card variant="outlined">
+    <Card variant="outlined" style={{ maxWidth: 400, margin: 'auto', marginTop: 50, padding: 20, marginBottom: 50 }}>
       <CardContent>
         <Typography variant="h5" component="h1">
           결제 성공
@@ -58,8 +73,8 @@ export function SuccessPage({orderData}) {
         <Typography color="textSecondary" gutterBottom>
           {`결제 금액: ${Number(searchParams.get('amount')).toLocaleString()}원`}
         </Typography>
-        <Typography color="textSecondary" gutterBottom>
-          {`paymentKey: ${searchParams.get('paymentKey')}`}
+        <Typography>
+          {`${countdown}초 후에 홈페이지로 이동합니다`}
         </Typography>
       </CardContent>
     </Card>

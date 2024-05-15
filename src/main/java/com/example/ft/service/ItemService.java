@@ -13,6 +13,8 @@ public interface ItemService {
 	
 	List<Item> getItemList();
 	
+	List<Item> getItemNewList();
+	
 	List<Item> getSearchItemList(String query);
 	
 	void insertItem(Item item);	

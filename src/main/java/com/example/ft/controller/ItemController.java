@@ -53,6 +53,55 @@ public class ItemController {
 			jObj.put("name", item.getName());
 			jObj.put("category", item.getCategory());
 			jObj.put("img1", item.getImg1());
+			jObj.put("content", item.getContent());
+			jObj.put("price", item.getPrice());
+			jObj.put("salePrice", item.getSalePrice());
+			jObj.put("saleDate", item.getSaleDate());
+			jObj.put("regDate", item.getRegDate());
+			jObj.put("totalSta", item.getTotalSta());
+			jObj.put("company", item.getCompany());
+			jObj.put("cost", item.getCost());
+			jArr.add(jObj);
+		}
+		return jArr;
+	}
+	
+	@GetMapping("/search/{query}")
+    public JSONArray getSearchItemList(@PathVariable String query) {
+        List<Item> list = itemService.getSearchItemList(query);
+        JSONArray jArr = new JSONArray();
+        for (Item item : list) {
+            JSONObject jObj = new JSONObject();
+            jObj.put("iid", item.getIid());
+            jObj.put("name", item.getName());
+            jObj.put("category", item.getCategory());
+            jObj.put("img1", item.getImg1());
+            jObj.put("img2", item.getImg2());
+            jObj.put("img3", item.getImg3());
+            jObj.put("content", item.getContent());
+            jObj.put("price", item.getPrice());
+            jObj.put("salePrice", item.getSalePrice());
+            jObj.put("saleDate", item.getSaleDate());
+            jObj.put("regDate", item.getRegDate());
+            jObj.put("isDeleted", item.getIsDeleted());
+            jObj.put("totalSta", item.getTotalSta());
+            jObj.put("company", item.getCompany());
+            jObj.put("cost", item.getCost());
+            jArr.add(jObj);
+        }
+        return jArr;
+    }
+	
+	@GetMapping("/newList")
+	public JSONArray newList() {
+		List<Item> list = itemService.getItemNewList();
+		JSONArray jArr = new JSONArray();
+		for(Item item : list) {
+			JSONObject jObj = new JSONObject(); 
+			jObj.put("iid", item.getIid());
+			jObj.put("name", item.getName());
+			jObj.put("category", item.getCategory());
+			jObj.put("img1", item.getImg1());
 			jObj.put("img2", item.getImg2());
 			jObj.put("img3", item.getImg3());
 			jObj.put("content", item.getContent());

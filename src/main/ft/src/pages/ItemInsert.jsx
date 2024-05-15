@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import { uploadImage } from "../api/cloudinary";
 import { useNavigate } from 'react-router-dom';
 import '../css/itemInsert.css'; // CSS 파일 import
+import { insertItem } from '../api/itemApi';
 
 export default function ItemInsert() {
   const [form, setForm] = useState({ name: '', category: '', img1: '', img2: '', img3: '', content: '', price: '', option: [], count: [], tag: [], company: '', cost: '' });
@@ -61,8 +62,7 @@ export default function ItemInsert() {
       cost: form.cost
     };
   
-    axios
-      .post('/ft/item/insert', requestData)
+    insertItem(requestData) // insertItem 함수 사용
       .then(res => {
         console.log(res);
         navigate(-1);

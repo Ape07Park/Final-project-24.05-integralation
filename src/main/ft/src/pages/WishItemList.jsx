@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import { Button, CardContent, CardMedia, Stack } from "@mui/material";
+import { CardContent, CardMedia, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import CountDown from "../components/CountDown";
 import Rating from "../components/Rating";
-import axios from 'axios'; // axios 추가
 import '../css/itemList.css'; // 분리된 CSS 파일 import
 import { selectUserData } from '../api/firebase';
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
+import { fetchWishList } from "../api/wishApi ";
+
 
 export default function ItemList() {
   const [isLoading, setIsLoading] = useState(true);
@@ -45,25 +46,13 @@ export default function ItemList() {
     }
   }, [currentUserEmail]);
 
-  const fetchWishList = async () => {
-    try {
-      console.log(userInfo.email);
-      const response = await axios.post('/ft/wish/list', { email: userInfo.email }); // 이메일 데이터 보내기
-      const wishList = response.data;
-      console.log("Wish List:", wishList);
-      setList(wishList)
-    } catch (error) {
-      console.error('Error fetching wish list:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchWishList();
-  }, [userInfo]);
-
   useEffect(() => {
     async function fetchData() {
       try {
+        if (userInfo) {
+          const wishList = await fetchWishList(userInfo);
+          setList(wishList);
+        }
         setIsLoading(false);
       } catch (error) {
         console.error('Error fetching product list:', error);
@@ -71,7 +60,7 @@ export default function ItemList() {
       }
     }
     fetchData();
-  }, []);
+  }, [userInfo]);
 
   return (
     <>

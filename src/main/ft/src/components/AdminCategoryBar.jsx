@@ -72,12 +72,12 @@ export default function AdminCategoryBar() {
         주문 내역
       </Button>
       <Button
-        onClick={() => handleItemClick('/admin/sales')}
+        onClick={() => handleItemClick('/admin/chart')}
         variant="contained"
         style={{
           ...buttonStyle,
-          backgroundColor: activeTab === '/admin/sales' ? '#ff3333' : '#ffffff',
-          color: activeTab === '/admin/sales' ? '#ffffff' : 'black',
+          backgroundColor: activeTab === '/admin/chart' ? '#ff3333' : '#ffffff',
+          color: activeTab === '/admin/chart' ? '#ffffff' : 'black',
         }}
       >
         통계

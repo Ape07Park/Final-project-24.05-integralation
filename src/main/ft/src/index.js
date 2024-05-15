@@ -24,8 +24,10 @@ import { FailPage } from './components/toss/Fail';
 import { CheckoutPage } from './components/toss/Checkout';
 import Order from './pages/OrderPage';
 import OrderHistoryList from './pages/OrderHistoryList';
-import AdminOrderHistoryList from './pages/AdminOrderHistoryList'
-import AdminOrderHistoryList2 from './pages/AdminOrderHistoryList2'
+import ItemListSearch from './pages/ItemListSearch';
+import MainPage from './pages/MainPage';
+import AdminOrderHistoryList from './pages/AdminOrderHistoryList';
+import DashboardPage from './pages/DashBoardPage';
 
 const router = createBrowserRouter([
   {
@@ -33,9 +35,9 @@ const router = createBrowserRouter([
     element: <App />,
     errorElement: <NotFound />,
     children: [
-      { index: true, element: <ItemList /> },
+      { index: true, element: <MainPage /> },
       { path: 'itemlist', element: <ItemList /> },
-      { path: 'itemlist/:searchQuery', element: <ItemList /> },
+      { path: 'itemlist/:searchQuery', element: <ItemListSearch /> },
       { path: 'item/detail/:iid', element: <ItemDetail /> },
       { path: 'cart', element: <CartPage/> },
       { path: 'signIn', element: <SignIn/> },
@@ -50,43 +52,43 @@ const router = createBrowserRouter([
       { path: 'admin/item/insert', element: <ItemInsertAdminRoutes /> },
       { path: 'admin/item/update/:iid', element: <ItemUpdateAdminRoutes/> },
       { path: 'admin/QnAlist', element: <AdminQnAList/> },
+      { path: 'admin/order/list', element: <AdminOrderLists /> },
+      { path: 'admin/chart', element: <Dashboard /> },
       { path: 'success', element: <SuccessPage/> },
       { path: 'fail', element: <FailPage/> },
       { path: 'checkout', element: <CheckoutPage/> },
-      { path: 'admin/order/list', element: <AdminOrderLists /> },
-      { path: 'admin/order/list2', element: <AdminOrderLists2 /> },
     ]
   }
 ]);
 
 function AdminItemLists() {
   const { user } = useAuthContext(); 
-  return user && user.isAdmin ? <AdminItemList /> : <ItemList />;
+  return user && user.isAdmin ? <AdminItemList /> : <MainPage />;
 }
 
 function AdminQnAList() {
   const { user } = useAuthContext();
-  return user && user.isAdmin ? <QnAList /> : <ItemList />;
+  return user && user.isAdmin ? <QnAList /> : <MainPage />;
 }
 
 function ItemInsertAdminRoutes() {
   const { user } = useAuthContext(); 
-  return user && user.isAdmin ? <ItemInsert /> : <ItemList />;
+  return user && user.isAdmin ? <ItemInsert /> : <MainPage />;
 }
 
 function ItemUpdateAdminRoutes() {
   const { user } = useAuthContext();
-  return user && user.isAdmin ? <ItemUpdate /> : <ItemList />;
+  return user && user.isAdmin ? <ItemUpdate /> : <MainPage />;
 }
 
 function AdminOrderLists() {
   const { user } = useAuthContext(); 
-  return user && user.isAdmin ? <AdminOrderHistoryList /> : <OrderHistoryList />;
+  return user && user.isAdmin ? <AdminOrderHistoryList /> : <MainPage />;
 }
 
-function AdminOrderLists2() {
+function Dashboard() {
   const { user } = useAuthContext(); 
-  return user && user.isAdmin ? <AdminOrderHistoryList2 /> : <OrderHistoryList />;
+  return user && user.isAdmin ? <DashboardPage /> : <MainPage />;
 }
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

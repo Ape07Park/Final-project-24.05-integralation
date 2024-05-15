@@ -9,6 +9,7 @@ import CountDown from "../components/CountDown";
 import SaleModal from "../components/SaleModal";
 import AdminCategoryBar from "../components/AdminCategoryBar";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import { deletedItem, fetchItemListAPI, getItemDetail } from "../api/itemApi";
 
 export default function AdminItemList() {
   const [isLoading, setIsLoading] = useState(true);
@@ -23,11 +24,10 @@ export default function AdminItemList() {
   const [selectedSalePrice, setSelectedSalePrice] = useState(null); 
   const [selectedSaleDate, setSelectedSaleDate] = useState(null); 
 
-
   useEffect(() => {
-    axios.get('/ft/item/list')
+    fetchItemListAPI()
       .then(res => {
-        setList(res.data);
+        setList(res);
         setIsLoading(false);
       })
       .catch(err => console.log(err))
@@ -38,9 +38,9 @@ export default function AdminItemList() {
     const itemIds = list.map(item => item.iid);
     // iid 배열을 사용하여 재고
     itemIds.forEach((iid, idx) => {
-      axios.get(`/ft/item/detail/${iid}/em`)
+      getItemDetail(iid)
         .then(response => {
-          const { options, tags } = response.data;
+          const { options, tags } = response;
           const formattedOptions = options ? options.map(option => ({
             ioid: option.ioid,
             option: option.option,
@@ -87,9 +87,9 @@ export default function AdminItemList() {
     setSelectedPrice(null)
     setSelectedCost(null)
     // 모달이 닫힐 때마다 새로운 데이터 가져오기
-    axios.get('/ft/item/list')
+    fetchItemListAPI()
       .then(res => {
-        setList(res.data);
+        setList(res);
       })
       .catch(err => console.log(err));
   };
@@ -98,9 +98,9 @@ export default function AdminItemList() {
   const deleteItem = (iid) => {
     const isConfirmed = window.confirm('정말 삭제하시겠습니까?');
     if (isConfirmed) {
-      axios.delete(`/ft/item/delete/${iid}`)
+      deletedItem(iid)
         .then(res => {
-          console.log(res.data);
+          console.log(res);
           // 삭제된 아이템을 UI에서도 동적으로 제거
           setList(prevList => prevList.filter(item => item.iid !== iid));
         })

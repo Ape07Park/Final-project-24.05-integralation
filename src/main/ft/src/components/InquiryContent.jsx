@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Button, TextField, Select, MenuItem, FormControl, InputLabel, Checkbox, FormControlLabel, Modal } from '@mui/material';
-import axios from 'axios';
 import { uploadImage } from "../api/cloudinary";
 import { selectUserData } from '../api/firebase';
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
+import { submitBoard } from '../api/boardApi';
 
 export default function InquiryContent({ isOpen, handleClose, iid }) {
   const [inquiry, setInquiry] = useState('');
@@ -54,10 +54,14 @@ export default function InquiryContent({ isOpen, handleClose, iid }) {
       email: userInfo.email,
     };
 
-    axios.post('/ft/board/insert', formData)
+    submitBoard(formData)
       .then(response => {
-        console.log('Review submitted successfully:', response.data);
+        console.log('Review submitted successfully:', response);
         handleClose();
+        setIssueType(null)
+        setTitle(null)
+        setInquiry(null)
+        setForm('')
       })
       .catch(error => {
         console.error('Error submitting review:', error);

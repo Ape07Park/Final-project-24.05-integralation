@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Typography, Grid, TextField } from "@mui/material";
 import { Button } from 'react-bootstrap';
 import '../css/reviewForm.css';
-import axios from 'axios'; 
 import { uploadImage } from "../api/cloudinary";
 import { selectUserData } from '../api/firebase';
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
 import CloseIcon from '@mui/icons-material/Close';
+import { submitBoard } from '../api/boardApi';
 
 const ReviewFormModal = ({ isOpen, handleClose, iid }) => {
   const [review, setReview] = useState('');
@@ -68,7 +68,7 @@ const ReviewFormModal = ({ isOpen, handleClose, iid }) => {
       email: userInfo.email,
     };
 
-    axios.post('/ft/board/insert', formData)
+    submitBoard(formData)
       .then(response => {
         console.log('Review submitted successfully:', response.data);
         handleClose();

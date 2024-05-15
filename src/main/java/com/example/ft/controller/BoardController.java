@@ -2,6 +2,7 @@ package com.example.ft.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.stereotype.Controller;
@@ -42,6 +43,11 @@ public class BoardController {
 	
 	@GetMapping("/list/{type}/{iid}")
 	public JSONArray list(@PathVariable String type, @PathVariable int iid) {
+
+		
+		
+		
+		
 		JSONArray jArr = new JSONArray();
 		if (type.equals("review")) {
 			List<Board> list = reviewService.getReviewList(type, iid);

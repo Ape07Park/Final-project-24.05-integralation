@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Button, TextField, Select, MenuItem, FormControl, InputLabel, Checkbox, FormControlLabel, Modal } from '@mui/material';
-import axios from 'axios';
 import { uploadImage } from "../api/cloudinary";
 import { selectUserData } from '../api/firebase';
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
+import { updateBoard } from '../api/boardApi';
 
 export default function QnAEditModal({ isOpen, handleClose, posts }) {
   const [inquiry, setInquiry] = useState('');
@@ -66,9 +66,9 @@ export default function QnAEditModal({ isOpen, handleClose, posts }) {
       email: userInfo.email,
     };
 
-    axios.post('/ft/board/update', formData)
+    updateBoard(formData)
       .then(response => {
-        console.log('Review submitted successfully:', response.data);
+        console.log('Review submitted successfully:', response);
         handleClose();
       })
       .catch(error => {

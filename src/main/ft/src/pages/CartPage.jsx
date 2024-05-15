@@ -3,10 +3,10 @@ import { selectUserData } from '../api/firebase';
 import axios from 'axios';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Card, Container, Grid, Typography, Table, TableBody, TableCell, TableHead, TableRow,
+import { Box, Button, Container, Grid, Typography, Table, TableBody, TableCell, TableHead, TableRow,
         Checkbox, Input, CardMedia, useMediaQuery, useTheme, } from '@mui/material';
-
 import '../css/cartPage.css';
+import { deleteAllCartItems, deleteCartItem, fetchCartItem, updateCartItemQuantity } from '../api/cartApi';
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -49,8 +49,8 @@ const CartPage = () => {
 
   const fetchCartItems = async () => {
     try {
-      const response = await axios.get(`/ft/api/v2/carts/list/${currentUserEmail}`);
-      setCartItems(response.data);
+      const response = await fetchCartItem(currentUserEmail);
+      setCartItems(response);
       console.log(response.data);
     } catch (error) {
       console.error('장바구니 목록을 불러오는데 실패했습니다:', error);
@@ -70,7 +70,7 @@ const CartPage = () => {
   const handleToggleItem = (itemId, itemOption) => {
     const selectedItem = cartItems.find((item) => item.iid === itemId && item.option === itemOption);
     const isSelected = selectedItems.some((item) => item.cid === selectedItem.cid);
-      // cid => oid
+
     if (isSelected) {
       setSelectedItems((prevItems) => prevItems.filter((item) => item.cid !== selectedItem.cid));
     } else {
@@ -78,7 +78,7 @@ const CartPage = () => {
     }
   };
 
-  // 전체 선택 버튼  cartItems -> orderHistory
+  // 전체 선택 버튼
   const handleToggleAllItems = () => {
     if (selectedItems.length === cartItems.length) {
       // If all items are selected, clear the selection
@@ -91,10 +91,7 @@ const CartPage = () => {
 
   // 카트 아이템 삭제
   const handleDeleteItem = (cid) => {
-    axios
-      .delete(`/ft/api/v2/carts/delete/${currentUserEmail}`, {
-        data: [cid] // 삭제할 아이템의 ID를 배열로 전달
-      })
+    deleteCartItem(currentUserEmail, cid )
       .then((response) => {
         if (response.data === true) {
           // 성공적으로 삭제된 경우
@@ -112,8 +109,7 @@ const CartPage = () => {
 
   // 전체 아이템 삭제 요청
   const handleDeleteAllItems = () => {
-    axios
-      .post(`/ft/api/v2/carts/delete/${currentUserEmail}`)
+    deleteAllCartItems(currentUserEmail)
       .then((response) => {
         if (response.data === true) {
           // 성공적으로 삭제된 경우
@@ -133,13 +129,8 @@ const CartPage = () => {
     try {
       const count = parseInt(newQuantity, 10);
 
-      await axios.post('/ft/api/v2/carts/update', {
-        cid: cartId,
-        email: currentUserEmail,
-        iid: itemId,
-        ioid: itemOption,
-        count: count,
-      }).then(response => {
+      await updateCartItemQuantity(cartId, currentUserEmail, itemId, itemOption, count,
+      ).then(response => {
         console.log(response);
         if (response.data) {
           console.log('변경되었습니다.');

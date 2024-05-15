@@ -1,29 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Box,
-  Button,
-  Card,
-  Container,
-  Grid,
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableContainer,
-  TableRow,
-  Checkbox,
-  CardMedia,
-  TextField,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Select,
-  Divider, // 추가
-} from "@mui/material";
+import { Box, Button, Card, Container, Grid, Typography, Table, TableBody, TableCell, TableHead, TableContainer,
+        TableRow, Checkbox, CardMedia, TextField, MenuItem, FormControl, InputLabel, Select, Divider, 
+        } from "@mui/material";
 import { nanoid } from "nanoid";
 import { useDaumPostcodePopup } from 'react-daum-postcode';
-
 import { selectUserData } from '../api/firebase';
 import { useNavigate } from 'react-router-dom';
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
@@ -32,26 +12,20 @@ const Order = () => {
   const [cartItems, setCartItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
-
-
   // order
   const [orderItems, setOrderItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0); // 총 결제 금액 추가
   const [totalPayment, setTotalPayment] = useState(0);
-
   // user
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
-
   const navigate = useNavigate();
   const auth = getAuth();
-
   const [orderId, setOrderId] = useState(null);
   
   useEffect(() => {
     setOrderId(nanoid())
   }, [])
-
   // ======== 로그인한 유저정보 불러오기 ==========
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -78,15 +52,8 @@ const Order = () => {
       // fetchCartItems();
     }
   }, [currentUserEmail]);
-
-  useEffect(() => {
-    // fetchCartItems();
-  }, [currentUserEmail]);
-
   // ======== 로그인한 유저정보 불러오기 끝 ==========
-
   // ======== 아이템 정보 불러오기  ==========
-
   useEffect(() => {
     // Get orderItems from location state
     const locationState = window.history.state;
@@ -100,9 +67,7 @@ const Order = () => {
       }
     }
   }, []);
-
   // ======== 아이템 정보 불러오기 끝 ==========
-
   // ======== 아이템 총 금액 계산 ==========
   useEffect(() => {
     // 주문 아이템이 변경될 때마다 총 결제 금액을 다시 계산
@@ -114,11 +79,8 @@ const Order = () => {
 
     calculateTotalPayment();
   }, [orderItems]);
-
   // ======== 아이템 총 금액 계산 끝 ==========
-
   // ======== order로 통합하기 ==========
-
   // order로 통합하기 
   useEffect(() => {
     // Get orderItems from location state
@@ -140,7 +102,6 @@ const Order = () => {
       alert('모든 필수 정보를 입력해주세요.');
       return;
     }
-
     try {
         // 입력된 정보를 객체로 만듦
         const order = {
@@ -154,7 +115,6 @@ const Order = () => {
             totalPrice: totalPrice, // 총 결제 금액 추가
             orderId: orderId,
         };
-    
         const orderItemData = orderItems.map(orderItem => ({
             iid: orderItem.iid,
             ioid: orderItem.ioid,
@@ -162,26 +122,19 @@ const Order = () => {
             price: orderItem.price,
             oid: null // oid를 초기화합니다.
         }));
-
-        console.log(orderItemData);
-
         // 서버로 전송할 데이터 구조 수정
         const data = {
             order: order,  // 주문 정보
             orderItems: orderItemData  // 주문 아이템 정보
         };
-
         navigate('/checkout', { state: { orderData: data } });
-
         // 모든 주문이 성공적으로 생성되었을 때 메시지 출력
         alert('주문이 성공적으로 생성되었습니다.');
-        
     } catch (error) {
         console.error('주문 처리 중 오류:', error);
         alert('주문 생성 중 오류가 발생했습니다.');
     }
   };
-
 
   useEffect(() => {
     // 주문 아이템이 변경될 때마다 총 결제 금액을 다시 계산
@@ -190,13 +143,10 @@ const Order = () => {
       const totalPrice = orderItems.reduce((acc, item) => acc + (item.price * item.count), 0);
       setTotalPrice(totalPrice);
     };
-
     calculateTotalPayment();
   }, [orderItems]);
   // ----------------------- user 관련 -------------------------------
-
   // =================== 자동으로 구매자 정보 들어가게 함 ============
-
   // useState는 함수 컴포넌트에서 어떤 상태(state)를 관리
   const [name, setName] = useState('');
   const [postCode, setPostCode] = useState('');
@@ -206,6 +156,7 @@ const Order = () => {
   const [req, setReq] = useState('');
   const [messageType, setMessageType] = useState('');
   const [customMessage, setCustomMessage] = useState('');
+  const openPostcode = useDaumPostcodePopup("//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js");
 
   useEffect(() => { // 컴포넌트가 렌더링될 때마다 실행되기 때문에, 기본적으로 매 렌더링마다 실행됩니다. 
     // 두 번째 인자로 배열을 전달하여 특정 상황에만 실행되도록 제어
@@ -219,17 +170,10 @@ const Order = () => {
       setReq(req || '');
     }
   }, [userInfo]);
-
   // =================== 자동으로 구매자 정보 들어가게 함 끝============
-
   // =========================== 받는 사람 정보 보내기 함수 ======================
-
-
   // ================ 받는 사람 정보 입력 ===================
-
   // Daum 우편번호 팝업 관련 함수
-  const openPostcode = useDaumPostcodePopup("//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js");
-
   // Daum 우편번호 팝업에서 주소 선택 시 호출되는 함수
   const handleComplete = data => {
     let fullAddress = data.address; // 선택된 주소
@@ -249,18 +193,14 @@ const Order = () => {
     setAddr(fullAddress);
     setPostCode(postCode);
   }
-
   // 취소 버튼 클릭 시 이전 페이지로 이동
   const handleCancel = () => {
     navigate(-1);
   };
-
   const handleTelChange = (e) => {
     const { value } = e.target;
-
     // 숫자 이외의 문자 제거
     const telValue = value.replace(/[^0-9]/g, '');
-
     // 하이픈(-) 추가
     let formattedTel = '';
     if (telValue.length <= 3) {
@@ -291,7 +231,7 @@ const Order = () => {
 
   return (
     <>
-      <Container fixed sx={{ mb: 5 }}>
+      <Container fixed sx={{ mb: 5, mt: 5 }}>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={8}>
             <Typography variant="h4" sx={{ marginBottom: 2 }}>
@@ -326,7 +266,6 @@ const Order = () => {
                         <CardMedia
                           component="img"
                           height="50"
-                          
                           image={item.img} // 이미지 주소로 수정
                           alt={item.name}
                         />
@@ -464,12 +403,8 @@ const Order = () => {
                 />
               )}
             </Grid>
-
-              <Divider
-                sx={{ mt: 2, mb: 2 }}
-              />
-            </Grid>
-
+            <Divider sx={{ mt: 2, mb: 2 }}/>
+          </Grid>
           <Grid item xs={12} sm={4}>
             <Typography variant="h4" sx={{ marginBottom: 2 }}>
               결제 정보
@@ -485,13 +420,7 @@ const Order = () => {
                 <Typography variant="h6" sx={{ marginBottom: 2 }}>
                   총 결제 금액: {totalPayment.toLocaleString()}원 {/* 총 결제 금액 표시 */}
                 </Typography>
-                <Button
-                  variant="contained"
-                  fullWidth
-                  onClick={handleSendOrder}
-                >
-                  결제하기
-                </Button>
+                <Button variant="contained" fullWidth onClick={handleSendOrder} >결제하기</Button>
               </Card>
             </Box>
           </Grid>

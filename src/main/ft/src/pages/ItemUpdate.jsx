@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import TextField from '@mui/material/TextField';
@@ -8,6 +7,7 @@ import { uploadImage } from "../api/cloudinary";
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import '../css/itemUpdate.css';
+import { getItemDetail, updateItem } from "../api/itemApi";
 
 export default function ItemUpdate() {
   const [form, setForm] = useState({ id: '', name: '', category: '', img1: '', img2: '', img3: '', content: '', price: '', company: '', cost: '', option: [''], count: [''], tag: [''] });
@@ -19,9 +19,9 @@ export default function ItemUpdate() {
 
   // 초기값을 받아오는 useEffect
   useEffect(() => {
-    axios.get(`/ft/item/detail/${iid}/em`)
+    getItemDetail(iid)
       .then(response => {
-        const { item, options: fetchedOptions, tags: fetchedTags } = response.data;
+        const { item, options: fetchedOptions, tags: fetchedTags } = response;
   
         // 상품 정보를 폼에 채움
         setForm({
@@ -176,7 +176,7 @@ export default function ItemUpdate() {
     };
 
     // 서버에 폼 데이터 전송
-    axios.post(`/ft/item/update`, requestData)
+    updateItem(requestData)
       .then(res => {
         console.log(res);
         navigate(-1);

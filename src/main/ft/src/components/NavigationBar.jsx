@@ -1,40 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { styled, alpha } from '@mui/material/styles';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import InputBase from '@mui/material/InputBase';
-import Badge from '@mui/material/Badge';
-import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import Drawer from '@mui/material/Drawer';
-import Button from '@mui/material/Button';
-import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import ListIcon from '@mui/icons-material/List';
-import WhatshotIcon from '@mui/icons-material/Whatshot';
-import LoginIcon from '@mui/icons-material/Login'; // login icon
-import LogoutIcon from '@mui/icons-material/Logout'; // logout icon
-import PersonAddIcon from '@mui/icons-material/PersonAdd'; // signUp
-import { Link } from 'react-router-dom';
-import '../css/nav.css';
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import { Collapse } from '@mui/material';
-import { useNavigate } from 'react-router-dom'; // useNavigate 추가
-import { useAuthContext } from "../context/AuthContext";
-import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
-import { Stack } from '@mui/material';
-import { selectUserData } from '../api/firebase';
-import { onAuthStateChanged, getAuth } from 'firebase/auth';
+import React from 'react';
+import { styled, alpha, AppBar, Box, Toolbar, IconButton, Typography, InputBase, Badge, Drawer, Button, List, Divider, ListItem, ListItemButton, ListItemIcon, ListItemText, Collapse, Stack } from '@mui/material';
+import {
+  Menu as MenuIcon,
+  Search as SearchIcon,
+  ShoppingCart as ShoppingCartIcon,
+  List as ListIcon,
+  Whatshot as WhatshotIcon,
+  Login as LoginIcon,
+  Logout as LogoutIcon,
+  PersonAdd as PersonAddIcon,
+  Favorite as FavoriteIcon,
+  ExpandLess,
+  ExpandMore,
+  AssignmentInd as AssignmentIndIcon
+} from '@mui/icons-material';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import StorageIcon from '@mui/icons-material/Storage';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuthContext } from "../context/AuthContext";
+import '../css/nav.css';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -142,28 +126,14 @@ export default function NavigationBar() {
   // 변경: AccountCircle 아이콘을 세션 로그인 상태에 따라 다르게 렌더링
 
   const DrawerList = (
-    <Box sx={{ width: 350,}} role="presentation" >
+    <Box sx={{ width: 350, }} role="presentation" >
       <List>
         <ListItem disablePadding>
-        {isAdmin && (
-        <>
-          <ListItem disablePadding>
-            <ListItemButton component={Link} to={'admin/itemlist'} onClick={() => setDrawerOpen(false)}>
-              <ListItemIcon>
-                <ListIcon/>
-              </ListItemIcon>
-              <ListItemText primary="Admin Option 1" />
-            </ListItemButton>
-          </ListItem>
-        </>
-      )}
-      </ListItem>
-      <ListItem disablePadding>
           <ListItemButton onClick={() => setDrawerOpen(false)}>
             <ListItemIcon>
               <WhatshotIcon />
             </ListItemIcon>
-              {/* Render admin options if user is an admin */}
+            {/* Render admin options if user is an admin */}
             <ListItemText primary="특가" />
           </ListItemButton>
         </ListItem>
@@ -214,16 +184,40 @@ export default function NavigationBar() {
       <Divider />
       <Divider />
       <List>
-        {['주문내역', '내 정보'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
+        <ListItem disablePadding>
+          <ListItemButton component={Link} to={'orderHistoryList'} onClick={() => setDrawerOpen(false)}>
+            <ListItemIcon>
+              <ShoppingCartIcon />
+            </ListItemIcon>
+            <ListItemText primary="주문내역" />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton component={Link} to={'wish/list'} onClick={() => setDrawerOpen(false)}>
+            <ListItemIcon>
+              <FavoriteIcon />
+            </ListItemIcon>
+            <ListItemText primary="찜목록" />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton component={Link} to={'userInfo'} onClick={() => setDrawerOpen(false)}>
+            <ListItemIcon>
+              <AccountCircleIcon />
+            </ListItemIcon>
+            <ListItemText primary="내 정보" />
+          </ListItemButton>
+        </ListItem>
+        {isAdmin && (
+          <ListItem disablePadding>
+            <ListItemButton component={Link} to={'admin/chart'} onClick={() => setDrawerOpen(false)}>
               <ListItemIcon>
-                {index % 2 === 0 ? <ShoppingCartIcon /> : <AccountCircle />}
+                <ListIcon />
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary="Admin Option 1" />
             </ListItemButton>
           </ListItem>
-        ))}
+          )}
       </List>
     </Box>
   );
@@ -248,53 +242,23 @@ export default function NavigationBar() {
   };
 
   const handleToCart = () => {
+    if (!user || !user.email) {
+      window.location.href = '/signIn';
+      return;
+    }
     navigate('/cart');
   };
 
-  const wishList = () => {
-    if (!userInfo || !userInfo.email) {
-      // 사용자가 로그인되어 있지 않은 경우, 로그인 페이지로 리다이렉트
-      window.location.href = '/signIn'; 
+  const handleToOrderHistory = () => {
+    if (!user || !user.email) {
+      window.location.href = '/signIn';
       return;
     }
-    window.location.href = '/wish/list';
-  }
-
-  const [currentUserEmail, setCurrentUserEmail] = useState(null);
-  const [userInfo, setUserInfo] = useState(null);
-  const auth = getAuth();
-
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setCurrentUserEmail(user.email);
-      } else {
-        setCurrentUserEmail(null);
-      }
-    });
-  }, [auth]);
-
-  useEffect(() => {
-    if (currentUserEmail) {
-      const fetchUserInfo = async () => {
-        try {
-          const info = await selectUserData(currentUserEmail);
-          setUserInfo(info);
-        } catch (error) {
-          console.error('사용자 정보를 불러오는 중 에러:', error);
-        }
-      };
-      fetchUserInfo();
-    }
-  }, [currentUserEmail]);
-
-  const handleToOrderHistory = () => {
     navigate('/OrderHistoryList');
   };
 
-
   return (
-    <Box sx={{ flexGrow: 1, marginBottom: 2, paddingTop: '130px',  }}>
+    <Box sx={{ flexGrow: 1, marginBottom: 2, paddingTop: '103px', }}>
       <StyledAppBar position="static">
         <Toolbar>
           <div>
@@ -303,7 +267,6 @@ export default function NavigationBar() {
               {DrawerList}
             </Drawer>
           </div>
-          <Link onClick={wishList}>찜</Link>
           <Box sx={{ flexGrow: 1 }} />
           <Typography
             variant="h6"
@@ -331,7 +294,6 @@ export default function NavigationBar() {
                 />
               </Search>
             </form>
-
             <IconButton size="small" color="inherit" onClick={handleToOrderHistory}>
               <Stack direction="column" alignItems="center">
                 <Badge badgeContent={0} color="error">
@@ -340,7 +302,6 @@ export default function NavigationBar() {
                 <Typography variant="body2" sx={{ fontSize: '0.7rem' }}>주문내역</Typography>
               </Stack>
             </IconButton>
-
             <IconButton size="small" color="inherit" onClick={handleToCart}>
               <Stack direction="column" alignItems="center">
                 <Badge badgeContent={0} color="error">
@@ -386,7 +347,7 @@ export default function NavigationBar() {
                 </IconButton>
               </>
             )}
-            
+
           </Box>
         </Toolbar>
       </StyledAppBar>
