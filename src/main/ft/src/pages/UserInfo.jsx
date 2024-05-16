@@ -63,44 +63,55 @@ export default function UserInfo() {
     }
   };
   
+  const InfoItem = ({ label, value }) => (
+    <Grid container spacing={2} sx={{ mb: 2 }}>
+      <Grid item xs={4}>
+        <Typography variant="body1" fontWeight="bold" noWrap>
+          {label}:
+        </Typography>
+      </Grid>
+      <Grid item xs={8}>
+        <Typography variant="body1">
+          {value || 'N/A'}
+        </Typography>
+      </Grid>
+    </Grid>
+  );
+  
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
       <Container maxWidth="sm">
         <Box mt={4}>
-          <Paper elevation={3} sx={{ p: 4 }}>
-            <Typography variant="h5" align="center" gutterBottom>
-              User Information
+          <Paper elevation={3} sx={{ p: 4, borderRadius: 4 }}>
+            <Typography variant="h4" align="center" gutterBottom>
+              마이 페이지
             </Typography>
-            <Grid container spacing={2}>
+            <Divider sx={{ my: 3 }} />
+            <Grid container spacing={3}>
               <Grid item xs={12}>
-                <InfoItem label="Email" value={userInfo?.email} />
-              
-                <InfoItem label="Name" value={userInfo?.name} />
-              
-                <InfoItem label="Phone" value={userInfo?.tel} />
-               
-                <InfoItem label="Address" value={userInfo?.addr} />
-                
-                <InfoItem label="Detail Address" value={userInfo?.detailAddr} />
-               
-                <InfoItem label="Delivery Request" value={userInfo?.req} />
-              
-                <InfoItem label="Email Verified" value={userInfo?.emailVerified ? 'Yes' : 'No'} />
-               
+                <InfoItem label="이메일" value={userInfo?.email} />
+                <InfoItem label="이름" value={userInfo?.name} />
+                <InfoItem label="전화번호" value={userInfo?.tel} />
+                <InfoItem label="우편번호" value={userInfo?.postCode} />
+                <InfoItem label="주소" value={userInfo?.addr} />
+                <InfoItem label="상세 주소" value={userInfo?.detailAddr} />
+                <InfoItem label="배송 시 요청사항" value={userInfo?.req} />
+                <InfoItem label="이메일 확인" value={userInfo?.emailVerified ? '확인됨' : '미확인'} />
                 {isAdmin && (
-                  <Typography variant="body1" color="error">
-                    <strong>Admin:</strong> Yes
-                  </Typography>
+                  <Box mt={2}>
+                    <Typography variant="body1" color="error">
+                      <strong>관리자:</strong> 예
+                    </Typography>
+                  </Box>
                 )}
               </Grid>
             </Grid>
             <Divider sx={{ my: 3 }} />
-            <Stack justifyContent="center" spacing={5}>
-              <Button variant="contained" onClick={handleUpdate}>
-               업데이트 페이지로 이동
+            <Stack direction="row" justifyContent="center" spacing={2}>
+              <Button variant="contained" color="primary" onClick={handleUpdate}>
+                정보 수정
               </Button>
-
               <Button variant="contained" color="error" onClick={handleDelete}>
                 계정 삭제
               </Button>
@@ -110,13 +121,4 @@ export default function UserInfo() {
       </Container>
     </ThemeProvider>
   );
-}
-
-function InfoItem({ label, value }) {
-  return (
-    <Box>
-      <Typography variant="body1" fontWeight="bold">{label}:</Typography>
-      <Typography variant="body1">{value || 'N/A'}</Typography>
-    </Box>
-  );
-}
+};

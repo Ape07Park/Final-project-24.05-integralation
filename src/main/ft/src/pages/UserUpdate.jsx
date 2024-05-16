@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
+
 import Button from '@mui/material/Button';
 import { updateUserData } from '../api/firebase'; // updateUserData 함수 import
 import { useLocation, useNavigate, Link } from 'react-router-dom'; // useHistory 대신 useNavigate 사용
 import { useDaumPostcodePopup } from 'react-daum-postcode';
+
 import CssBaseline from '@mui/material/CssBaseline';
+
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
-const defaultTheme = createTheme();
-
+// 디자인
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -27,18 +29,23 @@ function Copyright(props) {
   );
 }
 
+const defaultTheme = createTheme();
+
 export default function UserUpdate() {
   // 사용자 정보 관련 상태 설정
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [name, setName] = useState('');
+  const [postCode, setPostCode] = useState('');
   const [addr, setAddr] = useState('');
   const [detailAddr, setDetailAddr] = useState('');
   const [tel, setTel] = useState('');
   const [req, setReq] = useState('');
+
   const [messageType, setMessageType] = useState('');
   const [customMessage, setCustomMessage] = useState('');
+
   // 현재 페이지의 URL 정보를 가져오기 위해 useLocation 훅 사용
   const location = useLocation();
   // 페이지 이동을 위한 함수 가져오기
@@ -51,9 +58,10 @@ export default function UserUpdate() {
   // 왜냐하면 유저 정보 업데이트는 유저가 진짜 그 유저가 맞는지 확인 후에 하기 때문에
   useEffect(() => {
     if (userInfo) {
-      const { email, name, addr, detailAddr, tel, req } = userInfo;
+      const { email, name, postCode, addr, detailAddr, tel, req } = userInfo;
       setEmail(email || '');
       setName(name || '');
+      setPostCode(postCode || '');
       setAddr(addr || '');
       setDetailAddr(detailAddr || '');
       setTel(tel || '');
@@ -68,6 +76,7 @@ export default function UserUpdate() {
   const handleComplete = data => {
     let fullAddress = data.address; // 선택된 주소
     let extraAddress = '';
+    let postCode = data.zonecode; // 우편번호
 
     if (data.addressType === 'R') {
       if (data.bname !== '') {
@@ -78,16 +87,16 @@ export default function UserUpdate() {
       }
       fullAddress += extraAddress !== '' ? ` (${extraAddress})` : '';
     }
-
     // 주소 설정
     setAddr(fullAddress);
+    setPostCode(postCode);
   }
 
   // 사용자 정보 업데이트 함수
   const handleUpdate = async () => {
     // 필수 정보가 모두 입력되었는지 확인
     if (!email || !password || !confirmPassword || !name
-      || !addr || !detailAddr || !tel) {
+      || !postCode || !addr || !detailAddr || !tel) {
       alert('모든 필수 정보를 입력해주세요.');
       return;
     }
@@ -103,10 +112,11 @@ export default function UserUpdate() {
       email: email,
       password: password,
       name: name,
+      postCode: postCode,
       addr: addr,
       detailAddr: detailAddr,
       tel: tel,
-      req: req,
+      req: req
     };
 
     try {
@@ -182,40 +192,44 @@ export default function UserUpdate() {
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Email *"
+                    label="Email"
                     value={email}
                     InputProps={{
                       readOnly: true, // readOnly 속성을 true로 설정하여 수정 불가능하게 함
                     }}
+                    required
                   />
                 </Grid>
 
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Password *"
+                    label="Password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)} // 비밀번호 입력 시 상태 업데이트
+                    required
                   />
                 </Grid>
 
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Confirm Password *"
+                    label="Confirm Password"
                     type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)} // 비밀번호 확인 입력 시 상태 업데이트
+                    required
                   />
                 </Grid>
 
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Name *"
+                    label="Name"
                     value={name}
                     onChange={(e) => setName(e.target.value)} // 이름 입력 시 상태 업데이트
+                    required
                   />
                 </Grid>
 
@@ -234,27 +248,40 @@ export default function UserUpdate() {
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Address *"
+                    label="postCode"
+                    value={postCode}
+                    onChange={(e) => setPostCode(e.target.value)} // 우편번호 입력 시 상태 업데이트
+                    required
+                  />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Address"
                     value={addr}
                     onChange={(e) => setAddr(e.target.value)} // 주소 입력 시 상태 업데이트
+                    required
                   />
                 </Grid>
 
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Detail Address *"
+                    label="Detail Address"
                     value={detailAddr}
                     onChange={(e) => setDetailAddr(e.target.value)} // 상세 주소 입력 시 상태 업데이트
+                    required
                   />
                 </Grid>
 
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Phone Number *"
+                    label="Phone Number"
                     value={tel}
                     onChange={handleTelChange} // 전화번호 입력 시 상태 업데이트
+                    required
                   />
                 </Grid>
 
@@ -286,12 +313,15 @@ export default function UserUpdate() {
                       <MenuItem value="직접 입력">직접 입력</MenuItem>
                     </Select>
                   </FormControl>
-                  <TextField
-                    fullWidth
-                    label="Delivery Request *"
-                    value={req} // 선택한 값이 req로 전달되도록 수정
-                    onChange={(e) => setReq(e.target.value)} // 배송 요청 입력 시 상태 업데이트
-                  />
+                  {/* 직접 입력이 선택됐을 때만 TextField 표시 */}
+                  {messageType === '직접 입력' && (
+                    <TextField
+                      fullWidth
+                      label="Delivery Request"
+                      value={req} // 선택한 값이 req로 전달되도록 수정
+                      onChange={(e) => setReq(e.target.value)} // 배송 요청 입력 시 상태 업데이트
+                    />
+                  )}
                 </Grid>
               </Grid>
               {/* 사용자 정보 업데이트 버튼 */}
@@ -308,6 +338,7 @@ export default function UserUpdate() {
               <Button
                 fullWidth
                 variant="contained"
+                color='error'
                 sx={{ mt: 3, mb: 2 }} // 간격 조정
                 onClick={handleCancel}
               >

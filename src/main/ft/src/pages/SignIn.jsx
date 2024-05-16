@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { login, loginWithKakao, loginWithGoogle } from '../api/firebase';
 import { useNavigate, Link } from "react-router-dom";
-import { IconButton } from '@mui/material';
-import GoogleIcon from '@mui/icons-material/Google';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -49,7 +47,7 @@ export default function SignIn() {
         // 로그인 시도
         const userData = await login(userInfo);
         console.log("일반 로그인 성공:", userData);
-        navigate(-1);
+        navigate('/');
       }
       // * 나중에 수정 필요
     } catch (error) {
@@ -168,7 +166,6 @@ export default function SignIn() {
                 </Stack>
               </Grid>
             </Grid>
-
           </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />

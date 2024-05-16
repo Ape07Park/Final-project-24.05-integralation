@@ -2,8 +2,6 @@ import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider,
   signInWithPopup, signOut, updateProfile, signInWithEmailAndPassword,
   onAuthStateChanged, signInWithRedirect, OAuthProvider, deleteUser    } from "firebase/auth";
-import { v4 as uuid } from 'uuid';
-import axios from 'axios';
 import {getDatabase, ref, set, get, remove, update } from "firebase/database";
 
 const firebaseConfig = {
@@ -88,6 +86,30 @@ export function loginWithKakao(){
   });
 }
 
+// # 카카오 로그인
+export function loginWithNaver(){
+  const provider = new OAuthProvider('oidc.naver');
+  
+  return signInWithPopup(auth, provider)
+  .then((result) => {  
+    // User is signed in.
+    // IdP data available using getAdditionalUserInfo(result)
+
+    // Get the OAuth access token and ID Token
+    const credential = OAuthProvider.credentialFromResult(result);
+    const accessToken = credential.accessToken;
+    const idToken = credential.idToken;
+    
+    console.log(result.user); // 사용자 정보 찍어보기
+    insertUserDataWithSocial(result.user.email, result.user.userName, result.user.mobile ) // 사용자 정보 db에 저장
+    return result.user;
+  })
+  .catch((error) => {
+    console.error("kakao 로그인 오류:", error);
+      throw error; // 오류 재 throw
+  });
+}
+
 export function logout() {
   signOut(auth).catch(console.error);
 }
@@ -95,8 +117,8 @@ export function logout() {
 // --------------------- #login 끝 ----------------------
 
 /*========================= # Authentication =========================*/
-export function authRegister({ email, password, name, addr, detailAddr, 
-  tel, req, def, isAdmin}) { //  사용처에서 obj로 처리하기에 그것에 맞춰서 제공 
+export function authRegister({ email, password, name, postCode, addr, detailAddr, 
+  tel, req}) { //  사용처에서 obj로 처리하기에 그것에 맞춰서 제공 
   console.log('firebase:register():', email, password);
   createUserWithEmailAndPassword(auth, email, password) 
 
@@ -107,18 +129,17 @@ export function authRegister({ email, password, name, addr, detailAddr,
         email: email,
         password:password,
         name: name,
+        postCode:postCode,
         addr: addr,
         detailAddr: detailAddr,
         tel: tel,
-        req: req,
-        def: def,
-        isAdmin: isAdmin
+        req: req,       
       })
       console.log("User profile  updated");
     })
     .then(() => {
-      insertUserData(email, password, name, addr, detailAddr, tel, 
-        req, def, isAdmin );
+      insertUserData(email, password, name, postCode, addr, detailAddr, tel, 
+        req);
         console.log("User added to Database");
     })
     .then(() => {logout()})
@@ -135,7 +156,7 @@ export function authRegister({ email, password, name, addr, detailAddr,
       }
 
       alert(errorMessage); // 오류 메시지 출력
-      throw error; // 오류 다시 던지기
+      
     });
 }
 
@@ -168,8 +189,8 @@ export function authRemoveUser() {
 /*========================= # Authentication 끝=========================*/
 
 /*========================= DAO =========================*/
-function insertUserData(email, password, name, addr, detailAddr, 
-  tel, req, def, isAdmin) {
+function insertUserData(email, password, name, postCode, addr, detailAddr, 
+  tel, req) {
   if (!email) {
     console.error("이메일이 유효하지 않습니다.");
     return;
@@ -180,14 +201,15 @@ function insertUserData(email, password, name, addr, detailAddr,
     email: email,
     password: password,
     name: name,
+    postCode:postCode,
     addr: addr,
     detailAddr: detailAddr,
     tel: tel,
-    req: req,
-    def: def,
-    isAdmin: isAdmin
+    req: req
+    
   }).then(() => {
     console.log("사용자 정보가 성공적으로 저장되었습니다.");
+    window.location.reload();
   }).catch((error) => {
     console.error("사용자 정보 저장 중 오류가 발생했습니다:", error);
   });
@@ -201,12 +223,11 @@ function insertUserDataWithSocial(email, displayName) {
     email: email,
     name: displayName,
     password:'N/A', 
+    postCode:'',
     addr: '',
     detailAddr: '',
     tel: '',
     req: '',
-    def: 0,
-    isAdmin: 0
   }).then(() => {
     console.log("사용자 정보가 성공적으로 저장되었습니다.");
   }).catch((error) => {
@@ -239,7 +260,7 @@ export async function selectUserData(email) {
 }
 
 export async function updateUserData(user) {
-  const { email, password, name, addr, detailAddr, tel, req } = user;
+  const { email, password, name, postCode, addr, detailAddr, tel, req } = user;
   try {
     // email이 정의되어 있을 때만 업데이트를 시도합니다.
     if (email) {
@@ -247,6 +268,7 @@ export async function updateUserData(user) {
       await update(ref(database, `users/${sanitizedEmail}`), {
         name,
         password,
+        postCode,
         addr,
         detailAddr,
         tel,
@@ -258,7 +280,6 @@ export async function updateUserData(user) {
     }
   } catch (error) {
     console.error('사용자 정보 업데이트 중 오류:', error);
-    throw error; // 오류를 다시 던져서 호출하는 쪽에서 처리할 수 있도록 합니다.
   }
 }
 

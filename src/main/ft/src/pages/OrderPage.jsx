@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, Card, Container, Grid, Typography, Table, TableBody, TableCell, TableHead, TableContainer,
-        TableRow, Checkbox, CardMedia, TextField, MenuItem, FormControl, InputLabel, Select, Divider, 
-        } from "@mui/material";
+import {
+  Box, Button, Card, Container, Grid, Typography, Table, TableBody, TableCell, TableHead, TableContainer,
+  TableRow, Checkbox, CardMedia, TextField, MenuItem, FormControl, InputLabel, Select, Divider,
+} from "@mui/material";
 import { nanoid } from "nanoid";
 import { useDaumPostcodePopup } from 'react-daum-postcode';
 import { selectUserData } from '../api/firebase';
@@ -22,7 +23,7 @@ const Order = () => {
   const navigate = useNavigate();
   const auth = getAuth();
   const [orderId, setOrderId] = useState(null);
-  
+
   useEffect(() => {
     setOrderId(nanoid())
   }, [])
@@ -103,36 +104,36 @@ const Order = () => {
       return;
     }
     try {
-        // 입력된 정보를 객체로 만듦
-        const order = {
-            email: currentUserEmail,
-            name: name,
-            postCode: postCode,
-            addr: addr,
-            detailAddr: detailAddr,
-            tel: tel,
-            req: req,
-            totalPrice: totalPrice, // 총 결제 금액 추가
-            orderId: orderId,
-        };
-        const orderItemData = orderItems.map(orderItem => ({
-            iid: orderItem.iid,
-            ioid: orderItem.ioid,
-            count: orderItem.count,
-            price: orderItem.price,
-            oid: null // oid를 초기화합니다.
-        }));
-        // 서버로 전송할 데이터 구조 수정
-        const data = {
-            order: order,  // 주문 정보
-            orderItems: orderItemData  // 주문 아이템 정보
-        };
-        navigate('/checkout', { state: { orderData: data } });
-        // 모든 주문이 성공적으로 생성되었을 때 메시지 출력
-        alert('주문이 성공적으로 생성되었습니다.');
+      // 입력된 정보를 객체로 만듦
+      const order = {
+        email: currentUserEmail,
+        name: name,
+        postCode: postCode,
+        addr: addr,
+        detailAddr: detailAddr,
+        tel: tel,
+        req: req,
+        totalPrice: totalPrice, // 총 결제 금액 추가
+        orderId: orderId,
+      };
+      const orderItemData = orderItems.map(orderItem => ({
+        iid: orderItem.iid,
+        ioid: orderItem.ioid,
+        count: orderItem.count,
+        price: orderItem.price,
+        oid: null // oid를 초기화합니다.
+      }));
+      // 서버로 전송할 데이터 구조 수정
+      const data = {
+        order: order,  // 주문 정보
+        orderItems: orderItemData  // 주문 아이템 정보
+      };
+      navigate('/checkout', { state: { orderData: data } });
+      // 모든 주문이 성공적으로 생성되었을 때 메시지 출력
+      alert('주문이 성공적으로 생성되었습니다.');
     } catch (error) {
-        console.error('주문 처리 중 오류:', error);
-        alert('주문 생성 중 오류가 발생했습니다.');
+      console.error('주문 처리 중 오류:', error);
+      alert('주문 생성 중 오류가 발생했습니다.');
     }
   };
 
@@ -234,59 +235,55 @@ const Order = () => {
       <Container fixed sx={{ mb: 5, mt: 5 }}>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={8}>
-            <Typography variant="h4" sx={{ marginBottom: 2 }}>
+            <Typography variant="h4" sx={{ marginBottom: 2 }} align="center">
               주문하기
             </Typography>
             <Typography variant="h6">
               담긴 상품
             </Typography>
-            <TableContainer sx={{ maxWidth: '100%', overflowX: 'auto' }}>
-              <Table className="table table-hover">
+            <TableContainer sx={{ maxWidth: '100%', overflowX: 'auto', marginTop: 2 }}>
+              <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell></TableCell>
-                    <TableCell>이미지</TableCell>
-                    <TableCell>상품명</TableCell>
-                    <TableCell>가격</TableCell>
-                    <TableCell>옵션</TableCell>
-                    <TableCell>수량</TableCell>
-                    <TableCell>합계</TableCell>
-                    <TableCell>삭제</TableCell>
+                    <TableCell align="center">이미지</TableCell>
+                    <TableCell align="center">상품명</TableCell>
+                    <TableCell align="center">가격</TableCell>
+                    <TableCell align="center">옵션</TableCell>
+                    <TableCell align="center">수량</TableCell>
+                    <TableCell align="center">합계</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {orderItems.map((item, index) => (
                     <TableRow key={index}>
-                      <TableCell>
-                        <Checkbox
-                          checked={selectedItems.some((selectedItem) => selectedItem.iid === item.iid && selectedItem.option === item.option)}
-                        />
-                      </TableCell>
-                      <TableCell>
+                      <TableCell align="center">
                         <CardMedia
                           component="img"
                           height="50"
-                          image={item.img} // 이미지 주소로 수정
+                          image={item.img}
                           alt={item.name}
                         />
                       </TableCell>
-                      <TableCell>
+                      <TableCell align="center">
                         <Typography variant="body1" sx={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                           {item.name}
                         </Typography>
                       </TableCell>
-
-                      <TableCell>
-                        <Typography variant="body1">{item.price.toLocaleString()}원</Typography> {/* toLocaleString() 함수를 사용하여 원화 형식으로 표시*/}
+                      <TableCell align="center">
+                        <Typography variant="body1">
+                          {item.price.toLocaleString()}원
+                        </Typography>
                       </TableCell>
-                      <TableCell>
+                      <TableCell align="center">
                         <Typography variant="body1">{item.option}</Typography>
                       </TableCell>
-                      <TableCell>
+                      <TableCell align="center">
                         <Typography variant="body1">{item.count}</Typography>
                       </TableCell>
-                      <TableCell>
-                        <Typography variant="body1">{(item.price * item.count).toLocaleString()}원</Typography>
+                      <TableCell align="center">
+                        <Typography variant="body1">
+                          {(item.price * item.count).toLocaleString()}원
+                        </Typography>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -294,116 +291,124 @@ const Order = () => {
               </Table>
             </TableContainer>
             <Divider sx={{ mt: 5, mb: 2 }} />
+
             <Typography variant="h6">
               배송 정보
             </Typography>
-            <br />
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="받는 분 성함"
-                value={name}
-                onChange={(e) => setName(e.target.value)} // 이름 입력 시 상태 업데이트
-                sx={{ mt: 1, mb: 1 }}
-                required
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Button
-                fullWidth
-                type="button"
-                variant="contained"
-                sx={{ mt: 1, mb: 1 }}
-                onClick={() => openPostcode({ onComplete: handleComplete })}
-              >
-                우편번호 찾기
-              </Button>
-            </Grid>
 
-            <Grid item xs={12}>
-              <TextField
-                readOnly
-                fullWidth
-                label="우편번호"
-                value={postCode}
-                onChange={(e) => setPostCode(e.target.value)} // 우편번호 입력 시 상태 업데이트
-                sx={{ mt: 1, mb: 1 }}
-                required
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <TextField
-                readOnly
-                fullWidth
-                label="주소"
-                value={addr}
-                onChange={(e) => setAddr(e.target.value)} // 주소 입력 시 상태 업데이트
-                sx={{ mt: 1, mb: 1 }}
-                required
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="상세주소"
-                value={detailAddr}
-                onChange={(e) => setDetailAddr(e.target.value)} // 상세 주소 입력 시 상태 업데이트
-                sx={{ mt: 1, mb: 1 }}
-                required
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="연락처"
-                value={tel}
-                onChange={handleTelChange} // 전화번호 입력 시 상태 업데이트
-                sx={{ mt: 1, mb: 1 }}
-                required
-              />
-            </Grid>
-
-            <Grid item xs={12} sx={{ mt: 1, mb: 1 }}>
-              <FormControl fullWidth style={{ marginBottom: '5px' }}>
-                <InputLabel id="message-label">배송 시 요청사항</InputLabel>
-                <Select
-                  labelId="message-label"
-                  id="message"
-                  value={messageType}
-                  onChange={(e) => {
-                    const selectedMessageType = e.target.value;
-                    setMessageType(selectedMessageType);
-                    // 선택한 메시지 유형이 '직접 입력'이 아니면 req를 선택한 메시지로 설정
-                    if (selectedMessageType !== '직접 입력') {
-                      setReq(selectedMessageType);
-                    }
-                  }}
-                  label="배송 시 요청사항"
-                >
-                  <MenuItem value="배송 전 연락바랍니다.">배송 전 연락바랍니다.</MenuItem>
-                  <MenuItem value="경비실에 맡겨주세요.">경비실에 맡겨주세요.</MenuItem>
-                  <MenuItem value="집앞에 놔주세요.">집앞에 놔주세요.</MenuItem>
-                  <MenuItem value="택배함에 놔주세요.">택배함에 놔주세요.</MenuItem>
-                  <MenuItem value="부재시 핸드폰으로 연락주세요.">부재시 핸드폰으로 연락주세요.</MenuItem>
-                  <MenuItem value="부재시 경비실에 맡겨주세요.">부재시 경비실에 맡겨주세요.</MenuItem>
-                  <MenuItem value="부재시 집 앞에 놔주세요.">부재시 집 앞에 놔주세요.</MenuItem>
-                  <MenuItem value="직접 입력">직접 입력</MenuItem>
-                </Select>
-              </FormControl>
-              {/* 직접 입력이 선택됐을 때만 TextField 표시 */}
-              {messageType === '직접 입력' && (
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
-                  label="Delivery Request"
-                  value={req} // 선택한 값이 req로 전달되도록 수정
-                  onChange={(e) => setReq(e.target.value)} // 배송 요청 입력 시 상태 업데이트
+                  label="받는 분 성함"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  sx={{ mt: 1 }}
+                  required
                 />
-              )}
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                {/* Empty Grid item */}
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <Grid container alignItems="flex-start">
+                  <Grid item xs={12}>
+                    <Button
+                      fullWidth
+                      type="button"
+                      variant="contained"
+                      sx={{ mt: 1 }}
+                      onClick={() => openPostcode({ onComplete: handleComplete })}
+                    >
+                      우편번호 찾기
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12} >
+                <TextField
+                  readOnly
+                  fullWidth
+                  label="우편번호"
+                  value={postCode}
+                  onChange={(e) => setPostCode(e.target.value)}
+                  sx={{ mt: 1 }}
+                  required
+                />
+              </Grid>
+
+
+              <Grid item xs={12}>
+                <TextField
+                  readOnly
+                  fullWidth
+                  label="주소"
+                  value={addr}
+                  onChange={(e) => setAddr(e.target.value)}
+                  sx={{ mt: 1 }}
+                  required
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="상세주소"
+                  value={detailAddr}
+                  onChange={(e) => setDetailAddr(e.target.value)}
+                  sx={{ mt: 1 }}
+                  required
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="연락처"
+                  value={tel}
+                  onChange={handleTelChange}
+                  sx={{ mt: 1 }}
+                  required
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <InputLabel id="message-label">배송 시 요청사항</InputLabel>
+                  <Select
+                    labelId="message-label"
+                    id="message"
+                    value={messageType}
+                    onChange={(e) => {
+                      const selectedMessageType = e.target.value;
+                      setMessageType(selectedMessageType);
+                      if (selectedMessageType !== '직접 입력') {
+                        setReq(selectedMessageType);
+                      }
+                    }}
+                    label="배송 시 요청사항"
+                    sx={{ mt: 1 }}
+                  >
+                    <MenuItem value="배송 전 연락바랍니다.">배송 전 연락바랍니다.</MenuItem>
+                    <MenuItem value="경비실에 맡겨주세요.">경비실에 맡겨주세요.</MenuItem>
+                    <MenuItem value="집앞에 놔주세요.">집앞에 놔주세요.</MenuItem>
+                    <MenuItem value="택배함에 놔주세요.">택배함에 놔주세요.</MenuItem>
+                    <MenuItem value="부재시 핸드폰으로 연락주세요.">부재시 핸드폰으로 연락주세요.</MenuItem>
+                    <MenuItem value="부재시 경비실에 맡겨주세요.">부재시 경비실에 맡겨주세요.</MenuItem>
+                    <MenuItem value="부재시 집 앞에 놔주세요.">부재시 집 앞에 놔주세요.</MenuItem>
+                    <MenuItem value="직접 입력">직접 입력</MenuItem>
+                  </Select>
+                </FormControl>
+                {messageType === '직접 입력' && (
+                  <TextField
+                    fullWidth
+                    label="Delivery Request"
+                    value={req}
+                    onChange={(e) => setReq(e.target.value)}
+                    sx={{ mt: 1 }}
+                  />
+                )}
+              </Grid>
             </Grid>
-            <Divider sx={{ mt: 2, mb: 2 }}/>
+            <Divider sx={{ mt: 2, mb: 2 }} />
           </Grid>
           <Grid item xs={12} sm={4}>
             <Typography variant="h4" sx={{ marginBottom: 2 }}>
@@ -412,7 +417,7 @@ const Order = () => {
             <Box sx={{ position: "sticky", top: 20 }}>
               <Card sx={{ padding: 2 }}>
                 <Typography variant="subtitle1" sx={{ marginBottom: 1 }}>
-                  총 상품 가격: {totalPayment.toLocaleString()}원 {/* 총 상품 가격 표시 */}
+                  총 상품 가격: {totalPayment.toLocaleString()}원
                 </Typography>
                 <Typography variant="subtitle1" sx={{ marginBottom: 1 }}>
                   배송비: 원
