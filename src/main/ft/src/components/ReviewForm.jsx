@@ -73,6 +73,7 @@ const ReviewFormModal = ({ isOpen, handleClose, iid }) => {
         console.log('Review submitted successfully:', response.data);
         handleClose();
         setRating(null)
+        setReview(null)
       })
       .catch(error => {
         console.error('Error submitting review:', error);

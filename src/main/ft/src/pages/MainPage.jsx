@@ -6,9 +6,13 @@ import ItemList from "./ItemList";
 
 export default function MainPage() {
   
+  useEffect(() => {
+    window.scrollTo(0, 0); 
+  }, []); 
+
   return (
     <>
-      <Box width="50%" margin="auto" mt={5} mb={5}>
+      <Box width="70%" margin="auto" mt={5} mb={5}>
         <MainCategoryBox />
       </Box>
       <Box width="60%" margin="auto" mt={5} mb={5}>

@@ -22,6 +22,22 @@ const SoldItem = () => {
     fetchTopSoldItems();
   }, []);
 
+  const handleItemClick = (event, item) => {
+    if (item.length > 0) {
+      const clickedItem = topSoldItems[item[0].index];
+      if (clickedItem && clickedItem.productId) {
+        const productId = clickedItem.productId;
+        const width = 1000;
+        const height = 800;
+        const left = (window.innerWidth - width) / 2;
+        const top = (window.innerHeight - height) / 2;
+        const specs = `width=${width}, height=${height}, left=${left}, top=${top}`;
+        window.open(`/item/detail/${productId}`, '_blank',specs);
+      }
+    }
+  };
+
+  // Chart.js 데이터 포맷 생성
   const chartData = {
     labels: topSoldItems.map((item) => {
       return item.productName.length > 5 ? `${item.productName.slice(0, 5)}..` : item.productName;
@@ -48,6 +64,7 @@ const SoldItem = () => {
         },
       },
     },
+    onClick: handleItemClick
   };
 
   return (

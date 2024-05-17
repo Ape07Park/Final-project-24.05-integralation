@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Container, Typography, Table, TableBody, TableCell, TableHead, TableRow, Divider, TableContainer,
           Button, Box, Stack, Select, MenuItem, CircularProgress, } from "@mui/material";
-
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import WayModal from '../components/WayModal';
 import AdminCategoryBar from '../components/AdminCategoryBar';
 import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
+import TrackerComponent from '../components/TrackerComponent';
 
 const queryClient = new QueryClient();
 
@@ -46,6 +46,7 @@ const AdminOrderHistoryListContent = () => {
   const handleOpenModal = (orderId) => {
     setSelectedOrderId(orderId);
     setOpenModal(true);
+    //
   };
 
   const handleCloseModal = () => {
@@ -133,7 +134,7 @@ const AdminOrderHistoryListContent = () => {
   };
 
   return (
-    <Container fixed sx={{ mt: 5, mb: 5 }}>
+    <Container fixed sx={{ mb: 5 }}>
       <AdminCategoryBar/>
       <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 2 }}>
         <Select value={sortBy} onChange={handleSortChange}>
@@ -157,7 +158,11 @@ const AdminOrderHistoryListContent = () => {
               <Typography variant="body2">주문날짜: {orderList[0].regDate.substring(0, 10)}</Typography>
               <Typography variant="body2">총 가격: {totalPrice.toLocaleString()}원</Typography>
               <Typography variant="body2" onClick={() => DeliveryTracker(orderList[0].way)} style={{ cursor: 'pointer' }}>
-                배송상태: {orderList[0].status}
+                {orderList[0].way ? (  
+                  <div onClick={() => DeliveryTracker(orderList[0].way)} style={{ cursor: 'pointer', textAlign:'center' }}>
+                    <TrackerComponent order={orderList[0]} />
+                  </div>
+                ) : orderList[0].status}
               </Typography>
               <WayModal
                 open={openModal && selectedOrderId === orderId}

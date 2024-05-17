@@ -256,9 +256,9 @@ const CartPage = () => {
       maxWidth="lg"
       sx={{ mt: 5 }}
     >
-      <Typography variant="h4" gutterBottom>
+      {/* <Typography variant="h4" gutterBottom>
         장바구니
-      </Typography>
+      </Typography> */}
       <Grid container spacing={3}>
         <Grid item xs={12} md={15}>
           <Table>
@@ -318,9 +318,9 @@ const CartPage = () => {
               >
                 주문하기
               </Button>
-            <Button className='linkButton' variant="contained" fullWidth onClick={() => navigate('/item')}>
+            {/* <Button className='linkButton' variant="contained" fullWidth onClick={() => navigate('/item')}>
               쇼핑 계속하기
-            </Button>
+            </Button> */}
           </Box>
         </Grid>
       </Grid>

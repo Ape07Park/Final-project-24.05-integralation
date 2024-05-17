@@ -166,7 +166,7 @@ export default function ProductQnA({ posts, reloadQnAData }) {
                     </Typography>
                   </TableCell>
                   <TableCell style={{ fontSize: '80%' }}>{post.title}</TableCell>
-                  <TableCell style={{ fontSize: '80%' }}>{`${post.email.split('@')[0].substring(0, 4)}${'*'.repeat(post.email.split('@')[0].length - 4)}`}</TableCell>
+                  <TableCell style={{ fontSize: '80%' }}>{`${post.email.split('@')[0]}`}</TableCell>
                   <TableCell style={{ fontSize: '80%' }}>{new Date(post.regDate).toLocaleDateString().slice(0, -1)}</TableCell>
                   {currentUserEmail === post.email ? 
                     <TableCell style={{ width: isMobile ? '10%' : '10%', fontWeight: 'bold', fontSize: '80%', textAlign: 'center' }}>

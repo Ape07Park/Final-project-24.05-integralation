@@ -19,6 +19,12 @@ import StorageIcon from '@mui/icons-material/Storage';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthContext } from "../context/AuthContext";
 import '../css/nav.css';
+import WeekendIcon from '@mui/icons-material/Weekend';
+import DeskIcon from '@mui/icons-material/Desk';
+import HotelIcon from '@mui/icons-material/Hotel';
+import KitchenIcon from '@mui/icons-material/Kitchen';
+import TableBarIcon from '@mui/icons-material/TableBar';
+import FoodBankIcon from '@mui/icons-material/FoodBank';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -134,7 +140,7 @@ export default function NavigationBar() {
               <WhatshotIcon />
             </ListItemIcon>
             {/* Render admin options if user is an admin */}
-            <ListItemText primary="특가" />
+            <ListItemText component={Link} to={'/'} primary="특가" />
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
@@ -148,35 +154,47 @@ export default function NavigationBar() {
         </ListItem>
         <Collapse in={openList} unmountOnExit>
           <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 4 }}>
+            <ListItemButton sx={{ pl: 4 }} component={Link} to={'itemlist/의자'} onClick={() => setDrawerOpen(false)}>
               <ListItemIcon>
                 <WhatshotIcon />
               </ListItemIcon>
               <ListItemText primary="의자" />
             </ListItemButton>
-            <ListItemButton sx={{ pl: 4 }}>
+            <ListItemButton sx={{ pl: 4 }} component={Link} to={'itemlist/소파'} onClick={() => setDrawerOpen(false)}>
               <ListItemIcon>
-                <WhatshotIcon />
+                <WeekendIcon />
               </ListItemIcon>
-              <ListItemText primary="책상" />
+              <ListItemText primary="소파" />
             </ListItemButton>
-            <ListItemButton sx={{ pl: 4 }}>
+            <ListItemButton sx={{ pl: 4 }} component={Link} to={'itemlist/책상'} onClick={() => setDrawerOpen(false)}>
               <ListItemIcon>
-                <WhatshotIcon />
+                <DeskIcon />
               </ListItemIcon>
-              <ListItemText primary="책상" />
+              <ListItemText primary="책상"/>
             </ListItemButton>
-            <ListItemButton sx={{ pl: 4 }}>
+            <ListItemButton sx={{ pl: 4 }} component={Link} to={'itemlist/침대'} onClick={() => setDrawerOpen(false)}>
               <ListItemIcon>
-                <WhatshotIcon />
+                <HotelIcon />
               </ListItemIcon>
-              <ListItemText primary="책상" />
+              <ListItemText primary="침대" />
             </ListItemButton>
-            <ListItemButton sx={{ pl: 4 }}>
+            <ListItemButton sx={{ pl: 4 }} component={Link} to={'itemlist/책장'} onClick={() => setDrawerOpen(false)}>
               <ListItemIcon>
-                <WhatshotIcon />
+                <KitchenIcon />
               </ListItemIcon>
-              <ListItemText primary="책상" />
+              <ListItemText primary="책장" />
+            </ListItemButton>
+            <ListItemButton sx={{ pl: 4 }} component={Link} to={'itemlist/식탁'} onClick={() => setDrawerOpen(false)}>
+              <ListItemIcon>
+                <FoodBankIcon />
+              </ListItemIcon>
+              <ListItemText primary="식탁" />
+            </ListItemButton>
+            <ListItemButton sx={{ pl: 4 }} component={Link} to={'itemlist/테이블'} onClick={() => setDrawerOpen(false)}>
+              <ListItemIcon>
+                <TableBarIcon />
+              </ListItemIcon>
+              <ListItemText primary="테이블" />
             </ListItemButton>
           </List>
         </Collapse>
@@ -220,6 +238,7 @@ export default function NavigationBar() {
           )}
       </List>
     </Box>
+      
   );
 
   const StyledAppBar = styled(AppBar)({

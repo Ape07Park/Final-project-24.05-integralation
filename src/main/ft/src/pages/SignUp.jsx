@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { authRegister, loginWithGoogle, loginWithKakao } from '../api/firebase';
+import { authRegister, loginWithGoogle, loginWithKakao, loginWithNaver } from '../api/firebase';
 import { Link, useNavigate } from "react-router-dom";
 import { useDaumPostcodePopup } from 'react-daum-postcode';
-
+import { v4 as uuidv4 } from 'uuid';
 // mui 
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -122,10 +122,11 @@ export default function SignUp() {
     }
   }
 
-  //  네이버 로그인 핸들러
-  const handleNaver = async () => {
+   // 네이버 로그인 핸들러
+   const handleNaver = async () => {
+
     try {
-      // const userInfo = await loginWithNaver();
+      const userInfo = await loginWithNaver();
       console.log("네이버로 로그인한 사용자 정보:", userInfo);
       // 'UserInfo' 페이지로 이동 후, 일정 시간 뒤에 알림을 띄우고 'UserUpdate' 페이지로 이동
       navigate('/UserInfo');
@@ -350,7 +351,7 @@ const handleComplete = data => {
                 <Button onClick={handleKakao} startIcon={<img src="img/kakaologo.png" alt="카카오 로고" style={{ width: '36px', marginRight: '8px' }} />}>
                   
                 </Button>
-                <Button onClick={handleNaver} startIcon={<img src="img/naver-logo.jpg" alt="네이버 로고" style={{ width: '36px', marginRight: '8px' }} />}>
+                <Button onClick={handleNaver} startIcon={<img src="img/naverlogo.jpg" alt="네이버 로고" style={{ width: '36px', marginRight: '8px' }} />}>
                   네이버 로그인
                 </Button>
               </Grid>

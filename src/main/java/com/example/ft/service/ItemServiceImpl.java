@@ -34,7 +34,7 @@ public class ItemServiceImpl implements ItemService{
 
 	@Override
 	public List<Item> getSearchItemList(String query) {
-		query = query.replace("'", "''");
+//		query = query.replace("'", "''");
 		query = "'%" + query + "%'";
 		return itemDao.getSearchItemList(query);
 	}

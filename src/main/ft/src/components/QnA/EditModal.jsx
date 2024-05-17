@@ -1,5 +1,3 @@
-// EditModal.js
-
 import React from 'react';
 import { Modal, TextField, Button } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';

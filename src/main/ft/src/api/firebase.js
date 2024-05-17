@@ -86,7 +86,7 @@ export function loginWithKakao(){
   });
 }
 
-// # 카카오 로그인
+// # 네이버 로그인
 export function loginWithNaver(){
   const provider = new OAuthProvider('oidc.naver');
   
@@ -101,11 +101,11 @@ export function loginWithNaver(){
     const idToken = credential.idToken;
     
     console.log(result.user); // 사용자 정보 찍어보기
-    insertUserDataWithSocial(result.user.email, result.user.userName, result.user.mobile ) // 사용자 정보 db에 저장
+    insertUserDataWithSocial(result.user.email, result.user.displayName) // 사용자 정보 db에 저장
     return result.user;
   })
   .catch((error) => {
-    console.error("kakao 로그인 오류:", error);
+    console.error("naver 로그인 오류:", error);
       throw error; // 오류 재 throw
   });
 }

@@ -42,8 +42,8 @@ export default function ItemDetail() {
   const [itemWishCount, setItemWishCount] = useState(0);
 
   useEffect(() => {
-    window.scrollTo(0, 0); // 페이지가 로드될 때마다 맨 위로 스크롤
-  }, []); // 빈 배열을 전달하여 컴포넌트가 마운트될 때 한 번만 실행
+    window.scrollTo(0, 0); 
+  }, []); 
 
   useEffect(() => {
     const fetchItemDatas = async () => {
@@ -208,8 +208,7 @@ export default function ItemDetail() {
   // 리뷰모달
   const openModal = () => {
     if (!userInfo || !userInfo.email) {
-      // 사용자가 로그인되어 있지 않은 경우, 로그인 페이지로 리다이렉트
-      window.location.href = '/signIn'; // 로그인 페이지 URL을 실제로 사용하는 주소로 변경해주세요
+      window.location.href = '/signIn'; 
       return;
     }
     setIsModalOpen(true);
@@ -299,8 +298,7 @@ export default function ItemDetail() {
   // 찜기능
   const handleLikeClick = () => {
     if (!userInfo || !userInfo.email) {
-      // 사용자가 로그인되어 있지 않은 경우, 로그인 페이지로 리다이렉트
-      window.location.href = '/signIn'; // 로그인 페이지 URL을 실제로 사용하는 주소로 변경해주세요
+      window.location.href = '/signIn';
       return;
     }
   

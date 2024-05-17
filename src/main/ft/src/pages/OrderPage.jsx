@@ -297,7 +297,7 @@ const Order = () => {
             </Typography>
 
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <TextField
                   fullWidth
                   label="받는 분 성함"
@@ -307,11 +307,9 @@ const Order = () => {
                   required
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
-                {/* Empty Grid item */}
-              </Grid>
+             
 
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <Grid container alignItems="flex-start">
                   <Grid item xs={12}>
                     <Button

@@ -27,7 +27,7 @@ public interface ItemDao {
 	@Select("SELECT * FROM (SELECT i.*, ROW_NUMBER() OVER(PARTITION BY i.iid ORDER BY i.regDate"
 			+ " DESC) AS row_num FROM item i LEFT JOIN itemoption io ON i.iid = io.iid LEFT JOIN"
 			+ " itemtag it ON i.iid = it.iid WHERE CONCAT(i.name, i.category, i.content,"
-			+ " io.option, it.tag) LIKE ${query} AND i.isDeleted = 0) AS ranked_items WHERE"
+			+ " io.option, it.tag) LIKE ${query} AND i.isDeleted = 0 and io.isDeleted = 0 and it.isDeleted = 0) AS ranked_items WHERE"
 			+ " row_num = 1 ORDER BY ranked_items.regDate DESC")
 	List<Item> getSearchItemList(String query);
 	

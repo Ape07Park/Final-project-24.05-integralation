@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 
 const style = {
@@ -20,8 +18,7 @@ const style = {
 };
 
 const imgStyle = {
-  maxWidth: '100%', // 이미지 최대 너비를 100%로 설정하여 부모 요소에 맞춤
-  maxHeight: '100%', // 이미지 최대 높이를 100%로 설정하여 부모 요소에 맞춤
+  height: '100%'
 };
 
 export default function ImgModal(img) {
@@ -45,13 +42,15 @@ export default function ImgModal(img) {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <span style={{ position: 'absolute', top: 10, right: 10, cursor: 'pointer' }} onClick={closeModal}>&times;</span>
-            <img src={img.img} alt="Gallery" style={imgStyle} />
+            <span style={{ position: 'absolute', top: 10, right: 10, cursor: 'pointer'}} onClick={closeModal}>&times;</span>
+            <div style={{height: 700}}>
+              <img src={img.img} alt="Gallery" style={imgStyle} />
+            </div>
           </Box>
         </Modal>
       </div>
       <div>
-        <img src={img.img} alt="Gallery" onClick={handleImageClick} style={{ width: 100, cursor: 'pointer', }} />
+        <img src={img.img} alt="Gallery" onClick={handleImageClick} style={{ height: 100, cursor: 'pointer', }} />
       </div>
     </>
   );

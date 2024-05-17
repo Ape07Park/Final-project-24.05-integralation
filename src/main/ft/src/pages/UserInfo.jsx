@@ -84,7 +84,7 @@ export default function UserInfo() {
       <Container maxWidth="sm">
         <Box mt={4}>
           <Paper elevation={3} sx={{ p: 4, borderRadius: 4 }}>
-            <Typography variant="h4" align="center" gutterBottom>
+            <Typography variant="h5" align="center" gutterBottom>
               마이 페이지
             </Typography>
             <Divider sx={{ my: 3 }} />

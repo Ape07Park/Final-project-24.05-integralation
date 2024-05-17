@@ -45,6 +45,21 @@ const RevenueItems = () => {
     fetchTop5RevenueItems();
   }, []);
 
+  const handleItemClick = (event, item) => {
+    if (item.length > 0) {
+      const clickedItem = top5RevenueItems[item[0].index];
+      if (clickedItem && clickedItem.productId) {
+        const productId = clickedItem.productId;
+        const width = 1000;
+        const height = 800;
+        const left = (window.innerWidth - width) / 2;
+        const top = (window.innerHeight - height) / 2;
+        const specs = `width=${width}, height=${height}, left=${left}, top=${top}`;
+        window.open(`/item/detail/${productId}`, "_blank",specs);
+      } 
+    }
+  };
+
   // Chart.js 데이터 포맷 생성
   const chartData = {
     labels: top5RevenueItems.map((item) => item.productName),
@@ -95,15 +110,14 @@ const RevenueItems = () => {
         backgroundColor: "rgba(153, 102, 255, 1)", // 바의 배경 색상을 보라색으로 설정
         borderColor: "rgba(153, 102, 255, 1)" // 바의 테두리 색상을 보라색으로 설정
       }
-    }
+    },
+    onClick: handleItemClick
   };
 
   return (
-    // <div style={{ width: "50%", padding: "20px", border: "1px solid #ccc", borderRadius: "8px", boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)" }}>
-    //   <h2 style={{ textAlign: "center", marginBottom: "20px" }}>순이익 Top 5 상품</h2>
     <Box>
       <Typography variant="h5" mt={5} mb={5}>순이익 Top 5 상품</Typography>
-      <Bar data={chartData} options={options} height={300} />
+      <Bar data={chartData} options={options} height={300}  />
     </Box>
   );
 };

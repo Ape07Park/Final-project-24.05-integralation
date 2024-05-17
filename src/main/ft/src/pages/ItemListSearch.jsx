@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useQuery, QueryClientProvider, QueryClient } from "react-query"; // 추가
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
@@ -31,9 +31,13 @@ function ItemListSearchContent() {
     refetchInterval: 5000,
   });
 
+  useEffect(() => {
+    window.scrollTo(0, 0); 
+  }, []); 
+
   return (
       <>
-        <Box width="50%" margin="auto" mt={5} mb={5}>
+        <Box width="70%" margin="auto" mt={5} mb={5}>
           <MainCategoryBox />
         </Box>
         <Grid container spacing={2} className="itemList">

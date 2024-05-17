@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import OrderStatus from '../components/chart/OrderStatus';
 import Cancellations from '../components/chart/Cancellations';
 import RevenueItems from '../components/chart/RevenueItems';
@@ -9,6 +9,11 @@ import { Grid } from '@mui/material';
 import AdminCategoryBar from '../components/AdminCategoryBar';
 
 const DashboardPage = () => {
+
+  useEffect(() => {
+    window.scrollTo(0, 0); 
+  }, []); 
+  
   return (
     <>
       <AdminCategoryBar/>

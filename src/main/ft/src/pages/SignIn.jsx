@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { login, loginWithKakao, loginWithGoogle } from '../api/firebase';
 import { useNavigate, Link } from "react-router-dom";
+import { IconButton } from '@mui/material';
+import GoogleIcon from '@mui/icons-material/Google';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -47,7 +49,13 @@ export default function SignIn() {
         // 로그인 시도
         const userData = await login(userInfo);
         console.log("일반 로그인 성공:", userData);
-        navigate('/');
+        
+        const prevPage = localStorage.getItem('prevPage');
+        if (prevPage && prevPage !== '/signUp') {
+          navigate(-1); // 이전 페이지로 이동
+        } else {
+          navigate('/'); // 이전 페이지가 없거나 회원가입 페이지인 경우 홈페이지로 이동
+        }
       }
       // * 나중에 수정 필요
     } catch (error) {
@@ -61,7 +69,13 @@ export default function SignIn() {
     try {
       await loginWithGoogle();
       console.log("구글 로그인 성공");
-      navigate(-1);
+
+      const prevPage = localStorage.getItem('prevPage');
+        if (prevPage && prevPage !== '/signUp') {
+          navigate(-1); // 이전 페이지로 이동
+        } else {
+          navigate('/'); // 이전 페이지가 없거나 회원가입 페이지인 경우 홈페이지로 이동
+        }
     } catch (error) {
       // 로그인 실패 시 오류 메시지 표시
       alert('구글 로그인에 실패했습니다.');
@@ -74,7 +88,13 @@ export default function SignIn() {
     try {
       await loginWithKakao();
       console.log("카카오 로그인 성공");
-      navigate(-1);
+      
+      const prevPage = localStorage.getItem('prevPage');
+        if (prevPage && prevPage !== '/signUp') {
+          navigate(-1); // 이전 페이지로 이동
+        } else {
+          navigate('/'); // 이전 페이지가 없거나 회원가입 페이지인 경우 홈페이지로 이동
+        }
     } catch (error) {
       // 로그인 실패 시 오류 메시지 표시
       alert('카카오 로그인에 실패했습니다.');
@@ -166,6 +186,7 @@ export default function SignIn() {
                 </Stack>
               </Grid>
             </Grid>
+
           </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />

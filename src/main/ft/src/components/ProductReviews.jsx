@@ -135,7 +135,6 @@ const ProductReviews = ({ reviews, item, reloadReviewData }) => {
   const filteredReviews = selectedRating
     ? sortedReviews.filter(review => review.sta === selectedRating)
     : sortedReviews;
-
   const indexOfLastReview = currentPage * reviewsPerPage;
   const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
   const currentReviews = filteredReviews.slice(indexOfFirstReview, indexOfLastReview);
@@ -203,7 +202,7 @@ const ProductReviews = ({ reviews, item, reloadReviewData }) => {
             {/* 리뷰 내용 */}
             <div>
               <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1%' }}>
-                <p style={{ marginRight: '1%' }}>{`${review.email.split('@')[0].substring(0, 4)}${'*'.repeat(review.email.split('@')[0].length - 4)}`}</p>
+                <p style={{ marginRight: '1%' }}>{`${review.email.split('@')[0]}`}</p>
                 <p style={{ color: 'rgba(0, 0, 0, 0.5)', fontSize: '12px' }}>{new Date(review.regDate).toLocaleDateString().slice(0, -1)}</p>
                 {/* 수정 버튼 */}
                 {currentUserEmail === review.email ?

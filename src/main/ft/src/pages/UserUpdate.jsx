@@ -183,7 +183,7 @@ export default function UserUpdate() {
             }}
           >
             <Typography variant="h5" gutterBottom>
-              Update User Information - * 는 필수 입력
+              회원정보수정
             </Typography>
 
             <Box component="form" onSubmit={handleUpdate} sx={{ mt: 3 }}>
@@ -204,7 +204,7 @@ export default function UserUpdate() {
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Password"
+                    label="비밀번호"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)} // 비밀번호 입력 시 상태 업데이트
@@ -215,7 +215,7 @@ export default function UserUpdate() {
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Confirm Password"
+                    label="비밀번호 확인"
                     type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)} // 비밀번호 확인 입력 시 상태 업데이트
@@ -226,7 +226,7 @@ export default function UserUpdate() {
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Name"
+                    label="이름"
                     value={name}
                     onChange={(e) => setName(e.target.value)} // 이름 입력 시 상태 업데이트
                     required
@@ -241,14 +241,14 @@ export default function UserUpdate() {
                     sx={{ mt: 1, mb: 1 }}
                     onClick={() => openPostcode({ onComplete: handleComplete })}
                   >
-                    Find Postal Code
+                    주소 찾기
                   </Button>
                 </Grid>
 
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="postCode"
+                    label="우편번호"
                     value={postCode}
                     onChange={(e) => setPostCode(e.target.value)} // 우편번호 입력 시 상태 업데이트
                     required
@@ -258,7 +258,7 @@ export default function UserUpdate() {
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Address"
+                    label="주소명"
                     value={addr}
                     onChange={(e) => setAddr(e.target.value)} // 주소 입력 시 상태 업데이트
                     required
@@ -268,7 +268,7 @@ export default function UserUpdate() {
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Detail Address"
+                    label="상세주소"
                     value={detailAddr}
                     onChange={(e) => setDetailAddr(e.target.value)} // 상세 주소 입력 시 상태 업데이트
                     required
@@ -278,7 +278,7 @@ export default function UserUpdate() {
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Phone Number"
+                    label="휴대폰"
                     value={tel}
                     onChange={handleTelChange} // 전화번호 입력 시 상태 업데이트
                     required
@@ -331,7 +331,7 @@ export default function UserUpdate() {
                 sx={{ mt: 3, mb: 1 }} // 간격 조정
                 onClick={handleUpdate}
               >
-                Update
+                수정
               </Button>
 
               {/* 취소 버튼 */}
@@ -342,7 +342,7 @@ export default function UserUpdate() {
                 sx={{ mt: 3, mb: 2 }} // 간격 조정
                 onClick={handleCancel}
               >
-                Cancel
+                취소
               </Button>
             </Box>
             <Copyright sx={{ mt: 5 }} />
