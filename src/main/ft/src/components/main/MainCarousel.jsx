@@ -1,13 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import Carousel from 'react-material-ui-carousel';
 import { Paper } from '@mui/material';
 import CarouselImage1 from './carousel1.png';
 import CarouselImage2 from './carousel2.png';
 import './maincarousel.css';
 
-function MainCarousel() {
+const MainCarousel = forwardRef((props, ref) => {
     const carouselRef = useRef(null);
     const [imagesLoaded, setImagesLoaded] = useState(false);
+    const [error, setError] = useState(false); // 에러 상태 추가
     
     const items = [
         {
@@ -34,6 +35,9 @@ function MainCarousel() {
                 loadedCount++;
                 checkAllImagesLoaded();
             };
+            img.onerror = () => { // 이미지 로드 에러 처리
+                setError(true);
+            };
             img.src = imageSrc;
         });
 
@@ -41,8 +45,8 @@ function MainCarousel() {
         };
     }, []);
 
-    if (!imagesLoaded) {
-        return null; 
+    if (error || !imagesLoaded) { // 에러 발생하거나 이미지가 로드되지 않은 경우
+        return null; // null 반환하여 컴포넌트를 렌더링하지 않음
     }
 
     return (
@@ -50,12 +54,12 @@ function MainCarousel() {
             autoPlay={true}
             interval={5000}
             indicatorContainerProps={{ style: { display: 'none' } }}
-            ref={carouselRef}
+            ref={ref}
         >
             {items.map((item, i) => <Item key={i} item={item} />)}
         </Carousel>
     );
-}
+});
 
 function Item(props) {
     return (

@@ -20,7 +20,7 @@ const SelectedItemInfo = ({ selectedItem }) => {
                 <td style={{ width: '30%', paddingRight: 20 }} rowSpan="2">
                   <CardMedia
                     component="img"
-                    image={selectedItem.img1}
+                    image={selectedItem.item.img1}
                     alt="상품 이미지"
                     style={{ height: 200, cursor: 'pointer' }}
                     onClick={() => { navigate(`/item/detail/${selectedItem.iid}`) }}
@@ -30,21 +30,21 @@ const SelectedItemInfo = ({ selectedItem }) => {
                   <Typography variant="h6" style={{ display: 'inline-block', lineHeight: '1.2', maxHeight: '2.4em', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {selectedItem.name || '\u00A0'}
                   </Typography>
-                  <Typography variant="body2">제조사: {selectedItem.company || '\u00A0'}</Typography>
-                  <Typography variant="body2">원가: {selectedItem.cost ? selectedItem.cost.toLocaleString() + '원' : '\u00A0'}</Typography>
-                  <Typography variant="body2">정가: {selectedItem.price ? selectedItem.price.toLocaleString() + '원' : '\u00A0'}</Typography>
+                  <Typography variant="body2">제조사: {selectedItem.item.company || '\u00A0'}</Typography>
+                  <Typography variant="body2">원가: {selectedItem.item.cost ? selectedItem.item.cost.toLocaleString() + '원' : '\u00A0'}</Typography>
+                  <Typography variant="body2">정가: {selectedItem.item.price ? selectedItem.item.price.toLocaleString() + '원' : '\u00A0'}</Typography>
                   <Typography variant="body2">할인금액:
-                    {selectedItem.salePrice !== 0 && selectedItem.salePrice && new Date(selectedItem.saleDate) > new Date() && (
-                      <>{selectedItem.salePrice.toLocaleString()}원</>
+                    {selectedItem.item.salePrice !== 0 && selectedItem.item.salePrice && new Date(selectedItem.item.saleDate) > new Date() && (
+                      <>{selectedItem.item.salePrice.toLocaleString()}원</>
                     )}
                   </Typography>
                   <Typography variant="body2">할인율:
-                    {selectedItem.salePrice !== 0 && selectedItem.salePrice && new Date(selectedItem.saleDate) > new Date() && (
-                      <>{((selectedItem.price - selectedItem.salePrice) / selectedItem.price * 100).toFixed()}%</>
+                    {selectedItem.item.salePrice !== 0 && selectedItem.item.salePrice && new Date(selectedItem.item.saleDate) > new Date() && (
+                      <>{((selectedItem.item.price - selectedItem.item.salePrice) / selectedItem.item.price * 100).toFixed()}%</>
                     )}
                   </Typography>
-                  <Typography variant="body2">할인기간: {new Date(selectedItem.saleDate) > new Date() ? <CountDown saleDate={selectedItem.saleDate} /> : ''}</Typography>
-                  <Typography variant="body2">평점: {selectedItem.totalSta / 10 + '점' || '\u00A0'}</Typography>
+                  <Typography variant="body2">할인기간: {new Date(selectedItem.item.saleDate) > new Date() ? <CountDown saleDate={selectedItem.item.saleDate} /> : ''}</Typography>
+                  <Typography variant="body2">평점: {selectedItem.item.totalSta / 10 + '점' || '\u00A0'}</Typography>
                 </td>
                 <td style={{ verticalAlign: 'top' }}>
                   <Typography variant="h6">재고</Typography>

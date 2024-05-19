@@ -29,4 +29,5 @@ public class Board {
 	private int isDeleted;   // 삭제 여부
 	private int sta;   // 리뷰 게시물 한번에 처리 가능
 	private int vid;
+	private String replyStatus;
 }

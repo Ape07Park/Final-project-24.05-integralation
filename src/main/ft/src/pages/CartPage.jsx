@@ -285,24 +285,24 @@ const CartPage = () => {
               </TableRow>
             </TableHead>
             <TableBody>{renderCartItemRows()}</TableBody>
-            <Box className="boxContainer">
-              <Typography
-                variant="subtitle1"
-                sx={{ mt: 1, whiteSpace: 'nowrap' }}
-              >
-                총 상품 가격: {totalCount.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원
-              </Typography>
-              <Button
-                variant="contained"
-                color="error"
-                onClick={handleDeleteAllItems}
-                disabled={selectedItems.length === 0}
-                sx={{ marginBottom: 2, mr: 'auto', whiteSpace: 'nowrap' }}
-              >
-                전체 삭제
-              </Button>
-            </Box>
           </Table>
+          <Box className="boxContainer">
+            <Typography
+              variant="subtitle1"
+              sx={{ mt: 1, whiteSpace: 'nowrap' }}
+            >
+              총 상품 가격: {totalCount.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원
+            </Typography>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={handleDeleteAllItems}
+              disabled={selectedItems.length === 0}
+              sx={{ marginBottom: 2, mr: 'auto', whiteSpace: 'nowrap' }}
+            >
+              전체 삭제
+            </Button>
+          </Box>
           <Box
             xs={12}
             sx={{
@@ -310,17 +310,14 @@ const CartPage = () => {
             }}
           >
             <Button
-                variant="contained"
-                color="primary"
-                onClick={handleOrder}
-                disabled={selectedItems.length === 0}
-                sx={{ marginTop: 2 }}
-              >
-                주문하기
-              </Button>
-            {/* <Button className='linkButton' variant="contained" fullWidth onClick={() => navigate('/item')}>
-              쇼핑 계속하기
-            </Button> */}
+              variant="contained"
+              color="primary"
+              onClick={handleOrder}
+              disabled={selectedItems.length === 0}
+              sx={{ marginTop: 2 }}
+            >
+              주문하기
+            </Button>
           </Box>
         </Grid>
       </Grid>

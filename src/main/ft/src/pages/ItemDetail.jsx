@@ -522,7 +522,7 @@ export default function ItemDetail() {
 
   return (
     <Grid container spacing={2} className="itemDetail">
-      <Grid container spacing={2} className="itemDetail"  sx={{ paddingLeft: { xs: 0, md: 10 } }}>
+      <Grid container spacing={2} className="itemDetail" sx={{ paddingLeft: { xs: 0, md: 10 } }}>
         {/* 상품 이미지 카드 */}
         <Grid item xs={12} md={6} style={{ padding: 50, textAlign: 'center' }}>
           <ItemDetailInfo item={item} tags={tags} navigate={navigate}/>
@@ -540,7 +540,7 @@ export default function ItemDetail() {
       <nav style={{ backgroundColor: '#f8f9fa', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)', padding: '10px 0', textAlign: 'center', width: '100%', position: isNavFixed ? 'sticky' : 'relative', top: isNavFixed ? 120 : 'auto', left: 0, zIndex: 1000 }}>
         <ul style={{ display: 'flex', justifyContent: 'center', listStyleType: 'none', padding: 0 }}>
           {['detail', 'review', 'qna'].map((id) => (
-            <li key={id} style={{ margin: '0 20px' }}>
+            <li key={id} style={{ margin: '0 3.5%' }}>
               <button onClick={() => handleSectionClick(id)} style={{ backgroundColor: 'transparent', border: 'none', cursor: 'pointer', fontWeight: 'bold', padding: '12px 16px', borderRadius: '8px', fontSize: 'calc(14px + 0.5vw)', letterSpacing: '1px', textTransform: 'uppercase', transition: 'color 0.3s ease', position: 'relative', margin: '0 10px' }}>
                 <span style={{ position: 'absolute', left: 0, bottom: '-4px', width: '100%', height: '2px', backgroundColor: id === activeSection ? '#000' : 'transparent' }}></span>
                 <span style={{ position: 'relative', zIndex: 1 }}>{id === 'detail' ? <span>상세정보</span> : id === 'review' ? <span >리뷰&후기({reviewsCount})</span> : id === 'qna' ? <span >문의({qnAsCount})</span> : id}</span>
@@ -549,20 +549,20 @@ export default function ItemDetail() {
           ))}
         </ul>
       </nav>
-      <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+      <Grid item xs={12} md={12}>
         <section id="detail">
           <Grid container spacing={2} justifyContent="center">
-            <Grid item xs={12} style={{ padding: 50, textAlign: 'center' }}>
+            <Grid item xs={12} sx={{ padding: { xs: 0, md: 5 }, textAlign: 'center' }}>
               <img src={item.img2} alt={item.img2} style={{ width: '90%' }} />
               <img src={item.img3} alt={item.img3} style={{ width: '90%' }} />
             </Grid>
           </Grid>
         </section>
       </Grid>
-      <Grid item xs={12} sm={12} md={12} lg={12} xl={12} >
+      <Grid item xs={12} md={12}>
         <section id="review">
-          <Grid container spacing={2} justifyContent="center">
-            <Grid item xs={12} style={{ paddingLeft: 100 , paddingRight: 100 }}>
+          <Grid container spacing={2} justifyContent="center" sx={{ paddingLeft: { xs: 2, md: 10 }, paddingRight: { xs: 2, md: 10 } }}>
+            <Grid item xs={12}>
               <Button variant="contained" color="primary" size="small" style={{ marginRight: 10 }} onClick={() => openModal(iid)}>리뷰작성</Button>
               <ReviewForm isOpen={isModalOpen} handleClose={closeModal} iid={iid} /> 
               <ProductReviews reloadReviewData={reloadReviewData} reviews={reviews} item={item} />
@@ -570,10 +570,10 @@ export default function ItemDetail() {
           </Grid>
         </section>
       </Grid>
-      <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+      <Grid item xs={12} md={12}>
         <section id="qna">
-          <Grid container spacing={2} justifyContent="center">
-            <Grid item xs={12} style={{ paddingLeft: 100 , paddingRight: 100  }}>
+          <Grid container spacing={2} justifyContent="center" sx={{ paddingLeft: { xs: 2, md: 10 }, paddingRight: { xs: 2, md: 10 } }}>
+            <Grid item xs={12} >
               <ProductQnA posts={qnAs} reloadQnAData={reloadQnAData}/>
               <Button variant="contained" style={{ marginBottom: '20px', backgroundColor: '#808080' }} onClick={() => openInquiryModal(iid)}>문의하기</Button>
               <InquiryContent isOpen={isInquiryModalOpen} handleClose={closeInquiryModal} iid={iid}/>

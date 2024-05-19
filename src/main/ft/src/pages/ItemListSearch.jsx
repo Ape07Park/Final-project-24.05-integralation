@@ -43,7 +43,7 @@ function ItemListSearchContent() {
         <Grid container spacing={2} className="itemList">
           {isLoading ? (
             <div style={{ position: 'relative', height: '100vh' }}>
-              <img src="img/loading.gif" alt="loading" style={{ width: '200px', height: '200px', position: 'absolute', top: '30%', left: '200%', transform: 'translate(170%, 10%) translateX(100%)' }} />
+              <img src="/img/loading.gif" alt="loading" style={{ width: '200px', height: '200px', position: 'absolute', top: '30%', left: '200%', transform: 'translate(170%, 10%) translateX(100%)' }} />
             </div>
           ) : (
             list.map((item) => (

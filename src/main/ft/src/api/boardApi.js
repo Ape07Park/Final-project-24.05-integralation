@@ -61,3 +61,13 @@ export const deleteBoard = async (postId) => {
     throw error;
   }
 };
+
+export const adminQnAList = async () => {
+  try {
+    const response = await axios.get('/ft/board/adminQnAList'); // 데이터 가져오기
+    return response.data; // 가져온 데이터 반환
+  } catch (error) {
+    console.error('데이터를 불러오는 중 에러:', error);
+    throw error;
+  }
+};

@@ -46,6 +46,11 @@ public class BoardServiceImpl implements BoardService{
 	public List<Board> getQnAList() {
 		return boardDao.getQnAList();
 	}
+
+	@Override
+	public List<Board> adminGetQnAList() {
+		return boardDao.adminGetQnAList();
+	}
 	
 	
 }

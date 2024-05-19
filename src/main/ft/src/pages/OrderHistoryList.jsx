@@ -19,8 +19,6 @@ import { selectUserData } from '../api/firebase';
 import { useNavigate } from 'react-router-dom';
 import TrackerComponent from '../components/TrackerComponent';
 
-const t_key = process.env.REACT_APP_SWEETTRACKER_KEY;
-
 const OrderHistoryList = () => {
 
   const [currentUserEmail, setCurrentUserEmail] = useState(null);

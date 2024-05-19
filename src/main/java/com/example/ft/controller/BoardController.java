@@ -154,4 +154,26 @@ public class BoardController {
 		}
 		return jArr;
 	}
+	
+	@GetMapping("/adminQnAList")
+	public JSONArray adminQnAList() {
+		JSONArray jArr = new JSONArray();
+		List<Board> list = boardService.adminGetQnAList();
+		for(Board board : list) {
+			JSONObject jObj = new JSONObject();
+			jObj.put("bid",board.getBid());
+			jObj.put("iid",board.getIid());
+			jObj.put("email",board.getEmail());
+			jObj.put("type",board.getType());
+			jObj.put("typeQnA",board.getTypeQnA());
+			jObj.put("title",board.getTitle());
+			jObj.put("regDate",board.getRegDate());
+			jObj.put("content",board.getContent());
+			jObj.put("img",board.getImg());
+			jObj.put("replyStatus",board.getReplyStatus());
+			jArr.add(jObj);
+		}
+		System.out.println(jArr);
+		return jArr;
+	}
 }

@@ -16,7 +16,6 @@ import SignUp from './pages/SignUp';
 import UserInfo from './pages/UserInfo';
 import UserUpdate from './pages/UserUpdate';
 import Kakao from './api/kakao';
-import Naver from './api/naver';
 import WishItemList from './pages/WishItemList';
 import { useAuthContext } from "./context/AuthContext";
 import QnAList from './pages/QnAList';
@@ -46,7 +45,6 @@ const router = createBrowserRouter([
       { path: 'userInfo', element: <UserInfo/> },
       { path: 'userUpdate', element: <UserUpdate/> },
       { path: 'callback/kakaotalk', element: <Kakao/> },
-      { path: 'callback/naver', element: <Naver/> },
       { path: 'wish/list', element: <WishItemList/> },
       { path: 'order', element: <Order/> },
       { path: 'orderHistoryList', element: <OrderHistoryList/> },

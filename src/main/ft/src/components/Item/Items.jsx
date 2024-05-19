@@ -34,6 +34,8 @@ export async function getItemDetail(iid) {
       saleDate: item.saleDate,
       salePrice: item.salePrice,
       totalSta: item.totalSta,
+      company: item.company,
+      cost: item.cost,
     };
 
     const formattedOptions = options ? options.map(option => ({

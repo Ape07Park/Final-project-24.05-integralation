@@ -13,7 +13,7 @@ import com.example.ft.entity.Reply;
 public interface ReplyDao {
 	
 	@Select("select * from reply where bid=#{bid} and isDeleted=0")
-	List<Reply> getReplyList(int iid);
+	List<Reply> getReplyList(int bid);
 	
 	@Insert("insert into reply values(default, #{email}, #{bid}, #{content}, default, default)")
 	void insertReply(Reply reply);

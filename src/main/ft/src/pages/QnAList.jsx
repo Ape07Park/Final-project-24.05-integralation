@@ -2,15 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, MenuItem, Select, useMediaQuery, CircularProgress } from '@mui/material';
 import { selectUserData } from '../api/firebase';
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
-import { Items } from '../components/Item/Items'; // 아이템 정보 가져오기
+import { getItemDetail } from '../components/Item/Items'; // 아이템 정보 가져오기
 import AdminCategoryBar from '../components/AdminCategoryBar';
 import SelectedItemInfo from '../components/QnA/SelectedItemInfo';
 import EditModal from '../components/QnA/EditModal';
 import QnAPost from '../components/QnA/QnAPost';
-import { fetchQnAList } from '../api/boardApi';
+import { adminQnAList } from '../api/boardApi';
 import { fetchReplies, postReply, updateReply, deleteReply } from '../api/replyApi';
+import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
+
+const queryClient = new QueryClient();
 
 export default function QnAList() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <QnAListContent />
+    </QueryClientProvider>
+  );
+}
+
+function QnAListContent() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedType, setSelectedType] = useState("전체");
   const [expandedPost, setExpandedPost] = useState(null);
@@ -18,16 +29,15 @@ export default function QnAList() {
   const isMobile = useMediaQuery('(max-width:600px)');
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
   const auth = getAuth();
-  const [replyStatus, setReplyStatus] = useState({});
   const [replies, setReplies] = useState({});
   const [posts, setPosts] = useState([]);
-  const [selectedItem, setSelectedItem] = useState(null); // 선택된 아이템 정보
-  const [replyContent, setReplyContent] = useState(''); // 답변 내용 상태 추가
-  const [showEditModal, setShowEditModal] = useState(false); // 수정 모달 표시 상태 추가
-  const [editContent, setEditContent] = useState(''); // 수정 내용 상태 추가
-  const [editReplyId, setEditReplyId] = useState(null); // 수정할 답변 ID 상태 추가
-  const [editReply, setEditReply] = useState(null); // 수정할 답변 ID 상태 추가
-  const [loading, setLoading] = useState(true); // Loading state
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [replyContent, setReplyContent] = useState(''); 
+  const [showEditModal, setShowEditModal] = useState(false); 
+  const [editContent, setEditContent] = useState(''); 
+  const [editReplyId, setEditReplyId] = useState(null); 
+  const [editReply, setEditReply] = useState(null); 
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -51,11 +61,11 @@ export default function QnAList() {
       fetchUserInfo();
     }
   }, [currentUserEmail]);
-
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await fetchQnAList(); // QnA 목록 가져오기
+        const data = await adminQnAList(); // QnA 목록 가져오기
         setPosts(data); // 가져온 데이터를 posts 상태에 설정
         setLoading(false); // Set loading to false when data is fetched
       } catch (error) {
@@ -64,27 +74,6 @@ export default function QnAList() {
     };
     fetchData();
   }, []);
-  
-  const fetchReplyStatus = async () => {
-    try {
-      if (posts && posts.length > 0) {
-        const status = {};
-        for (const post of posts) {
-          if (post && post.bid) {
-            const data = await fetchReplies(post.bid); // 답변 목록 가져오기
-            status[post.bid] = data.length > 0;
-          }
-        }
-        setReplyStatus(status);
-      }
-    } catch (error) {
-      console.error('답변 목록을 불러오는 중 에러:', error);
-    }
-  };
-  
-  useEffect(() => {
-    fetchReplyStatus();
-  }, [posts]);
 
   const handlePageChange = (event, newPage) => {
     setCurrentPage(newPage);
@@ -103,6 +92,7 @@ export default function QnAList() {
 
   const handlePostClick = async (post, index) => {
     setExpandedPost(expandedPost === index ? null : index);
+    if(expandedPost !== index )
     try {
       await fetchRepliesAndItemInfo(post);
     } catch (error) {
@@ -118,9 +108,8 @@ export default function QnAList() {
         
         // 아이템 정보 가져오기
         if (post.iid) {
-          const itemInfo = await Items(); // 아이템 정보 가져오기 함수 호출
-          const selectedItemInfo = itemInfo.find(item => item.iid === post.iid); // 선택된 게시물의 아이템 정보 찾기
-          setSelectedItem(selectedItemInfo); // 선택된 아이템 정보 설정
+          const itemInfo = await getItemDetail(post.iid); // 아이템 정보 가져오기 함수 호출
+          setSelectedItem(itemInfo); // 선택된 아이템 정보 설정
         } else {
           console.error('게시물에 아이템 ID가 없습니다.');
         }
@@ -159,19 +148,18 @@ export default function QnAList() {
   // 답변 수정 제출 핸들러
   const handleEditSubmit = async () => {
     try {
-      // 수정할 답변 데이터 생성
       const updateReplyData = {
         rid: editReplyId,
-        content: editContent.replace(/\n/g, "<br/>") // 엔터를 <br> 태그로 변환하여 저장
+        content: editContent.replace(/\n/g, "<br/>") 
       };
       const response = await updateReply(updateReplyData);
       console.log('답변을 성공적으로 수정했습니다:', response.data);
       handleCloseEditModal();
-  
-      fetchReplyStatus();
-      // 수정된 답변의 bid를 이용하여 해당 게시물의 답변 목록을 다시 불러옴
       const responseReplies = await fetchReplies(editReply.bid);
       setReplies(responseReplies);
+
+      const updatedData = await adminQnAList();
+      setPosts(updatedData);
     } catch (error) {
       console.error('답변을 수정하는 중 에러:', error);
     }
@@ -197,12 +185,13 @@ export default function QnAList() {
   
       // 응답 확인
       console.log('답변을 성공적으로 작성했습니다:', response.data);
-      fetchReplyStatus();
       // 답변 내용 초기화
       setReplyContent('');
       const updatedRepliesData = await fetchReplies(post.bid); // 수정된 답변이 속한 게시물의 답변 목록
       setReplies(updatedRepliesData);
       setExpandedPost(null);
+      const updatedData = await adminQnAList();
+      setPosts(updatedData);
     } catch (error) {
       console.error('답변을 작성하는 중 에러:', error);
     }
@@ -210,19 +199,18 @@ export default function QnAList() {
 
   const sortedPosts = () => {
     let sorted = [...posts];
-
+  
     if (selectedType !== "전체") {
       sorted = sorted.filter(post => post.typeQnA === selectedType);
     }
-
+  
     if (sortBy === "unanswered") {
       sorted.sort((a, b) => {
-        const aHasReply = replyStatus[a.bid] || false;
-        const bHasReply = replyStatus[b.bid] || false;
-        // 답변이 없는 게시물들이 먼저 표시되도록 정렬
-        if (!aHasReply && !bHasReply) {
+        const aHasReply = a.replyStatus === "미답변";
+        const bHasReply = b.replyStatus === "미답변";
+        if (aHasReply && bHasReply) {
           return 0;
-        } else if (!aHasReply) {
+        } else if (aHasReply) {
           return -1;
         } else {
           return 1;
@@ -230,9 +218,8 @@ export default function QnAList() {
       });
     } else if (sortBy === "answered") {
       sorted.sort((a, b) => {
-        const aHasReply = replyStatus[a.bid] || false;
-        const bHasReply = replyStatus[b.bid] || false;
-        // 답변이 있는 게시물들이 먼저 표시되도록 정렬
+        const aHasReply = a.replyStatus === "답변완료";
+        const bHasReply = b.replyStatus === "답변완료";
         if (aHasReply && bHasReply) {
           return 0;
         } else if (aHasReply) {
@@ -242,29 +229,26 @@ export default function QnAList() {
         }
       });
     }
-
+  
     return sorted;
   };
-
+  
   const currentPosts = sortedPosts().slice(indexOfFirstPost, indexOfLastPost);
 
   const handleDeleteReply = async (reply) => {
     try {
-      // 삭제 요청을 보냄
       await deleteReply(reply.rid);
       
-      // 삭제된 답변을 화면에서 제거
       setReplies(prevReplies => {
         const updatedReplies = { ...prevReplies };
         delete updatedReplies[reply.rid];
         return updatedReplies;
       });
-  
-      // 데이터가 업데이트된 후에는 다시 답변 목록을 가져옴
-      fetchReplyStatus();
 
       const responseReplies = await fetchReplies(reply.bid);
       setReplies(responseReplies);
+      const updatedData = await adminQnAList();
+      setPosts(updatedData);
     } catch (error) {
       console.error('답변 삭제 중 에러:', error);
     }
@@ -323,7 +307,6 @@ export default function QnAList() {
                     index={index}
                     expandedPost={expandedPost}
                     handlePostClick={handlePostClick}
-                    replyStatus={replyStatus}
                     replies={replies}
                     handleOpenEditModal={handleOpenEditModal}
                     handleDeleteReply={handleDeleteReply}

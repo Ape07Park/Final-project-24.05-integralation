@@ -17,4 +17,6 @@ public interface BoardService {
 	void deleteBoard(int bid);  // 게시물 삭제 (잠시 사용 중지 상태로 변경)
 	
 	List<Board> getQnAList();
+	
+	List<Board> adminGetQnAList();
 }

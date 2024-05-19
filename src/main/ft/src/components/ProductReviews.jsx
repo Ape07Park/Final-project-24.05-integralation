@@ -25,7 +25,7 @@ const RatingOption = ({ option, count, maxCount, increaseCommentCount }) => {
   return (
     <div style={{ marginBottom: '1%', width: '100%', marginRight: '1%' }}>
       <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-        <div style={{ width: '20%', marginRight: '1%' }}>{option}</div>
+        <div style={{ width: '10%', }}>{option}</div>
         <div style={{ width: '100%', position: 'relative', height: '30px', backgroundColor: 'lightgray', borderRadius: '20px' }}>
           <div style={{ position: 'absolute', width: `${barWidth}%`, height: '100%', backgroundColor: 'gray', borderRadius: '20px' }}></div>
         </div>
@@ -40,7 +40,7 @@ const RatingOptions = ({ commentCounts, increaseCommentCount }) => {
   return (
     <div className="bar-chart" style={{ width: '100%' }}>
       {[5, 4, 3, 2, 1].map((rating, index) => (
-        <div style={{ display: 'flex', alignItems: 'center', width: '100%' }} key={index}>
+        <div style={{ display: 'flex', alignItems: 'center', width: '150%' }} key={index}>
           <RatingOption
             option={`${rating}점`}
             count={commentCounts[rating]}
@@ -166,7 +166,7 @@ const ProductReviews = ({ reviews, item, reloadReviewData }) => {
   return (
     <div className="product-reviews" style={{ width: '100%' }}>
       <Stack direction="row" spacing={1} alignItems="center">
-        <div className="left-panel" style={{ width: '20%' }}>
+        <div className="left-panel" style={{ width: '25%' }}>
           <h2>Review</h2>
           <Rating item={item} strSize={22} />
           <ReviewForm />

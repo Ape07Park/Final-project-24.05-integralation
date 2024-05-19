@@ -26,7 +26,7 @@ export default function QnAPost({
         <TableCell style={{ fontSize: '80%' }}>{post.typeQnA}</TableCell>
         <TableCell style={{ fontWeight: 'bold', fontSize: '80%' }}>
           <Typography variant="body2" style={{ fontWeight: 'bold' }}>
-            {replyStatus[post.bid] ? '답변완료' : '미답변'}
+            {post.replyStatus}
           </Typography>
         </TableCell>
         <TableCell style={{ fontSize: '80%' }}>{post.title}</TableCell>

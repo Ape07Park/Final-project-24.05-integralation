@@ -86,30 +86,6 @@ export function loginWithKakao(){
   });
 }
 
-// # 네이버 로그인
-export function loginWithNaver(){
-  const provider = new OAuthProvider('oidc.naver');
-  
-  return signInWithPopup(auth, provider)
-  .then((result) => {  
-    // User is signed in.
-    // IdP data available using getAdditionalUserInfo(result)
-
-    // Get the OAuth access token and ID Token
-    const credential = OAuthProvider.credentialFromResult(result);
-    const accessToken = credential.accessToken;
-    const idToken = credential.idToken;
-    
-    console.log(result.user); // 사용자 정보 찍어보기
-    insertUserDataWithSocial(result.user.email, result.user.displayName) // 사용자 정보 db에 저장
-    return result.user;
-  })
-  .catch((error) => {
-    console.error("naver 로그인 오류:", error);
-      throw error; // 오류 재 throw
-  });
-}
-
 export function logout() {
   signOut(auth).catch(console.error);
 }
@@ -156,7 +132,7 @@ export function authRegister({ email, password, name, postCode, addr, detailAddr
       }
 
       alert(errorMessage); // 오류 메시지 출력
-      
+      window.location.replace("/signUp")
     });
 }
 
@@ -205,10 +181,10 @@ function insertUserData(email, password, name, postCode, addr, detailAddr,
     addr: addr,
     detailAddr: detailAddr,
     tel: tel,
-    req: req
-    
+    req: req,
   }).then(() => {
     console.log("사용자 정보가 성공적으로 저장되었습니다.");
+    alert('회원가입이 완료되었습니다.')
     window.location.reload();
   }).catch((error) => {
     console.error("사용자 정보 저장 중 오류가 발생했습니다:", error);

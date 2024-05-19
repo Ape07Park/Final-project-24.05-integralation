@@ -134,7 +134,7 @@ export default function ProductQnA({ posts, reloadQnAData }) {
         <Table style={{ width: '100%' }}>
           <TableHead>
             <TableRow>
-              <TableCell style={{ width: isMobile ? '10%' : '10%' }}>
+              <TableCell style={{ width: isMobile ? '5%' : '8%' }}>
                 <Select
                   value={selectedType}
                   onChange={handleTypeChange}
@@ -148,11 +148,15 @@ export default function ProductQnA({ posts, reloadQnAData }) {
                   <MenuItem value="교환">교환</MenuItem>
                 </Select>
               </TableCell>
-              <TableCell style={{ width: isMobile ? '15%' : '15%', fontWeight: 'bold', fontSize: '80%' }}>답변</TableCell>
-              <TableCell style={{ width: isMobile ? '60%' : '40%', fontWeight: 'bold', textAlign: 'center', fontSize: '80%' }} align="center">제목</TableCell>
-              <TableCell style={{ width: isMobile ? '20%' : '10%', fontWeight: 'bold', fontSize: '80%' }}>작성자</TableCell>
-              <TableCell style={{ width: isMobile ? '10%' : '10%', fontWeight: 'bold', fontSize: '80%' }}>작성일</TableCell>
-              <TableCell style={{ width: isMobile ? '10%' : '20%', fontWeight: 'bold', fontSize: '80%', textAlign: 'center', }}><BuildIcon/></TableCell>
+              {!isMobile && (
+                <TableCell style={{ width: '8%', fontWeight: 'bold', fontSize: '80%' }}>답변</TableCell>
+              )}
+              <TableCell style={{ width: isMobile ? '40%' : '32%', fontWeight: 'bold', textAlign: 'center', fontSize: '80%' }} align="center">제목</TableCell>
+              <TableCell style={{ width: isMobile ? '8%' : '8%', fontWeight: 'bold', fontSize: '80%' }}>작성자</TableCell>
+              {!isMobile && (
+                <TableCell style={{ width: '8%', fontWeight: 'bold', fontSize: '80%' }}>작성일</TableCell>
+              )}
+              <TableCell style={{ width: isMobile ? '8%' : '8%', fontWeight: 'bold', fontSize: '80%', textAlign: 'center', }}><BuildIcon/></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -160,16 +164,20 @@ export default function ProductQnA({ posts, reloadQnAData }) {
               <React.Fragment key={index}>
                 <TableRow onClick={() => handlePostClick(post, index)} style={{ cursor: 'pointer' }}>
                   <TableCell style={{ fontSize: '80%' }}>{post.typeQnA}</TableCell>
-                  <TableCell style={{ fontWeight: 'bold', fontSize: '80%' }}>
-                    <Typography variant="body2" style={{ fontWeight: 'bold' }}>
-                      {replyStatus[post.bid] ? '답변완료' : '미답변'}
-                    </Typography>
-                  </TableCell>
+                  {!isMobile && (
+                    <TableCell style={{ fontWeight: 'bold', fontSize: '80%' }}>
+                      <Typography variant="body2" style={{ fontWeight: 'bold' }}>
+                        {replyStatus[post.bid] ? '답변완료' : '미답변'}
+                      </Typography>
+                    </TableCell>
+                  )}
                   <TableCell style={{ fontSize: '80%' }}>{post.title}</TableCell>
                   <TableCell style={{ fontSize: '80%' }}>{`${post.email.split('@')[0]}`}</TableCell>
-                  <TableCell style={{ fontSize: '80%' }}>{new Date(post.regDate).toLocaleDateString().slice(0, -1)}</TableCell>
+                  {!isMobile && (
+                    <TableCell style={{ fontSize: '80%' }}>{new Date(post.regDate).toLocaleDateString().slice(0, -1)}</TableCell>
+                  )}
                   {currentUserEmail === post.email ? 
-                    <TableCell style={{ width: isMobile ? '10%' : '10%', fontWeight: 'bold', fontSize: '80%', textAlign: 'center' }}>
+                  <TableCell style={{ width: isMobile ? '10%' : '10%', fontWeight: 'bold', fontSize: '80%', textAlign: 'center' }}>
                       <IconButton onClick={(event) => handleEditClick(event, post)} aria-label="edit">
                         <EditIcon />
                       </IconButton>
