@@ -45,9 +45,7 @@ public class BoardController {
 	public JSONArray list(@PathVariable String type, @PathVariable int iid) {
 
 		
-		
-		
-		
+				
 		JSONArray jArr = new JSONArray();
 		if (type.equals("review")) {
 			List<Board> list = reviewService.getReviewList(type, iid);
