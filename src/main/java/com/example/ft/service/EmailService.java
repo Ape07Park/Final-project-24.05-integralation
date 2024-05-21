@@ -5,9 +5,8 @@ import jakarta.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
 
 public interface EmailService {
-	MimeMessage createMessage(String to) throws MessagingException, UnsupportedEncodingException;
+	MimeMessage createMessage(String recipient) throws MessagingException, UnsupportedEncodingException;
 
-	String sendSimpleMessage(String to) throws Exception;
+	String sendSimpleMessage(String recipient) throws Exception;
 
-	String getEmailMessage(String to) throws MessagingException, UnsupportedEncodingException;
 }

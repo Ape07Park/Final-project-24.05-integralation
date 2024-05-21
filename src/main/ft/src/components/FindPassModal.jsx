@@ -18,13 +18,15 @@ const FindPassModal = () => {
 
   const getEmailMessage = async (email) => {
     try {
-      const response = await axios.get(`/ft/email/message/${email}`);
-      return response.data;
+        const response = await axios.post('/ft/email/message', null, {
+            params: { email: email }
+        });
+        return response.data;
     } catch (error) {
-      console.error('Error fetching email message:', error);
-      throw error;
+        console.error('Error fetching email message:', error);
+        throw error;
     }
-  };
+};
 
   // const handleBlur = async () => {
   //   try {

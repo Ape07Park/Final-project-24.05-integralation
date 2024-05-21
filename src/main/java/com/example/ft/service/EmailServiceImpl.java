@@ -37,15 +37,15 @@ public class EmailServiceImpl implements EmailService {
 						// 주소로 사용
 
 	@Override
-	public MimeMessage createMessage(String to) throws MessagingException, UnsupportedEncodingException {
-		log.info("보내는 대상 : " + to);
+	public MimeMessage createMessage(String recipient) throws MessagingException, UnsupportedEncodingException {
+		log.info("보내는 대상 : " + recipient);
 		log.info("인증 번호 : " + ePw);
 		MimeMessage message = javaMailSender.createMimeMessage();
 		
 		System.out.println("message1:" + message );
 		
-		message.addRecipients(MimeMessage.RecipientType.TO, to); // to 보내는 대상
-		message.setSubject("ㅇㅇㅇ 회원가입 인증 코드: "); // 메일 제목
+		message.addRecipients(MimeMessage.RecipientType.TO, recipient); // to 보내는 대상
+		message.setSubject("Funiture 회원가입 인증 코드: "); // 메일 제목
 
 		// 메일 내용 메일의 subtype을 html로 지정하여 html 문법 사용 가능
 		String msg = "";
@@ -58,7 +58,7 @@ public class EmailServiceImpl implements EmailService {
 		System.out.println(msg);
 
 		message.setText(msg, "utf-8", "html"); // 내용, charset 타입, subtype
-		message.setFrom(new InternetAddress(id, "prac_Admin")); // 보내는 사람의 메일 주소, 보내는 사람 이름
+		message.setFrom(new InternetAddress(id, "Funiture")); // 보내는 사람의 메일 주소, 보내는 사람 이름
 		
 		System.out.println("message2:" + message );
 		
@@ -76,22 +76,17 @@ public class EmailServiceImpl implements EmailService {
 		return key.toString();
 	}
 	
-	@Override
-    public String getEmailMessage(String to) throws MessagingException, UnsupportedEncodingException {
-        createMessage(to); // 인증 코드 생성
-        return ePw; // 생성된 인증 코드 반환
-    }
-
 	/*
 	 * 메일 발송 sendSimpleMessage의 매개변수로 들어온 to는 인증번호를 받을 메일주소 MimeMessage 객체 안에 내가 전송할
 	 * 메일의 내용을 담아준다. bean으로 등록해둔 javaMailSender 객체를 사용하여 이메일 send
 	 */
 	@Override
-	public String sendSimpleMessage(String to) throws Exception {
-		MimeMessage message = createMessage(to);
+	public String sendSimpleMessage(String recipient) throws Exception {
+		MimeMessage message = createMessage(recipient);
 		System.out.println("message--------" + message);
 		
 		try {
+			// 메일 발송에서 터짐 
 			javaMailSender.send(message); // 메일 발송
 			
 		} catch (MailException es) {
