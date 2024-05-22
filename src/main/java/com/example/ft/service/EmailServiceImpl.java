@@ -86,7 +86,7 @@ public class EmailServiceImpl implements EmailService {
 		System.out.println("message--------" + message);
 		
 		try {
-			// 메일 발송에서 터짐 
+			// 메일 발송에서 터짐 - 
 			javaMailSender.send(message); // 메일 발송
 			
 		} catch (MailException es) {

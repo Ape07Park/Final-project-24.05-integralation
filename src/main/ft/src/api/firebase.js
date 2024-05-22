@@ -1,19 +1,26 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider,
   signInWithPopup, signOut, updateProfile, signInWithEmailAndPassword,
-  onAuthStateChanged, signInWithRedirect, OAuthProvider, deleteUser    } from "firebase/auth";
-import {getDatabase, ref, set, get, remove, update } from "firebase/database";
-
-const firebaseConfig = {
+  onAuthStateChanged, sendPasswordResetEmail, OAuthProvider, deleteUser, 
+  sendEmailVerification, RecaptchaVerifier, signInWithPhoneNumber} from "firebase/auth";
+  import {getDatabase, ref, set, get, remove, update } from "firebase/database";
+  
+  
+  const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
   projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL
+  databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKE,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 const database = getDatabase(app);
+
+export { auth, RecaptchaVerifier, signInWithPhoneNumber };
 
 /*========================= login =========================*/
 export function login({ email, password }) {
@@ -96,7 +103,15 @@ export function logout() {
 export function authRegister({ email, password, name, postCode, addr, detailAddr, 
   tel, req}) { //  사용처에서 obj로 처리하기에 그것에 맞춰서 제공 
   console.log('firebase:register():', email, password);
-  createUserWithEmailAndPassword(auth, email, password) 
+  createUserWithEmailAndPassword(auth, email, password)
+
+  .then(() => {
+    sendEmailVerification(auth.currentUser) // 인증 이메일 발송
+  .then(() => {
+    // Email verification sent!
+    // ...
+  });
+  })
 
     // user 등록하기
     .then(() => {
@@ -111,8 +126,9 @@ export function authRegister({ email, password, name, postCode, addr, detailAddr
         tel: tel,
         req: req,       
       })
-      console.log("User profile  updated");
+      console.log("User profile updated");
     })
+    
     .then(() => {
       insertUserData(email, password, name, postCode, addr, detailAddr, tel, 
         req);
@@ -161,6 +177,66 @@ export function authRemoveUser() {
     console.error("Error deleting user from Authentication:", error);
   });
 }
+
+// 받은 이메일로 비번 바꾸기 기능 
+export function changePassword (email) {
+  sendPasswordResetEmail(auth, email)
+  .then(() => {
+    // Password reset email sent!
+    // ..
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    // ..
+  });
+}
+
+// ==========모바일로 받은 코드 입력해 인증하는 기능
+// const getPhoneNumberFromUserInput = () => {
+//   return "+82 본인번호"; 
+//   //  +821012345679 ( 010-1234-5678을 왼쪽과 같이, +82를 붙이고 010에서 0 하나 빼기)
+// };
+
+// export function sendCodeToMobile() {
+//   auth.languageCode = 'it';
+//   auth.languageCode = "ko";      // 한국어 설정
+//   const phoneNumber = getPhoneNumberFromUserInput(); // 위에서 받아온 번호
+//   const appVerifier = window.recaptchaVerifier;
+
+  
+//   window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {});
+  
+
+//       signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+//           .then((confirmationResult) => {
+//               window.confirmationResult = confirmationResult;   // window
+//           })
+//           .catch((error) => {
+//               console.log("인증에 실패하였습니다.");
+//           });
+//   };
+
+  
+
+//   const onClickHandle2 = () => {
+//       const code = getCodeFromUserInput();
+//       window.confirmationResult
+//           .confirm(code)
+//           .then((result) => {
+//               // User signed in successfully.
+//               const user = result.user;
+//               console.log("인증에 성공하셨습니다");
+//               // ...
+//           })
+//           .catch((error) => {
+//               // 인증번호가 올바르지 않은경우
+//               console.log("인증번호가 올바르지 않습니다.");
+//           });
+//   };
+
+
+// ================
 
 /*========================= # Authentication 끝=========================*/
 
@@ -288,7 +364,6 @@ export function onUserStateChanged(callback) {
 
   return unsubscribe; // unsubscribe 함수 반환
 }
-
 
 // ====================
 

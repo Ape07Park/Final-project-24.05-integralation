@@ -162,8 +162,6 @@ export default function SignUp() {
   }
 
 
-
-
   return (
     <>
       <ThemeProvider theme={defaultTheme}>

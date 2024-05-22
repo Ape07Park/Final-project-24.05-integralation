@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { changePassword } from '../api/firebase';
+import axios from 'axios';
 import {
+  Modal,
   Box,
   Typography,
   TextField,
   Button,
 } from "@mui/material";
 
-const FindPassModal = ({ handleClose }) => {
+const FindPassModalSpring = ({ handleClose }) => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
 
@@ -15,19 +16,22 @@ const FindPassModal = ({ handleClose }) => {
     setEmail(e.target.value);
   };
 
-  const findPassFirebase = async (email) => {
+  const getEmailMessage = async (email) => {
     try {
-      await changePassword(email);
-      setMessage('이메일을 전송하였습니다. 확인 해주세요.');
+      const response = await axios.post('/ft/email/message', null, {
+        params: { email: email }
+      });
+      setMessage('이메일을 열어 확인 코드를 입력해주세요.');
     } catch (error) {
-      setMessage('비밀번호 변경 요청 실패.');
+      console.error('Error fetching email message:', error);
+      setMessage('이메일 전송에 실패했습니다.');
     }
   };
 
   return (
     <Box>
       <Typography variant="h6">
-        이메일을 입력하세요 - 파이어베이스
+        이메일을 입력하세요
       </Typography>
       <TextField
         type="email"
@@ -37,20 +41,19 @@ const FindPassModal = ({ handleClose }) => {
         fullWidth
         margin="normal"
       />
-      <Button variant='contained' onClick={() => findPassFirebase(email)}>
+      <Button variant='contained' onClick={() => getEmailMessage(email)}>
         제출
       </Button>
-      {message && (
-        <Box mt={2}>
-          <Typography variant="h6">이메일 주소 확인</Typography>
-          <Typography variant="body1">{message}</Typography>
-        </Box>
-      )}
       <Button variant='contained' onClick={handleClose} sx={{ mt: 2 }}>
         닫기
       </Button>
+      {message && (
+        <Box mt={2}>
+          <Typography variant="body1">{message}</Typography>
+        </Box>
+      )}
     </Box>
   );
 };
 
-export default FindPassModal;
+export default FindPassModalSpring;

@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { login, loginWithKakao, loginWithGoogle } from '../api/firebase';
 import { useNavigate, Link } from "react-router-dom";
-import { Button, CssBaseline, TextField, Grid, Box, Typography, Container, createTheme, ThemeProvider, Stack, Modal, Backdrop, Fade } from '@mui/material'; // Import Modal components
+import { Button, CssBaseline, TextField, Grid, Box, Typography, Container, createTheme, ThemeProvider, Stack, Modal, Backdrop, Fade, Divider } from '@mui/material';
+import FindPassModalSpring from "../components/FindPassModalSpring";
 import FindPassModal from "../components/FindPassModal";
+import FindPassModalPhone from "../components/FindPassModalPhone";
 
 function SignIn() {
   const [userInfo, setUserInfo] = useState({ email: '', password: '' });
-  const [openModal, setOpenModal] = useState(false); // State to control modal visibility
+  const [modalType, setModalType] = useState(null);
   const navigate = useNavigate();
 
   const handleChange = e => {
@@ -68,12 +70,20 @@ function SignIn() {
     }
   }
 
-  const handleOpenFindPassModal = () => {
-    setOpenModal(true);
+  const handleOpenFindPassModalSpring = () => {
+    setModalType('spring');
+  };
+
+  const handleOpenFindPassModalFirebase = () => {
+    setModalType('firebase');
+  };
+
+  const handleOpenFindPassPhone= () => {
+    setModalType('mobile');
   };
 
   const handleCloseFindPassModal = () => {
-    setOpenModal(false);
+    setModalType(null);
   };
 
   return (
@@ -127,18 +137,25 @@ function SignIn() {
               로그인
             </Button>
 
-            <Box sx={{ mt: 2 }}>
-              <Typography variant="body2" color="text.secondary" align="center">
+            <Box sx={{ mt: 4, p: 2, border: '1px solid #e0e0e0', borderRadius: 2, boxShadow: 2 }}>
+              <Typography variant="body2" color="text.secondary" align="center" sx={{ mb: 2 }}>
                 아직 계정이 없으신가요?
               </Typography>
-              <Box sx={{ textAlign: 'center' }}>
+              <Box sx={{ textAlign: 'center', mb: 2 }}>
                 <Link to='/signUp' style={{ textDecoration: 'none' }}>
-                  <Button variant="contained" color="primary">
+                  <Button variant="contained" color="primary" sx={{ mb: 1 }}>
                     사용자 등록
                   </Button>
                 </Link>
-                <Button variant="contained" color="primary" onClick={handleOpenFindPassModal}>
-                  비번 찾기
+                <Divider sx={{ my: 2 }} />
+                <Button variant="contained" color="primary" onClick={handleOpenFindPassModalSpring} sx={{ mb: 1 }}>
+                  스프링으로 비번 찾기
+                </Button>
+                <Button variant="contained" color="primary" onClick={handleOpenFindPassModalFirebase}>
+                  파이어베이스로 비번 찾기
+                </Button>
+                <Button variant="contained" color="primary" onClick={handleOpenFindPassPhone}>
+                  휴대폰으로 비번 찾기
                 </Button>
               </Box>
             </Box>
@@ -160,7 +177,7 @@ function SignIn() {
 
         {/* Modal for FindPassModal */}
         <Modal
-          open={openModal}
+          open={modalType !== null}
           onClose={handleCloseFindPassModal}
           aria-labelledby="transition-modal-title"
           aria-describedby="transition-modal-description"
@@ -170,7 +187,7 @@ function SignIn() {
             timeout: 500,
           }}
         >
-          <Fade in={openModal}>
+          <Fade in={modalType !== null}>
             <Box
               sx={{
                 position: 'absolute',
@@ -184,7 +201,9 @@ function SignIn() {
                 p: 4,
               }}
             >
-              <FindPassModal />
+              {modalType === 'spring' && <FindPassModalSpring handleClose={handleCloseFindPassModal} />}
+              {modalType === 'firebase' && <FindPassModal handleClose={handleCloseFindPassModal} />}
+              {modalType === 'mobile' && <FindPassModalPhone open={modalType === 'mobile'} onClose={handleCloseFindPassModal} />}
             </Box>
           </Fade>
         </Modal>
