@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Modal, Box, TextField, Button, Typography } from "@mui/material";
-import { auth, RecaptchaVerifier, signInWithPhoneNumber } from "../api/firebase";
+import { auth, RecaptchaVerifier, signInWithPhoneNumber, updatePassword, 
+  login, get, selectUserEmailPassword, logout } from "../api/firebase";
 
 const FindPassModalPhone = ({ open, onClose }) => {
+  const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
   const [isCodeSent, setIsCodeSent] = useState(false);
@@ -25,6 +27,7 @@ const FindPassModalPhone = ({ open, onClose }) => {
       window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {});
     }
 
+    // 인증번호 전송
     signInWithPhoneNumber(auth, formattedPhoneNumber, window.recaptchaVerifier)
       .then((confirmationResult) => {
         window.confirmationResult = confirmationResult;
@@ -37,19 +40,28 @@ const FindPassModalPhone = ({ open, onClose }) => {
 
   const verifyCode = () => {
     window.confirmationResult
-      .confirm(verificationCode)
-      .then((result) => {
-        setUser(result.user);
+      // 계정 생성 
+      .confirm(verificationCode) 
+      logout()
+    
+      .then(() => {       
         console.log("인증에 성공하셨습니다");
+  
+        // 사용자 정보를 이용하여 로그인
+        const resultData = selectUserEmailPassword(email);
+        console(resultData);
+        login(resultData[0], resultData[1]);
       })
       .catch((error) => {
         console.log("인증번호가 올바르지 않습니다.", error);
       });
   };
 
+  const loginUser = auth.currentUser;
+
   const changePassword = () => {
-    if (user) {
-      user.updatePassword(newPassword).then(() => {
+    if (loginUser) {
+        updatePassword(loginUser ,newPassword).then(() => {
         console.log("비밀번호가 성공적으로 변경되었습니다.");
         onClose();
       }).catch((error) => {
@@ -65,12 +77,20 @@ const FindPassModalPhone = ({ open, onClose }) => {
           <>
             <Typography variant="h6">휴대폰 번호로 인증 코드 보내기</Typography>
             <TextField
+              label="이메일"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              fullWidth
+              margin="normal"
+            />
+            <TextField
               label="휴대폰 번호"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
               fullWidth
               margin="normal"
             />
+
             <div id="recaptcha-container"></div>
             <Button variant="contained" onClick={sendCodeToMobile}>
               인증 코드 보내기

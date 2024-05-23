@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider,
   signInWithPopup, signOut, updateProfile, signInWithEmailAndPassword,
   onAuthStateChanged, sendPasswordResetEmail, OAuthProvider, deleteUser, 
-  sendEmailVerification, RecaptchaVerifier, signInWithPhoneNumber} from "firebase/auth";
+  sendEmailVerification, RecaptchaVerifier, signInWithPhoneNumber, updatePassword } from "firebase/auth";
   import {getDatabase, ref, set, get, remove, update } from "firebase/database";
   
   
@@ -20,7 +20,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 const database = getDatabase(app);
 
-export { auth, RecaptchaVerifier, signInWithPhoneNumber };
+export { auth, RecaptchaVerifier, signInWithPhoneNumber, updatePassword  };
 
 /*========================= login =========================*/
 export function login({ email, password }) {
@@ -192,52 +192,6 @@ export function changePassword (email) {
   });
 }
 
-// ==========모바일로 받은 코드 입력해 인증하는 기능
-// const getPhoneNumberFromUserInput = () => {
-//   return "+82 본인번호"; 
-//   //  +821012345679 ( 010-1234-5678을 왼쪽과 같이, +82를 붙이고 010에서 0 하나 빼기)
-// };
-
-// export function sendCodeToMobile() {
-//   auth.languageCode = 'it';
-//   auth.languageCode = "ko";      // 한국어 설정
-//   const phoneNumber = getPhoneNumberFromUserInput(); // 위에서 받아온 번호
-//   const appVerifier = window.recaptchaVerifier;
-
-  
-//   window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {});
-  
-
-//       signInWithPhoneNumber(auth, phoneNumber, appVerifier)
-//           .then((confirmationResult) => {
-//               window.confirmationResult = confirmationResult;   // window
-//           })
-//           .catch((error) => {
-//               console.log("인증에 실패하였습니다.");
-//           });
-//   };
-
-  
-
-//   const onClickHandle2 = () => {
-//       const code = getCodeFromUserInput();
-//       window.confirmationResult
-//           .confirm(code)
-//           .then((result) => {
-//               // User signed in successfully.
-//               const user = result.user;
-//               console.log("인증에 성공하셨습니다");
-//               // ...
-//           })
-//           .catch((error) => {
-//               // 인증번호가 올바르지 않은경우
-//               console.log("인증번호가 올바르지 않습니다.");
-//           });
-//   };
-
-
-// ================
-
 /*========================= # Authentication 끝=========================*/
 
 /*========================= DAO =========================*/
@@ -310,6 +264,30 @@ export async function selectUserData(email) {
       return null;
     });
 }
+
+export async function selectUserEmailPassword(email) {
+
+  if (!email) {
+    console.error("이메일이 유효하지 않습니다.");
+    return null;
+  }
+  
+  const sanitizedEmail = email.replace(/[.#$[\]]/g, ''); // 특수 문자를 제거한 이메일
+
+  return get(ref(database, `users/${sanitizedEmail}`))
+    .then(snapshot => {
+      if (snapshot.exists()) {
+        const result = [snapshot.val().email, snapshot.val().password]
+        return result;
+      } 
+      return null;
+    })
+    .catch(error => {
+      console.error("사용자 정보를 가져오는 중 오류가 발생했습니다:", error);
+      return null;
+    });
+}
+
 
 export async function updateUserData(user) {
   const { email, password, name, postCode, addr, detailAddr, tel, req } = user;
