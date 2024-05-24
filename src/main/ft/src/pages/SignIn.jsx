@@ -149,10 +149,10 @@ function SignIn() {
                 </Link>
                 <Divider sx={{ my: 2 }} />
                 <Button variant="contained" color="primary" onClick={handleOpenFindPassModalSpring} sx={{ mb: 1 }}>
-                  스프링으로 비번 찾기
+                  스프링으로 비번 찾기(이메일)
                 </Button>
                 <Button variant="contained" color="primary" onClick={handleOpenFindPassModalFirebase}>
-                  파이어베이스로 비번 찾기
+                  파이어베이스로 비번 변경(이메일)
                 </Button>
                 <Button variant="contained" color="primary" onClick={handleOpenFindPassPhone}>
                   휴대폰으로 비번 찾기
