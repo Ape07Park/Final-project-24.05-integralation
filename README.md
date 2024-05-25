@@ -1,10 +1,12 @@
 # 가구 쇼핑몰 Funiture
 
+
+
+# 프로젝트 기간
+
 # 기술 스택
-## 백엔드 ![Language][Java] ![Framework][SpringBoot] ![DB][MySQL] ![Framework][FireBase] ![API][Cloudinary]
-## 프론트엔드 ![Language][JavaScript] ![Library][React] ![Framework][Mui] 
-
-
+## 백엔드 [Java], [SpringBoot], [MySQL], [FireBase], ![API][Cloudinary]
+## 프론트엔드 [Language][JavaScript], [Library][React], [Framework][Mui] 
 
 
 <!--Table of Contents-->
@@ -24,18 +26,18 @@
 
 
 
-# [1] About the Project
+# [1] 개요
 *Provide **general information** about your project describing:*
 - ❗️Short❗️ introduction/motivation
 - What your project does
 - Why people should consider using your project
 
-## Features
+## 주요 기능
 *Provide **main features** or **unique features** which you want to emphasize.*
 - Provide **guidelines** in *italic* font to help you write aaaaawesome **README** easily.
 - Provide **language option** in badge
 
-## Technologies
+## 기술 스택
 *List **languages**, **frameworks**, and **major libraries** with their **version**.*
 - [Maven](https://maven.apache.org/) 3.6.3
 - [MySQL](https://www.mysql.com/) 8.0
