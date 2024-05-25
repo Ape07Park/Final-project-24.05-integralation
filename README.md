@@ -1,13 +1,11 @@
 # 가구 쇼핑몰 Funiture
 
-<!--Badges-->
-![MIT License][license-shield] ![Repository Size][repository-size-shield] ![Issue Closed][issue-closed-shield]
+# 기술 스택
+## 백엔드 ![Language][Java] ![Framework][SpringBoot] ![DB][MySQL] ![Framework][FireBase] ![API][Cloudinary]
+## 프론트엔드 ![Language][JavaScript] ![Library][React] ![Framework][Mui] 
 
-<!--Project Title Image-->
-![Project Title](res-readme/img/project-title.png)
 
-<!--Project Buttons-->
- [![Readme in Korean][readme-ko-shield]][readme-ko-url] [![View Demo][view-demo-shield]][view-demo-url] [![Report bug][report-bug-shield]][report-bug-url] [![Request feature][request-feature-shield]][request-feature-url]
+
 
 <!--Table of Contents-->
 # Table of Contents
