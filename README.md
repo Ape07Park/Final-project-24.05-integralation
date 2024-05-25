@@ -1,139 +1,139 @@
+# Project Title
 
-부동산 매물 정보 사이트🏠
+<!--Badges-->
+![MIT License][license-shield] ![Repository Size][repository-size-shield] ![Issue Closed][issue-closed-shield]
 
-    
+<!--Project Title Image-->
+![Project Title](res-readme/img/project-title.png)
 
+<!--Project Buttons-->
+ [![Readme in Korean][readme-ko-shield]][readme-ko-url] [![View Demo][view-demo-shield]][view-demo-url] [![Report bug][report-bug-shield]][report-bug-url] [![Request feature][request-feature-shield]][request-feature-url]
 
-
-프로젝트 기간: 11/19 - 11/26
-프로젝트 일정표 바로가기
-
-서비스 개요
-거주하는 지역과 주거형태를 선택 후 검색하여 지도를 통해 매물 정보를 확인하고 근처 진료소,병원,근처 부동산,정류소 등의 생활시설 정보와 치안 안전 등급을 제공받아 보다 안전한 매물을 찾을 수 있도록 도와주는 부동산 서비스입니다.
-
-UCC 영상
-시연 영상 바로가기
-
-역할 분담
-이름	역할	내용
-성진옥[팀장]	FE,BE,영상	- Goolge Map/Naver/공공데이터 API
-- Rest API이용 Ajax 요청
-- QnA vue(CRUD) 구현
-- 찜하기 기능
-- UCC/Marker icon 제작
-정다운[팀원]	FE,BE	- 구별 범죄데이터 파싱 및 치안 등급 시각화
-- 실시간 1:1 채팅 메신저
-- AWS와 MySQL 연동
-- 원페이지 스크롤 플러그인 적용
-- 소개페이지, 공지사항(CRUD) 제작
-주요 기능
-매물 정보 서비스
-
-a. 아파트명별 매물을 검색하여 결과 목록을 출력한다.
-
-b. 시/구/동별 매물을 검색하여 결과 목록을 출력한다.
-
-c. 해당 매물 선택시 이미지,층,면적 등의 상세정보를 제공한다.
-
-d. 검색 결과를 지도에서 마커로 표시하고, 선택 시 모달로 상세 정보를 제공한다.
-
-e. 매물을 찜하거나 취소할 수 있다.
-
-매물 주변 생활시설 서비스
-
-a. 검색한 매물 주변의 코로나 선별 진료소 위치를 마커로 표시하고, 상세 정보를 모달로 보여준다.
-
-b. 검색한 매물 주변의 국민 안심 병원의 위치를 마커로 표시하고, 상세 정보를 모달로 보여준다.
-
-c. 검색한 매물 주변의 부동산 위치를 마커로 표시하고, 상세 정보를 모달로 보여준다.
-
-d. 검색한 매물 주변의 버스정류소 위치를 마커로 표시하고, 정류소 번호를 모달로 보여준다.
-
-e. 구별 치안 안전 등급을 시각화하여 지도에서 보여주고, 정류소 번호를 모달로 보여준다.
-
-이외 사용자 편의 서비스
-
-a. 마이페이지, 비밀번호 찾기페이지에서 회원 정보 관리가 가능하다.
-
-b. 공지사항, QnA게시판에서 글작성/수정/삭제와 댓글or답변 작성/수정/삭제가 가능하다.
-
-c. 사용자가 찜한 매물 리스트를 한눈에 관리할 수 있습니다.
-
-d. 관리자와 실시간 1:1 채팅 상담을 통해 문의 시간 단축해준다.
+<!--Table of Contents-->
+# Table of Contents
+- [[1] About the Project](#1-about-the-project)
+  - [Features](#features)
+  - [Technologies](#technologies)
+- [[2] Getting Started](#2-getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Configuration](#configuration)
+- [[3] Usage](#3-usage)
+- [[4] Contribution](#4-contribution)
+- [[5] Acknowledgement](#5-acknowledgement)
+- [[6] Contact](#6-contact)
+- [[7] License](#7-license)
 
 
-서비스 구성
-[1] 로그인 및 회원가입
-happyhouse_0 회원가입→로그인 후 전체 서비스를 이용할 수 있습니다. 회원가입 시 아이디 중복 체크를 통해 가입여부 확인 후 처리됩니다.
+
+# [1] About the Project
+*Provide **general information** about your project describing:*
+- ❗️Short❗️ introduction/motivation
+- What your project does
+- Why people should consider using your project
+
+## Features
+*Provide **main features** or **unique features** which you want to emphasize.*
+- Provide **guidelines** in *italic* font to help you write aaaaawesome **README** easily.
+- Provide **language option** in badge
+
+## Technologies
+*List **languages**, **frameworks**, and **major libraries** with their **version**.*
+- [Maven](https://maven.apache.org/) 3.6.3
+- [MySQL](https://www.mysql.com/) 8.0
+- [Spring](https://spring.io/) 2.4.3
 
 
-[2] 메인 화면
-happyhouse_1
-로그인 후 검색창과 찜한 매물 목록을 확인할 수 있습니다. 찜한 매물을 누르면 페이지에서 상세 정보를 확인할 수 있습니다.
+
+# [2] Getting Started
+*If your program runs differently depending on the OS, explain how to run it for each OS.*
+## Prerequisites
+*List software and libraries that you need to run your project and Explain how to get them.*
+- [OpenWeather API key](https://openweathermap.org/) for free
+- npm
+```bash
+npm install npm@latest -g
+```
+
+## Installation
+*Explain how to get your source.*
+1. Clone the repository
+```bash
+git clone https://github.com/your-username/project-repository
+```
+2. Install NPM packages
+```bash
+npm install
+```
+
+## Configuration
+*Explain where to fill your code.*
+- Enter Openweather API key in `config.js`
+```bash
+const API_KEY = "<Your API key>";
+```
 
 
-[3] 매물 검색
-happyhouse_2
-공공데이터를 DB에 저장해두어 검색 결과에 따라 매물 리스트를 출력하였습니다. 매물명이나 시/도,구/군,동의 주소를 선택해 매물 정보를 확인할 수 있고, 검색한 매물 위치를 지도에 표시해두었습니다. 매물 선택 시 사진/층/면적/날짜 등의 상세 정보를 확인할 수 있습니다.
 
-[4] 매물 주변 지역/시설 정보
-happyhouse_3
-공공데이터를 데이터베이스에 저장해두었습니다. 매물 주변의 국민 안심 병원 위치를 마커로 보여주고,클릭 시 모달창에서 상세 정보를 확인할 수 있습니다.
+# [3] Usage
+*Show **instructions** and **useful examples** of how your project can be used with **screenshots**, **code examples**, etc. You can make h2 headers for each usage example to clarify your explanation.*
 
-happyhouse_4
-공공데이터를 데이터베이스에 저장해두었습니다. 매물 주변의 코로나 선별 진료소 위치를 마커로 보여주고, 클릭 시 모달창에서 상세 정보를 확인할 수 있습니다.
+![usage](res-readme/img/usage.png)
 
-happyhouse_5
-네이버 검색 API를 사용해 주소 근처의 부동산 목록을 가져와 활용했습니다. 매물 주변 부동산 위치를 마커로 보여주고, 클릭 시 모달창에서 주소 등의 상세 정보를 확인할 수 있습니다.
-
-happyhouse_6
-happyhouse_7
-서울 열린 데이터 광장의 csv파일 정보를 활용해 구별 인구수를 계산하여 치안안정등급 5단계로 분류하였습니다. 매물 주변의 구별 치안 안전 등급을 보여주고, 클릭 시 모달창에서 구별 5대 범죄 발생 현황 수치를 확인할 수 있습니다.
-
-happyhouse_8
-공공 데이터 API를 활용하여 매물 주변의 버스 정류소 위치 보여주고, 클릭 시 모달창에서 정류장 번호를 확인할 수 있습니다.
-
-[5] 찜한 매물 페이지
-happyhouse_9
-happyhouse_10
-매물 검색 결과 리스트에서 찜한 매물들을 한눈에 모아 확인할 수 있는 페이지입니다. 상세 클릭 시 모달창에서 내부 사진과 매매가, 층, 면적, 매물날짜가 보여집니다. 여기서 찜하기 취소를 하면 찜한 리스트에서 삭제됩니다.
+```java
+// Show useful code examples of some of your APIs 
+```
 
 
-[6] 공지사항
-happyhouse_11
-happyhouse_22
-공지사항 목록을 확인할 수 있습니다. 관리자일 경우에만 글쓰기,수정,삭제가 가능합니다. 회원은 제목/작성자/내용별로 키워드 검색 후 검색결과를 확인할 수 있습니다.
 
-happyhouse_12
-공지 상세 페이지에서는 제목/작성자/작성날짜/조회수/내용을 보여주고 작성자일 경우에만 글쓰기/수정/삭제가 가능합니다.
-
-happyhouse_13
-게시글 아래에는 작성된 댓글 리스트가 보여지고 새로 작성이 가능하며, 본인이 작성한 댓글만 수정/삭제할 수 있습니다.
+# [4] Contribution
+Any contributions you make are greatly appreciated. Here is the [`contributing guide`][contribution-url].
+These are contributors to this project. Thank you!🙆‍♀️
+*If you like to use emoji, you can use 🐞 for **fixing bug**, 💡 for **suggestion**, ✨ for creating **new feature***
+- 🐞 [dev-ujin](https://github.com/dev-ujin): Fix bug on the main page
 
 
-[7] QnA
-happyhouse_14
-QnA목록을 확인할 수 있고, 누구나 질문을 남길 수 있습니다. 회원은 제목/작성자/내용별로 키워드 검색 후 검색결과를 확인할 수 있습니다.
 
-happyhouse_15
-등록된 질문글 상세에서는 관리자가 등록한 답변을 확인할 수 있습니다.
-
-
-[8] 마이페이지
-happyhouse_16
-마이페이지에서는 회원이 가입시 작성한 정보를 확인하고 이를 수정할 수 있습니다. 탈퇴하기 탭에서는 회원 탈퇴가 가능합니다.
+# [5] Acknowledgement
+*Provide links to **any sources** like **relevant repositories** or **blog posts** that inspired you to build your project.*
+- [Readme Template - Embedded Artistry](https://embeddedartistry.com/blog/2017/11/30/embedded-artistry-readme-template/)
+- [How to write a kickass Readme - James.Scott](https://dev.to/scottydocs/how-to-write-a-kickass-readme-5af9)
+- [Best-README-Template - othneildrew](https://github.com/othneildrew/Best-README-Template#prerequisites)
+- [Img Shields](https://shields.io/)
+- [Github Pages](https://pages.github.com/)
 
 
-[9] QnA
-happyhouse_17
-happyhouse_18
-회원검색 페이지는 관리자로 로그인한 경우에만 접근이 가능하며, 가입된 전체 회원 리스트를 확인할 수 있고 특정 회원을 선택해 관리자로 등록/해제할 수 있습니다.
+
+# [6] Contact
+If you want to contact me, you can reach me at:
+- 📧 dev.ujin518@gmail.com
+- 📋 [https://dev-ujin.github.io/contact](https://dev-ujin.github.io/contact)
 
 
-[10] 실시간 1:1 채팅
-happyhouse_19
-Ajax통신으로 실시간 채팅 서비스를 구현했습니다. 우측 하단 채팅아이콘을 눌러 회원은 관리자와 1:1 채팅을 진행할 수 있습니다. 첫 채팅 화면에서는 QnA에 등록된 자주 묻는 질문 목록을 보여주고 클릭 시 그 내용을 채팅으로 확인할 수 있습니다.
-happyhouse_20
-happyhouse_21
-사용자가 처음 메시지를 보내면 '관리자 채팅 화면'에서는 해당 회원과의 채팅방이 열리고 버튼 클릭 시 채팅이 시작됩니다.
+
+# [7] License
+This project is licensed under the MIT License. See the [`LICENSE`][license-url] for more information.
+
+
+
+<!--Url for Badges-->
+[license-shield]: https://img.shields.io/github/license/dev-ujin/readme-template?labelColor=D8D8D8&color=04B4AE
+[repository-size-shield]: https://img.shields.io/github/repo-size/dev-ujin/readme-template?labelColor=D8D8D8&color=BE81F7
+[issue-closed-shield]: https://img.shields.io/github/issues-closed/dev-ujin/readme-template?labelColor=D8D8D8&color=FE9A2E
+
+<!--Url for Buttons-->
+[readme-ko-shield]: https://img.shields.io/badge/-readme%20in%20korean-2E2E2E?style=for-the-badge
+[view-demo-shield]: https://img.shields.io/badge/-%F0%9F%98%8E%20view%20demo-F3F781?style=for-the-badge
+[view-demo-url]: https://dev-ujin.github.io
+[report-bug-shield]: https://img.shields.io/badge/-%F0%9F%90%9E%20report%20bug-F5A9A9?style=for-the-badge
+[report-bug-url]: https://github.com/dev-ujin/readme-template/issues
+[request-feature-shield]: https://img.shields.io/badge/-%E2%9C%A8%20request%20feature-A9D0F5?style=for-the-badge
+[request-feature-url]: https://github.com/dev-ujin/readme-template/issues
+
+<!--URLS-->
+[license-url]: res-readme/LICENSE.md
+[contribution-url]: res-readme/CONTRIBUTION.md
+[readme-ko-url]: res-readme/README-KO.md
+
+
 
