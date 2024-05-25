@@ -1,21 +1,14 @@
 # 가구 쇼핑몰 Funiture
 
+
 # 프로젝트 기간
 - 2024년 4월 16일 ~ 2024년 6월 14일
-
-# 기술 스택
-## 백엔드 [Java], [SpringBoot], [MySQL], [FireBase], ![API][Cloudinary]
-## 프론트엔드 [Language][JavaScript], [Library][React], [Framework][Mui] 
 
 <!--Table of Contents-->
 # Table of Contents
 - [[1] 개요](#1-개요)
   - [주요 기능](#주요 기능)
   - [기술 스택](#기술 스택)
-- [[2] Getting Started](#2-getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-  - [Configuration](#configuration)
 - [[3] Usage](#3-usage)
 - [[4] Contribution](#4-contribution)
 
@@ -38,7 +31,7 @@
 - 프론트엔드: [JavaScript], [React], [Mui] 
 
 
-# [3] Usage
+# [2] Usage
 *Show **instructions** and **useful examples** of how your project can be used with **screenshots**, **code examples**, etc. You can make h2 headers for each usage example to clarify your explanation.*
 
 ![usage](res-readme/img/usage.png)
@@ -46,7 +39,6 @@
 ```java
 // Show useful code examples of some of your APIs 
 ```
-
 
 
 # [4] Contribution
