@@ -8,6 +8,7 @@ import ImgModal from './ImgModal';
 import ReviewEditModal from './ReviewEditModal'; // 추가: 리뷰 수정 모달
 import { selectUserData } from '../api/firebase';
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
+import { Button, MenuItem, Select } from '@mui/material';
 
 // 리뷰 작성 폼 컴포넌트
 const ReviewForm = () => {
@@ -186,12 +187,16 @@ const ProductReviews = ({ reviews, item, reloadReviewData }) => {
       <div className="bottom-panel" style={{ width: '100%' }}>
         <div className="sort-options" style={{ width: '100%' }}>
           {/* 정렬 옵션 선택 */}
-          <select onChange={handleSortChange} style={{ width: 100 }}>
-            <option value="latest">최신순</option>
-            <option value="highest">별점 높은 순</option>
-            <option value="lowest">별점 낮은 순</option>
-            <option value="img">사진</option>
-          </select>
+          <Select
+            value={sortBy}
+            onChange={handleSortChange}
+            style={{ width: 100 }}
+          >
+            <MenuItem value="latest">최신순</MenuItem>
+            <MenuItem value="highest">별점 높은 순</MenuItem>
+            <MenuItem value="lowest">별점 낮은 순</MenuItem>
+            <MenuItem value="img">사진</MenuItem>
+          </Select>
         </div>
       </div>
 
@@ -206,7 +211,7 @@ const ProductReviews = ({ reviews, item, reloadReviewData }) => {
                 <p style={{ color: 'rgba(0, 0, 0, 0.5)', fontSize: '12px' }}>{new Date(review.regDate).toLocaleDateString().slice(0, -1)}</p>
                 {/* 수정 버튼 */}
                 {currentUserEmail === review.email ?
-                  <button onClick={() => handleEditReview(review, item)} style={{ marginLeft: 'auto' }}>수정</button>
+                  <Button onClick={() => handleEditReview(review, item)} style={{ marginLeft: 'auto', backgroundColor:'gray', color:'white', }}>수정</Button>
                   : ""}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1%' }}>

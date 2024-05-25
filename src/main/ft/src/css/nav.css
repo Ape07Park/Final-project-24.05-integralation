@@ -1,5 +1,16 @@
 .mainPageLink {
-    color: white; /* 링크 색상 */
-    text-decoration: none; /* 밑줄 제거 */
-    font-weight: bold; /* 굵은 글씨체 */
+    color: black;
+    /* 링크 색상 */
+    text-decoration: none;
+    /* 밑줄 제거 */
+    font-weight: bold;
+    /* 굵은 글씨체 */
+}
+
+.icon-color {
+    color: black;
+}
+
+.text-color {
+    color: black;
 }

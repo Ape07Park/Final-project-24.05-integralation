@@ -3,7 +3,7 @@ import axios from 'axios';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import { Button } from "@mui/material";
+import { Button, Container, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import CountDown from "../components/CountDown";
 import SaleModal from "../components/SaleModal";
@@ -16,6 +16,7 @@ export default function AdminItemList() {
   const [list, setList] = useState([]);
   const [stock, setStock] = useState([]); 
   const [modalOpen, setModalOpen] = useState(false); 
+  const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태 추가
   const navigate = useNavigate();
   const [tags, setTags] = useState([]);
   const [selectedItemId, setSelectedItemId] = useState(null); 
@@ -42,6 +43,7 @@ export default function AdminItemList() {
         .then(response => {
           const { options, tags } = response;
           const formattedOptions = options ? options.map(option => ({
+            iid: option.iid,
             ioid: option.ioid,
             option: option.option,
             stock: option.count, // 재고갯수
@@ -109,9 +111,20 @@ export default function AdminItemList() {
         });
     }
   };
-  
+
+  // 검색어 변경 핸들러
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  // 검색 기능을 적용한 목록 필터링
+  const filteredList = list.filter(item =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.iid.toString().toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <>
+    <Container>
       <AdminCategoryBar/>
       <Button
         onClick={() => navigate(`/admin/item/insert`)}
@@ -122,8 +135,15 @@ export default function AdminItemList() {
       >
         상품 추가
       </Button>
+      <TextField
+        label="검색"
+        variant="outlined"
+        value={searchTerm}
+        onChange={handleSearchChange}
+        style={{ marginBottom: 5, marginLeft: 5, }}
+      />
       <Grid container spacing={2} style={{marginBottom:10}}>
-        {list.map((item, index) => (
+        {filteredList.map((item, index) => (
           <Grid item xs={12} sm={12} md={12} lg={6} key={index}>
             <Paper style={{ padding: 20, height:250 }}>
               <table style={{ width: '100%' }}>
@@ -195,6 +215,6 @@ export default function AdminItemList() {
       </Grid>
       {/* 모달 */}
       <SaleModal open={modalOpen} onClose={closeModal} iid={selectedItemId} price={selectedPrice} cost={selectedCost} ordSaleDate={selectedSaleDate} ordSalePrice={selectedSalePrice} /> 
-    </>
+    </Container>
   )
 }

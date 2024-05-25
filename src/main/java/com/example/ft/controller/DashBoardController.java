@@ -15,10 +15,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/admin/sales")
 public class DashBoardController {
-	
 	private final DashBoardService dashBoardService;
-	
-
 
     @GetMapping("/status")
     public DashBoardDto getOrderStatusCounts() {

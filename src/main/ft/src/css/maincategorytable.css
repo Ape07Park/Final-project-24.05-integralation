@@ -1,0 +1,12 @@
+.main-category-table td,
+.main-category-table th {
+    text-align: center;
+}
+
+@media (max-width: 760px) {
+
+    .main-category-table td,
+    .main-category-table th {
+        display: none;
+    }
+}

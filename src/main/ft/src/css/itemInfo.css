@@ -1,0 +1,14 @@
+.MuiButton-root.mainButton {
+  background-color: lightgray;
+  color: black;
+  box-shadow: none;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.MuiButton-root.mainButton:hover {
+  background-color: gray;
+}
+
+.MuiButton-root.optionButton {
+  color: black
+}

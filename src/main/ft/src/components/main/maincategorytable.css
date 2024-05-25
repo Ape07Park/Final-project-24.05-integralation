@@ -2,3 +2,11 @@
 .main-category-table th {
     text-align: center;
 }
+
+@media (max-width: 900px) {
+
+    .main-category-table td,
+    .main-category-table th {
+        display: none;
+    }
+}

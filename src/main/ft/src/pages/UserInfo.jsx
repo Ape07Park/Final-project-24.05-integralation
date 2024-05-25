@@ -7,7 +7,7 @@ import { onAuthStateChanged, getAuth } from 'firebase/auth';
 import Button from '@mui/material/Button';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Container from '@mui/material/Container';
-import { CssBaseline, Paper, Grid, Divider } from '@mui/material';
+import {  Paper, Grid, Divider } from '@mui/material';
 import Box from '@mui/material/Box';
 
 export default function UserInfo() {
@@ -80,7 +80,7 @@ export default function UserInfo() {
   
   return (
     <ThemeProvider theme={defaultTheme}>
-      <CssBaseline />
+      
       <Container maxWidth="sm">
         <Box mt={4}>
           <Paper elevation={3} sx={{ p: 4, borderRadius: 4 }}>

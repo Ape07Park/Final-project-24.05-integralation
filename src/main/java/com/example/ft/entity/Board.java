@@ -30,4 +30,6 @@ public class Board {
 	private int sta;   // 리뷰 게시물 한번에 처리 가능
 	private int vid;
 	private String replyStatus;
+	private int oiid; // 오더 아이템 고유키
+	private int secretMsg;
 }

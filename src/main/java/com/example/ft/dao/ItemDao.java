@@ -86,4 +86,23 @@ public interface ItemDao {
 	
 	@Update("update itemtag set isDeleted=1 where itid=#{itid}")
 	void tagDeleted(int itid);
+	
+	// 리뷰 많은순
+	@Select("SELECT i.*, COUNT(b.iid) as reviewCount FROM item i LEFT JOIN board b"
+			+ " ON i.iid = b.iid AND b.type='review' AND b.isDeleted=0 WHERE i.isDeleted=0"
+			+ " GROUP BY i.iid ORDER BY reviewCount DESC")
+	List<Item> getMostReviewItemList();
+	
+	// 세일중
+	@Select("SELECT * FROM item WHERE regDate < saleDate and isDeleted=0 order by regDate desc")
+	List<Item> getSaleItemList();
+	
+	// 구매가 많은 아이템(7일 기준으로) // 많이 팔린순인 경우 COUNT(oi.iid)를 sum(oi.count)으로 변경
+	@Select("SELECT i.*, COUNT(oi.iid) FROM `order` o JOIN orderitem oi ON o.oid = oi.oid"
+			+ " JOIN item i ON oi.iid = i.iid WHERE o.regDate > DATE_SUB(NOW(), INTERVAL 14 DAY) and i.isDeleted=0"
+			+ " GROUP BY oi.iid order BY COUNT(oi.iid) DESC limit 0, 10")
+	List<Item> getHotItemList();
+	
+	@Select("SELECT * from item WHERE category = #{menu} and isDeleted=0 order by regDate desc")
+	List<Item> getCategoryItemList(String menu);
 }

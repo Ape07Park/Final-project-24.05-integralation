@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { loadPaymentWidget } from "@tosspayments/payment-widget-sdk";
-import { Button, Card, CardContent } from "@mui/material";
+import { Button, Card, CardContent, Grid, Typography } from "@mui/material";
 import axios from "axios";
+import { Stack } from "react-bootstrap";
 
 const widgetClientKey = process.env.REACT_APP_WIDGET_CLIENT_KEY;
 const customerKey = process.env.REACT_APP_CUSTOMER_KEY;
@@ -99,10 +100,15 @@ export function CheckoutPage() {
         <CardContent>
           <div id="payment-widget" />
           <div id="agreement" />
+          
           <div style={{ marginTop: 20 }}>
-            <Button variant="contained" style={{ backgroundColor: 'grey' }} onClick={handlePaymentRequest}>
-              결제하기
-            </Button>
+            <Grid container spacing={2} justifyContent="center">
+              <Grid item>
+                <Button variant="contained" style={{ backgroundColor: 'grey' }} onClick={handlePaymentRequest}>
+                  결제하기
+                </Button>
+              </Grid>
+            </Grid>
           </div>
         </CardContent>
       </Card>

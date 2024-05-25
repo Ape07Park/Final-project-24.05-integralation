@@ -34,7 +34,7 @@ public class ItemServiceImpl implements ItemService{
 
 	@Override
 	public List<Item> getSearchItemList(String query) {
-//		query = query.replace("'", "''");
+		query = query.replace("'", "''");
 		query = "'%" + query + "%'";
 		return itemDao.getSearchItemList(query);
 	}
@@ -126,6 +126,24 @@ public class ItemServiceImpl implements ItemService{
 		itemDao.tagDeleted(itid);
 	}
 
+	@Override
+	public List<Item> getMostReviewItemList() {
+		return itemDao.getMostReviewItemList();
+	}
 
-	
+	@Override
+	public List<Item> getSaleItemList() {
+		return itemDao.getSaleItemList();
+	}
+
+	@Override
+	public List<Item> getHotItemList() {
+		return itemDao.getHotItemList();
+	}
+
+	@Override
+	public List<Item> getCategoryItemList(String menu) {
+		return itemDao.getCategoryItemList(menu);
+	}
+
 }

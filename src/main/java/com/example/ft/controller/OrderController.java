@@ -150,7 +150,6 @@ public class OrderController {
 	public String statusUpdate(@RequestBody Order order) {
 		String status = (order.getStatus().equals("배송완료") ? "배송완료" : "배송중");
 		Order orderData = Order.builder().status(status).oid(order.getOid()).build();
-		orderService.statusUpdate(orderData);
 		return "update";
 	}
 
@@ -159,8 +158,6 @@ public class OrderController {
     public ResponseEntity<?> updateOrderWay(@RequestBody Map<String, String> data) {
         int oid = Integer.parseInt(data.get("oid"));
         String way = data.get("way");
-        System.out.println(oid);
-        System.out.println(way);
 
         if (way == null || way.isEmpty()) {
             return ResponseEntity.badRequest().body("운송장 번호를 제공해주세요.");
@@ -192,4 +189,23 @@ public class OrderController {
         }
     }
     
+    // 비회원
+ 	@PostMapping("/nonMembersOrderHistory")
+ 	public ResponseEntity<?> nonMembersOrderHistory(@RequestBody Map<String, String> data) { // 이메일 json으로 받음. 그래서 map
+ 		String name = data.get("name");
+ 		String tel = data.get("tel"); 
+
+ 		if (name == null || tel == null) {
+ 			return ResponseEntity.badRequest().body("정보를 입력해주세요");
+ 		}
+
+ 		// 사용자 이름과 폰넘버로 조회 구현예정
+ 		List<OrderHistory> orderList = orderService.nonMembersOrderHistory(name, tel);
+
+ 		if (orderList.isEmpty()) {
+ 			return ResponseEntity.notFound().build();
+ 		}
+
+ 		return ResponseEntity.ok(orderList);
+ 	}
 }

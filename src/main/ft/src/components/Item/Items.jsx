@@ -89,3 +89,17 @@ export async function NewItems() {
     return [];
   }
 }
+
+// 메뉴에따라 데이터값변경
+export const menuItems = async (menu) => {
+  try {
+    const response = await fetch(`/ft/item/itemMenu/${menu}`);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw new Error(`Error fetching search results: ${error.message}`);
+  }
+};

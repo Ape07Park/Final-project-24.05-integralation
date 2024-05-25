@@ -28,5 +28,10 @@ public interface ReviewDao {
 	
 	@Update("update review set sta=#{sta} where vid=#{vid}")
 	void updateReview(Review review); 
+	
+	@Select("SELECT oi.iid, count(oi.iid) AS ordersNumber, o.email  FROM `order` o "
+			+ "JOIN orderitem oi ON o.oid = oi.oid WHERE o.email='admin@gmail.com' "
+			+ "GROUP BY oi.iid")
+	int reviewOrNot();
 
 }

@@ -4,9 +4,10 @@ import { Card } from "react-bootstrap";
 import CountDown from "../CountDown";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import "../../css/itemInfo.css"
 
 const ItemInfo = ({ item, options, selectedOptions, handleOptionChange, decreaseQuantity, increaseQuantity, removeOption, totalPrice, handleOrder,
-                    handleAddToCart, handleCopyLink, iswish, itemWishCount, handleLikeClick
+                    handleAddToCart, handleCopyLink, iswish, itemWishCount, handleLikeClick, nonMembersHandleOrder
  }) => {
   
   return (
@@ -65,36 +66,43 @@ const ItemInfo = ({ item, options, selectedOptions, handleOptionChange, decrease
                 boxShadow={2}
                 bgcolor="#f5f5f5"
                 border="1px solid #ccc"
-                style={{ width: '75%', marginTop: 5, minHeight: 50 }} 
+                style={{ width: '75%', marginTop: 5, minHeight: 40,  }} 
               >
                 <Typography variant="body1" style={{ flexGrow: 1 }}>
                   {option.option}
                 </Typography>
-                <Button onClick={() => decreaseQuantity(index)}>-</Button>
-                <Input
-                  value={option.count}
-                  readOnly
-                  style={{ width: `${(option.count.toString().length + 1) * 10}px`, margin: '0 5px' }} 
-                  disableUnderline 
-                  inputProps={{ min: 0, max: 5 }}
-                />
-                <Button onClick={() => increaseQuantity(index, option.stock)}>+</Button>
-                <Button onClick={() => removeOption(index)}>X</Button>
+                <button className="optionButton" style={{border:0, width:30, cursor: 'pointer',}} onClick={() => decreaseQuantity(index)}>-</button>
+                <Box display="flex" alignItems="center" justifyContent="center">
+                  <Input
+                    value={option.count}
+                    readOnly
+                    style={{ 
+                      width: `${(option.count.toString().length + 1) * 10}px`, 
+                      margin: '0 0px', 
+                      backgroundColor: 'transparent', 
+                      textAlign: 'center', 
+                    }} 
+                    disableUnderline 
+                    inputProps={{ min: 0, max: 5 }}
+                  />
+                </Box>
+                <button className="optionButton" style={{border:0, width:30, cursor: 'pointer',}} onClick={() => increaseQuantity(index, option.stock)}>+</button>
+                <Button className="optionButton" onClick={() => removeOption(index)}>X</Button>
               </Box>
             ))}
           </div>
           {/* 총 가격 표시 */}
-          <Typography variant="h5" style={{ fontWeight: 'bold' }}>
+          <Typography variant="h6" style={{ fontWeight: 'bold' }}>
             총 가격: {totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원
           </Typography>
           {/* 주문 및 장바구니 버튼 */}
-          <Button variant="contained" color="primary" style={{ marginBottom: '10px' }} 
-          onClick={handleOrder}>주문하기</Button> 
-          <Button variant="contained" color="primary" style={{ marginBottom: '10px', marginLeft:5 }} onClick={handleAddToCart}>장바구니</Button>
-          <Button variant="contained" color="primary" style={{ marginBottom: '10px', marginLeft:5, backgroundColor: '#808080' }}>비회원 주문하기</Button>
+          <Button variant="contained" className="mainButton" style={{ marginBottom: '10px' }} 
+            onClick={handleOrder}>주문하기</Button> 
+          <Button variant="contained" className="mainButton" style={{ marginBottom: '10px', marginLeft:5 }} onClick={handleAddToCart}>장바구니</Button>
+          <Button variant="contained" style={{ marginBottom: '10px', marginLeft:5, backgroundColor: '#808099' }} onClick={nonMembersHandleOrder}>비회원 주문하기</Button>
           <br/>
           {/* 공유 및 찜하기 버튼 */}
-          <Button variant="contained" color="primary" style={{ marginBottom: '10px' }} onClick={handleCopyLink}>공유하기</Button>
+          <Button variant="contained" className="mainButton" color="primary" style={{ marginBottom: '10px' }} onClick={handleCopyLink}>공유하기</Button>
           <Button variant="contained" color="primary" style={{ marginBottom: '10px', marginLeft:5, backgroundColor: 'transparent', color: 'black', }} onClick={handleLikeClick}>
             {iswish ? <FavoriteIcon style={{ color: 'red', width: 18 }} /> : <FavoriteBorderIcon style={{width:18}}/>} {itemWishCount}
           </Button>

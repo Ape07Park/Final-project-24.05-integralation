@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { authRegister, loginWithGoogle, loginWithKakao } from '../api/firebase';
 import { Link, useNavigate } from "react-router-dom";
 import { useDaumPostcodePopup } from 'react-daum-postcode';
-import { getDatabase, ref, child, get } from "firebase/database";
 
 // mui 
 import Button from '@mui/material/Button';
@@ -16,6 +15,7 @@ import Container from '@mui/material/Container';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 
 // 디자인
 function Copyright(props) {
@@ -36,11 +36,10 @@ const defaultTheme = createTheme();
 // 기능
 export default function SignUp() {
   const [userInfo, setUserInfo] = useState({
-    email: '', password: '', confirmPassword: '', name: '', postCode: '', addr: '',
+    email: '', password: '', confirmPassword: '', name: '', postCode:'', addr: '',
     detailAddr: '', tel: '', req: ''
   });
-  const [isReadOnly, setIsReadOnly] = useState(false); // 읽기 전용 상태 추가
-
+  localStorage.setItem('prevPage', '/signUp');
   const navigate = useNavigate();
 
   // 사용자 정보 변경 핸들러
@@ -62,12 +61,20 @@ export default function SignUp() {
     }
   }
 
+  // 이메일 중복 확인 핸들러
+  const handleEmailBlur = () => {
+    // 여기서는 간단히 이메일이 비어있지 않으면 중복된 것으로 가정합니다.
+    if (userInfo.email !== '') {
+      setUserInfo({ ...userInfo, emailExists: true });
+    }
+  }
+
   // 폼 제출 핸들러
   const handleSubmit = e => {
     e.preventDefault(); // 기본 제출 동작 방지
 
     // 필수 정보가 입력되었는지 확인
-    if (!userInfo.email || !userInfo.password || !userInfo.confirmPassword || !userInfo.name ||
+    if (!userInfo.email || !userInfo.password || !userInfo.confirmPassword || !userInfo.name || 
       !userInfo.addr || !userInfo.addr || !userInfo.detailAddr || !userInfo.tel || !userInfo.req) {
       alert("모든 필수 정보를 입력해주세요.");
       return;
@@ -117,49 +124,30 @@ export default function SignUp() {
   }
 
   // Daum 우편번호 팝업 열기 함수
-  const openPostcode = useDaumPostcodePopup("//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js");
+const openPostcode = useDaumPostcodePopup("//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js");
 
-  // Daum 우편번호 팝업에서 주소 선택 시 호출되는 완료 핸들러
-  const handleComplete = data => {
-    let fullAddress = data.address; // 선택된 주소
-    let extraAddress = '';
-    let postCode = data.zonecode; // 우편번호
+// Daum 우편번호 팝업에서 주소 선택 시 호출되는 완료 핸들러
+const handleComplete = data => {
+  let fullAddress = data.address; // 선택된 주소
+  let extraAddress = '';
+  let postCode = data.zonecode; // 우편번호
 
-    if (data.addressType === 'R') {
-      if (data.bname !== '') {
-        extraAddress += data.bname;
-      }
-      if (data.buildingName !== '') {
-        extraAddress += extraAddress !== '' ? `, ${data.buildingName}` : data.buildingName;
-      }
-      fullAddress += extraAddress !== '' ? ` (${extraAddress})` : '';
+  if (data.addressType === 'R') {
+    if (data.bname !== '') {
+      extraAddress += data.bname;
     }
-
-    setUserInfo({
-      ...userInfo,
-      addr: fullAddress, // 선택된 주소를 사용자 정보에 업데이트
-      postCode: postCode // 우편번호를 사용자 정보에 업데이트
-    });
-  };
-
-  const handleCheckEmail = () => {
-    const inputEmail = userInfo.email;
-    const sanitizedEmail = inputEmail.replace(/[.#$[\]]/g, ''); // 특수 문자를 제거한 이메일
-
-    // 가져오는게 되면 그것 자체로 중복이니 굳이 로직 더 안써도 됨
-    const dbRef = ref(getDatabase());
-    get(child(dbRef, `users/${sanitizedEmail}`)).then((snapshot) => {
-      if (snapshot.exists()) {
-        alert("이메일이 중복됩니다.")
-      } else {
-        alert("사용 가능한 이메일입니다.");
-        setIsReadOnly(true); // 중복되면 읽기 전용으로 설정하지 않음
-
-      }
-    }).catch((error) => {
-      console.error(error);
-    });
+    if (data.buildingName !== '') {
+      extraAddress += extraAddress !== '' ? `, ${data.buildingName}` : data.buildingName;
+    }
+    fullAddress += extraAddress !== '' ? ` (${extraAddress})` : '';
   }
+
+  setUserInfo({
+    ...userInfo,
+    addr: fullAddress, // 선택된 주소를 사용자 정보에 업데이트
+    postCode: postCode // 우편번호를 사용자 정보에 업데이트
+  });
+};
 
 
   return (
@@ -194,17 +182,10 @@ export default function SignUp() {
                     autoFocus
                     value={userInfo.email}
                     onChange={handleChange}
+                    onBlur={handleEmailBlur}
                     required
-                    InputProps={{
-                      readOnly: isReadOnly, // 읽기 전용 상태 반영
-                    }}
                   />
                 </Grid>
-
-                <Button onClick={handleCheckEmail} variant="contained" style={{ textAlign: 'center' }}>
-                  이메일 중복 확인
-                </Button>
-
 
                 <Grid item xs={12}>
                   <TextField
@@ -272,7 +253,7 @@ export default function SignUp() {
                     autoComplete="sample6_postcode"
                     value={userInfo.postCode}
                     readOnly
-                    required
+                    required                   
                   />
                 </Grid>
 
@@ -286,7 +267,7 @@ export default function SignUp() {
                     autoComplete="sample6_postcode"
                     value={userInfo.addr}
                     readOnly
-                    required
+                    required                  
                   />
                 </Grid>
 
@@ -348,10 +329,10 @@ export default function SignUp() {
                   계정이 있으신가요? 로그인
                 </Link>
                 <Button onClick={handleGoogle} startIcon={<img src="img/googlelogo.png" alt="구글 로고" style={{ width: '36px', marginRight: '8px' }} />}>
-
+                  
                 </Button>
                 <Button onClick={handleKakao} startIcon={<img src="img/kakaologo.png" alt="카카오 로고" style={{ width: '36px', marginRight: '8px' }} />}>
-
+                  
                 </Button>
                 {/* <Button onClick={handleNaver} startIcon={<img src="img/naver-logo.jpg" alt="네이버 로고" style={{ width: '36px', marginRight: '8px' }} />}>
                   네이버 로그인

@@ -25,6 +25,7 @@ import com.example.ft.entity.ItemRequest;
 import com.example.ft.entity.Review;
 import com.example.ft.service.BoardService;
 import com.example.ft.service.ItemService;
+import com.example.ft.service.OrderService;
 import com.example.ft.service.ReviewService;
 
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,12 +41,11 @@ public class BoardController {
 	private final BoardService boardService; 
 	private final ReviewService reviewService; 
 	private final ItemService itemService;
+	private final OrderService orderService;
 	
 	@GetMapping("/list/{type}/{iid}")
 	public JSONArray list(@PathVariable String type, @PathVariable int iid) {
-
 		
-				
 		JSONArray jArr = new JSONArray();
 		if (type.equals("review")) {
 			List<Board> list = reviewService.getReviewList(type, iid);
@@ -77,6 +77,7 @@ public class BoardController {
 				jObj.put("regDate",board.getRegDate());
 				jObj.put("content",board.getContent());
 				jObj.put("img",board.getImg());
+				jObj.put("secretMsg",board.getSecretMsg());
 				jArr.add(jObj);
 			}
 		}
@@ -88,7 +89,9 @@ public class BoardController {
 		Board board = Board.builder()
 				  		.iid(boardData.getIid()).email(boardData.getEmail()).type(boardData.getType())
 				  		.typeQnA(boardData.getTypeQnA()).title(boardData.getTitle())
-				  		.content(boardData.getContent()).img(boardData.getImg()).build();
+				  		.content(boardData.getContent()).img(boardData.getImg())
+				  		.secretMsg(boardData.getSecretMsg())
+				  		.build();
 		boardService.insertBoard(board);
 		if (boardData.getType().equals("review")) {
 			Review review = Review.builder()
@@ -100,7 +103,7 @@ public class BoardController {
 						.iid(boardData.getIid()).totalSta(totalSta)
 						.build();
 			itemService.totalSta(item);
-			
+			orderService.oiidReviewUpdate(boardData.getOiid());
 		}
 		return "등록되었습니다.";
 	}
@@ -171,7 +174,6 @@ public class BoardController {
 			jObj.put("replyStatus",board.getReplyStatus());
 			jArr.add(jObj);
 		}
-		System.out.println(jArr);
 		return jArr;
 	}
 }

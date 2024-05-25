@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { selectUserData } from '../api/firebase';
-import axios from 'axios';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, Container, Grid, Typography, Table, TableBody, TableCell, TableHead, TableRow,
@@ -172,17 +171,16 @@ const CartPage = () => {
     const handleClick = (item) => {
       navigate(`/item/detail/${item.iid}`);
     };
-
+    
     return cartItems.map((item) => (
       <TableRow key={`${item.iid}-${item.option}`}>
-        {!isSmallScreen &&
-          <TableCell>
-            <Checkbox
-              checked={selectedItems.some((selectedItem) => selectedItem.cid === item.cid)}
-              onChange={() => handleToggleItem(item.iid, item.option)}
-            />
-          </TableCell>
-        }
+        <TableCell>
+          <Checkbox
+            checked={selectedItems.some((selectedItem) => selectedItem.cid === item.cid)}
+            onChange={() => handleToggleItem(item.iid, item.option)}
+            size="small"
+          />
+        </TableCell>
         <TableCell>
           <CardMedia
             component="img"
@@ -194,9 +192,11 @@ const CartPage = () => {
           />
         </TableCell>
         <TableCell>{item.name}</TableCell>
-        <TableCell>{item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell>
         {!isSmallScreen &&
+        <>
+          <TableCell>{item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell>
           <TableCell>{item.option}</TableCell>
+        </>
         }
         <TableCell>
           <Input
@@ -204,13 +204,20 @@ const CartPage = () => {
             value={item.count}
             onChange={(e) => handleQuantityChange(item.cid, item.iid, item.ioid, e.target.value)}
             inputProps={{ min: 1, max: item.stockCount }}
+            style={{ fontSize: '16px', padding: '4px' }}
           />
         </TableCell>
         <TableCell>{item.totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell>
         <TableCell>
-          <Button onClick={() => handleDeleteItem(item.cid)} variant="contained" color="error">
-            X
-          </Button>
+        <button
+          onClick={() => handleDeleteItem(item.cid)}
+          variant="contained"
+          color="error"
+          size="mini"
+          style={{ borderRadius: '20%', backgroundColor: 'rgb(219, 68, 85)', paddingTop: 3, border: 0, color:'white' }}
+        >
+          X
+        </button>
         </TableCell>
       </TableRow>
     ));
@@ -264,24 +271,27 @@ const CartPage = () => {
           <Table>
             <TableHead>
               <TableRow>
-                {!isSmallScreen &&
-                  <TableCell sx={{ width: isSmallScreen ? '10%' : '5%' }}>
-                    <Checkbox
-                      variant="contained"
-                      color="primary"
-                      onClick={handleToggleAllItems}
-                    >
-                      {selectedItems.length === cartItems.length ? '전체 선택 해제' : '전체 선택'}
-                    </Checkbox>
-                  </TableCell>
+                <TableCell sx={{ width: isSmallScreen ? '10%' : '10%' }}>
+                  <Checkbox
+                    variant="contained"
+                    color="primary"
+                    onClick={handleToggleAllItems}
+                    size="small"
+                  >
+                    {selectedItems.length === cartItems.length ? '전체 선택 해제' : '전체 선택'}
+                  </Checkbox>
+                </TableCell>
+                <TableCell sx={{ width: isSmallScreen ? '30%' : '10%' }}>이미지</TableCell>
+                <TableCell sx={{ width: isSmallScreen ? '30%' : '30%' }}>상품명</TableCell>
+                {!isSmallScreen && 
+                <>
+                  <TableCell sx={{ width: isSmallScreen ? '0%' : '10%' }}>가격</TableCell>
+                  <TableCell sx={{ width: isSmallScreen ? '0%' : '10%' }}>옵션</TableCell>
+                </>
                 }
-                <TableCell>이미지</TableCell>
-                <TableCell>상품명</TableCell>
-                <TableCell>가격</TableCell>
-                {!isSmallScreen && <TableCell>옵션</TableCell>}
-                <TableCell>수량</TableCell>
-                <TableCell>합계</TableCell>
-                <TableCell>삭제</TableCell>
+                <TableCell sx={{ width: isSmallScreen ? '10%' : '10%' }}>수량</TableCell>
+                <TableCell sx={{ width: isSmallScreen ? '10%' : '10%' }}>합계</TableCell>
+                <TableCell sx={{ width: isSmallScreen ? '10%' : '10%' }}>삭제</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>{renderCartItemRows()}</TableBody>

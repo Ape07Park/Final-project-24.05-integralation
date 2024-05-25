@@ -36,6 +36,7 @@ export default function AdminCategoryBar() {
         borderBottom: '2px solid red',
         justifyContent: 'center',
         height: 60 ,
+        marginBottom: 30,
       }}
     >
       <Button
@@ -70,6 +71,17 @@ export default function AdminCategoryBar() {
         }}
       >
         주문 내역
+      </Button>
+      <Button
+        onClick={() => handleItemClick('/admin/products')}
+        variant="contained"
+        style={{
+          ...buttonStyle,
+          backgroundColor: activeTab === '/admin/products' ? '#ff3333' : '#ffffff',
+          color: activeTab === '/admin/products' ? '#ffffff' : 'black',
+        }}
+      >
+        상품분석
       </Button>
       <Button
         onClick={() => handleItemClick('/admin/chart')}

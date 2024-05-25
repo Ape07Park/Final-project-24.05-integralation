@@ -15,6 +15,7 @@ export default function InquiryContent({ isOpen, handleClose, iid }) {
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [secretMsg, setSecretMsg] = useState(0);
   const auth = getAuth();
 
   useEffect(() => {
@@ -41,6 +42,7 @@ export default function InquiryContent({ isOpen, handleClose, iid }) {
       fetchUserInfo();
     }
   }, [currentUserEmail]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -52,16 +54,18 @@ export default function InquiryContent({ isOpen, handleClose, iid }) {
       content: inquiry,
       img: form.img,
       email: userInfo.email,
+      secretMsg: isPrivate ? 1 : 0, // 비밀글 여부에 따라 설정
     };
 
     submitBoard(formData)
       .then(response => {
         console.log('Review submitted successfully:', response);
         handleClose();
-        setIssueType(null)
-        setTitle(null)
-        setInquiry(null)
-        setForm('')
+        setIssueType('');
+        setTitle('');
+        setInquiry('');
+        setForm({ img: '' });
+        setIsPrivate(false);
       })
       .catch(error => {
         console.error('Error submitting review:', error);
@@ -86,6 +90,7 @@ export default function InquiryContent({ isOpen, handleClose, iid }) {
     setIssueType(null);
     setTitle(null);
     setInquiry(null);
+    setIsPrivate(false);
   };
 
   return (
@@ -116,11 +121,7 @@ export default function InquiryContent({ isOpen, handleClose, iid }) {
           label="비밀글 문의하기"
           style={{ marginBottom: '20px' }}
         />
-        <FormControlLabel
-          control={<Checkbox checked={receiveNotification} onChange={(e) => setReceiveNotification(e.target.checked)} />}
-          label="답변 알림"
-          style={{ marginBottom: '20px' }}
-        />
+
         <br/>
         <img src={form.img} alt={form.img} className='form-image' style={{width: '20%'}}/>
         <br/>

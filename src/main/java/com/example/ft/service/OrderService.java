@@ -30,6 +30,9 @@ public interface OrderService {
 	
 	// email로 주문 내역 가져오기
 	List<OrderHistory> getOrderHistoryList(String email);
+
+	// email로 주문 내역 가져오기
+	List<OrderHistory> nonMembersOrderHistory(String name, String tel);
 	
 	// admin의 주문 내역 가져오기 
 	List<OrderHistory> getOrderHistoryListForAdmin();
@@ -52,6 +55,8 @@ public interface OrderService {
 	
 	void statusUpdate(Order order);
 	
+	// oiid 리뷰 여부 수정
+	void oiidReviewUpdate(int oiid);
 	//
 	void orderWayUpdate(int oid, String way);
 	

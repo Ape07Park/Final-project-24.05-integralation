@@ -8,7 +8,7 @@ import { onAuthStateChanged, getAuth } from 'firebase/auth';
 import CloseIcon from '@mui/icons-material/Close';
 import { submitBoard } from '../api/boardApi';
 
-const ReviewFormModal = ({ isOpen, handleClose, iid }) => {
+const ReviewFormModal = ({ isOpen, handleClose, iid, oiid }) => {
   const [review, setReview] = useState('');
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
@@ -66,8 +66,9 @@ const ReviewFormModal = ({ isOpen, handleClose, iid }) => {
       sta: (rating == 0) ? 1 * 10 : rating * 10,
       img: form.img,
       email: userInfo.email,
+      oiid: oiid,
     };
-
+    console.log(formData);
     submitBoard(formData)
       .then(response => {
         console.log('Review submitted successfully:', response.data);

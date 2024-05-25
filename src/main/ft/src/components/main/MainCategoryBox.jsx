@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { TableCell, TableRow, IconButton, Stack, Typography, TableBody, Table } from '@mui/material';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ChairAltIcon from '@mui/icons-material/ChairAlt';
 import WeekendIcon from '@mui/icons-material/Weekend';
 import DeskIcon from '@mui/icons-material/Desk';
@@ -10,18 +9,21 @@ import FoodBankIcon from '@mui/icons-material/FoodBank';
 import TableBarIcon from '@mui/icons-material/TableBar';
 import './maincategorytable.css';
 import { useNavigate, useParams } from 'react-router-dom';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import { FaHotjar } from "react-icons/fa";
+import { FaBoltLightning } from "react-icons/fa6";
 
 export default function MainCategoryBox() {
     const navigate = useNavigate(); 
-    const { searchQuery } = useParams();
-    const [selectedCategory, setSelectedCategory] = useState(null);
+    const { menu } = useParams();
+    const [menus, setMenus] = useState(null);
 
     useEffect(() =>{
-        setSelectedCategory(searchQuery)
+        setMenus(menu)
     })
 
-    const handleCategoryClick = (category) => {
-        navigate(`/itemlist/${category}`);
+    const handleMenuCategoryClick = (category) => {
+        navigate(`/itemMenuList/${category}`);
     };
     return (
         <Table className="main-category-table">
@@ -31,8 +33,53 @@ export default function MainCategoryBox() {
                         <IconButton
                             size="small"
                             color="inherit"
-                            onClick={() => handleCategoryClick('의자')}
-                            style={{ color: selectedCategory === '의자' ? 'orange' : 'black' }}
+                            onClick={() => handleMenuCategoryClick('hot')}
+                            style={{ color: menus === 'hot' ? 'orange' : 'black' }}
+                        >
+                            <Stack direction="column" alignItems="center">
+                                <FaHotjar />
+                                <Typography variant="body2">
+                                    HOT
+                                </Typography>
+                            </Stack>
+                        </IconButton>
+                    </TableCell>
+                    <TableCell align="center">
+                        <IconButton
+                            size="small"
+                            color="inherit"
+                            onClick={() => handleMenuCategoryClick('sale')}
+                            style={{ color: menus === 'sale' ? 'orange' : 'black' }}
+                        >
+                            <Stack direction="column" alignItems="center">
+                                <FaBoltLightning/>
+                                <Typography variant="body2">
+                                    SALE
+                                </Typography>
+                            </Stack>
+                        </IconButton>
+                    </TableCell>
+                    <TableCell align="center">
+                        <IconButton
+                            size="small"
+                            color="inherit"
+                            onClick={() => handleMenuCategoryClick('mostReview')}
+                            style={{ color: menus === 'mostReview' ? 'orange' : 'black' }}
+                        >
+                            <Stack direction="column" alignItems="center">
+                                <AutoAwesomeIcon />
+                                <Typography variant="body2">
+                                    리뷰
+                                </Typography>
+                            </Stack>
+                        </IconButton>
+                    </TableCell>
+                    <TableCell align="center">
+                        <IconButton
+                            size="small"
+                            color="inherit"
+                            onClick={() => handleMenuCategoryClick('의자')}
+                            style={{ color: menus === '의자' ? 'orange' : 'black' }}
                         >
                             <Stack direction="column" alignItems="center">
                                 <ChairAltIcon />
@@ -44,8 +91,8 @@ export default function MainCategoryBox() {
                         <IconButton
                             size="small"
                             color="inherit"
-                            onClick={() => handleCategoryClick('소파')}
-                            style={{ color: selectedCategory === '소파' ? 'orange' : 'black' }}
+                            onClick={() => handleMenuCategoryClick('소파')}
+                            style={{ color: menus === '소파' ? 'orange' : 'black' }}
                         >
                             <Stack direction="column" alignItems="center">
                                 <WeekendIcon />
@@ -57,8 +104,8 @@ export default function MainCategoryBox() {
                         <IconButton
                             size="small"
                             color="inherit"
-                            onClick={() => handleCategoryClick('책상')}
-                            style={{ color: selectedCategory === '책상' ? 'orange' : 'black' }}
+                            onClick={() => handleMenuCategoryClick('책상')}
+                            style={{ color: menus === '책상' ? 'orange' : 'black' }}
                         >
                             <Stack direction="column" alignItems="center">
                                 <DeskIcon />
@@ -70,8 +117,8 @@ export default function MainCategoryBox() {
                         <IconButton
                             size="small"
                             color="inherit"
-                            onClick={() => handleCategoryClick('침대')}
-                            style={{ color: selectedCategory === '침대' ? 'orange' : 'black' }}
+                            onClick={() => handleMenuCategoryClick('침대')}
+                            style={{ color: menus === '침대' ? 'orange' : 'black' }}
                         >
                             <Stack direction="column" alignItems="center">
                                 <HotelIcon />
@@ -83,8 +130,8 @@ export default function MainCategoryBox() {
                         <IconButton
                             size="small"
                             color="inherit"
-                            onClick={() => handleCategoryClick('책장')}
-                            style={{ color: selectedCategory === '책장' ? 'orange' : 'black' }}
+                            onClick={() => handleMenuCategoryClick('책장')}
+                            style={{ color: menus === '책장' ? 'orange' : 'black' }}
                         >
                             <Stack direction="column" alignItems="center">
                                 <KitchenIcon />
@@ -96,8 +143,8 @@ export default function MainCategoryBox() {
                         <IconButton
                             size="small"
                             color="inherit"
-                            onClick={() => handleCategoryClick('식탁')}
-                            style={{ color: selectedCategory === '식탁' ? 'orange' : 'black' }}
+                            onClick={() => handleMenuCategoryClick('식탁')}
+                            style={{ color: menus === '식탁' ? 'orange' : 'black' }}
                         >
                             <Stack direction="column" alignItems="center">
                                 <FoodBankIcon />
@@ -109,8 +156,8 @@ export default function MainCategoryBox() {
                         <IconButton
                             size="small"
                             color="inherit"
-                            onClick={() => handleCategoryClick('테이블')}
-                            style={{ color: selectedCategory === '테이블' ? 'orange' : 'black' }}
+                            onClick={() => handleMenuCategoryClick('테이블')}
+                            style={{ color: menus === '테이블' ? 'orange' : 'black' }}
                         >
                             <Stack direction="column" alignItems="center">
                                 <TableBarIcon />

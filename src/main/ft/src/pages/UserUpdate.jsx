@@ -7,8 +7,6 @@ import { updateUserData } from '../api/firebase'; // updateUserData 함수 impor
 import { useLocation, useNavigate, Link } from 'react-router-dom'; // useHistory 대신 useNavigate 사용
 import { useDaumPostcodePopup } from 'react-daum-postcode';
 
-import CssBaseline from '@mui/material/CssBaseline';
-
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -173,7 +171,6 @@ export default function UserUpdate() {
     <>
       <ThemeProvider theme={defaultTheme}>
         <Container component="main" maxWidth="xs">
-          <CssBaseline />
           <Box
             sx={{
               marginTop: 8,

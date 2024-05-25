@@ -10,6 +10,8 @@ import { selectUserData } from '../api/firebase';
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
 import { fetchReplies } from '../api/replyApi';
 import { deleteBoard } from '../api/boardApi';
+import LockIcon from '@mui/icons-material/Lock';
+import { useAuthContext } from '../context/AuthContext';
 
 export default function ProductQnA({ posts, reloadQnAData }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -20,10 +22,11 @@ export default function ProductQnA({ posts, reloadQnAData }) {
   const isMobile = useMediaQuery('(max-width:600px)');
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
   const auth = getAuth();
   const [replyStatus, setReplyStatus] = useState({});
   const [replies, setReplies] = useState({});
+  const { user, logout } = useAuthContext();
+  const isAdmin = user && user.isAdmin == true;
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -41,7 +44,6 @@ export default function ProductQnA({ posts, reloadQnAData }) {
         try {
           const info = await selectUserData(currentUserEmail);
           setUserInfo(info);
-          setIsAdmin(info && info.isAdmin === 1);
         } catch (error) {
           console.error('사용자 정보를 불러오는 중 에러:', error);
         }
@@ -167,11 +169,16 @@ export default function ProductQnA({ posts, reloadQnAData }) {
                   {!isMobile && (
                     <TableCell style={{ fontWeight: 'bold', fontSize: '80%' }}>
                       <Typography variant="body2" style={{ fontWeight: 'bold' }}>
-                        {replyStatus[post.bid] ? '답변완료' : '미답변'}
+                        {replyStatus[post.bid] ? '답변' : '미답변'}
                       </Typography>
                     </TableCell>
                   )}
-                  <TableCell style={{ fontSize: '80%' }}>{post.title}</TableCell>
+                  <TableCell style={{ fontSize: '80%', verticalAlign: 'middle' }}>
+                    {post.secretMsg === 1 && (
+                      <LockIcon style={{ fontSize: '120%', marginRight: '4px', verticalAlign: 'middle', marginBottom: '5px' }} />
+                    )}
+                    {post.title}
+                  </TableCell>
                   <TableCell style={{ fontSize: '80%' }}>{`${post.email.split('@')[0]}`}</TableCell>
                   {!isMobile && (
                     <TableCell style={{ fontSize: '80%' }}>{new Date(post.regDate).toLocaleDateString().slice(0, -1)}</TableCell>
@@ -190,46 +197,51 @@ export default function ProductQnA({ posts, reloadQnAData }) {
                 {expandedPost === index && (
                   <TableRow>
                     <TableCell colSpan={6}>
-                      <Accordion expanded={expandedPost === index}>
-                        <AccordionSummary
-                          expandIcon={<ExpandMoreIcon />}
-                          aria-controls="panel1bh-content"
-                          id="panel1bh-header"
-                        >
-                          <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            <Typography style={{ minHeight: '50px', marginRight: '10px', fontSize: '100%' }}>
-                              {post.content}
-                            </Typography>
-                            {post.img && <ImgModal style={{ width: 100 }} img={post.img} />}
-                          </div>
-                        </AccordionSummary>
-                        <TableContainer>
-                          <Table>
-                            <TableBody>
-                              {Object.values(replies).map((reply, index) => (
-                                <React.Fragment key={index}>
-                                  <TableRow style={{ backgroundColor: '#f5f5f5' }}>
-                                    <TableCell style={{ fontWeight: 'bold', fontSize: '80%' }}>
-                                      답변
-                                    </TableCell>
-                                    <TableCell style={{ fontWeight: 'bold', fontSize: '80%' }}>
-                                      {reply.email.split('@')[0]}
-                                    </TableCell>
-                                    <TableCell style={{ fontWeight: 'bold', fontSize: '80%' }}>
-                                      {new Date(reply.regDate).toLocaleString().replace('T', ' ').slice(0, -3)}
-                                    </TableCell>
-                                  </TableRow>
-                                  <TableRow>
-                                    <TableCell colSpan={3} style={{ padding: '10px' }}>
-                                      {reply.content}
-                                    </TableCell>
-                                  </TableRow>
-                                </React.Fragment>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                      </Accordion>
+                      {(!post.secretMsg || currentUserEmail === post.email || isAdmin) && (
+                        <Accordion expanded={expandedPost === index}>
+                          <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel1bh-content"
+                            id="panel1bh-header"
+                          >
+                            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                              <Typography style={{ minHeight: '50px', marginRight: '10px', fontSize: '100%' }}>
+                                {post.content}
+                              </Typography>
+                              {post.img && <ImgModal style={{ width: 100 }} img={post.img} />}
+                            </div>
+                          </AccordionSummary>
+                          <TableContainer>
+                            <Table>
+                              <TableBody>
+                                {Object.values(replies).map((reply, index) => (
+                                  <React.Fragment key={index}>
+                                    <TableRow style={{ backgroundColor: '#f5f5f5' }}>
+                                      <TableCell style={{ fontWeight: 'bold', fontSize: '80%' }}>
+                                        답변
+                                      </TableCell>
+                                      <TableCell style={{ fontWeight: 'bold', fontSize: '80%' }}>
+                                        {reply.email.split('@')[0]}
+                                      </TableCell>
+                                      <TableCell style={{ fontWeight: 'bold', fontSize: '80%' }}>
+                                        {new Date(reply.regDate).toLocaleString().replace('T', ' ').slice(0, -3)}
+                                      </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                      <TableCell colSpan={3} style={{ padding: '10px' }}>
+                                        {reply.content}
+                                      </TableCell>
+                                    </TableRow>
+                                  </React.Fragment>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        </Accordion>
+                      )}
+                      {(post.secretMsg && !(currentUserEmail === post.email || isAdmin)) ? (
+                        <div>비밀 게시물입니다. 작성자 또는 관리자만 열람할 수 있습니다.</div>
+                      ) : ''}
                     </TableCell>
                   </TableRow>
                 )}

@@ -18,6 +18,7 @@ import { onAuthStateChanged, getAuth } from 'firebase/auth';
 import { selectUserData } from '../api/firebase';
 import { useNavigate } from 'react-router-dom';
 import TrackerComponent from '../components/TrackerComponent';
+import ReviewFormModal from '../components/ReviewForm';
 
 const OrderHistoryList = () => {
 
@@ -117,20 +118,62 @@ const OrderHistoryList = () => {
 
     // 새 창을 엽니다.
     window.open(`https://tracker.delivery/#/${carrier_id}/${t_invoice}`, "_blank", specs);
-};
+  };
 
-const handleDelete = async (orderId) => {
-  const confirmDelete = window.confirm("정말로 주문을 취소하시겠습니까?");
-  if (!confirmDelete) return; // 사용자가 취소를 선택한 경우 함수 종료
+  const handleDelete = async (orderId) => {
+    const confirmDelete = window.confirm("정말로 주문을 취소하시겠습니까?");
+    if (!confirmDelete) return; // 사용자가 취소를 선택한 경우 함수 종료
 
-  try {
-    await axios.post('/ft/order/orderDelete', { oid: orderId });
-    console.log('주문 삭제 완료');
-    // 여기서 필요하다면 상태를 업데이트하거나 다른 작업을 수행할 수 있습니다.
-  } catch (error) {
-    console.error('주문 삭제 실패:', error);
-  }
-};
+    try {
+      await axios.post('/ft/order/orderDelete', { oid: orderId });
+      console.log('주문 삭제 완료');
+      // 여기서 필요하다면 상태를 업데이트하거나 다른 작업을 수행할 수 있습니다.
+      fetchOrderHistory();
+    } catch (error) {
+      console.error('주문 삭제 실패:', error);
+    }
+  };
+
+  const [reviews, setReviews] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [iid, setIid] = useState();
+  const [oiid, setOiid] = useState();
+
+  // 리뷰모달
+  const openModal = (iid, oiid) => {
+    if (!userInfo || !userInfo.email) {
+      window.location.href = '/signIn'; 
+      return;
+    }
+    setIid(iid);
+    setOiid(oiid);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setIid('')
+    setOiid('')
+    fetchOrderHistory();
+  };
+
+  const fetchOrderHistory = async () => {
+    // 데이터를 다시 불러오는 함수
+    try {
+      const response = await axios.post('/ft/order/historyList', { email: currentUserEmail });
+      setOrders(response.data);
+      console.log(response);
+    } catch (error) {
+      if (error.response) {
+        console.error('주문 내역을 다시 불러오는데 실패했습니다:', error.response.status, error.response.data);
+      } else if (error.request) {
+        console.error('주문 내역을 다시 불러오는데 실패했습니다: 서버로부터 응답이 없습니다.');
+      } else {
+        console.error('주문 내역을 다시 불러오는데 실패했습니다:', error.message);
+      }
+      setOrders([]);
+    }
+  };
 
   return (
     <Container fixed sx={{ mt: 5, mb: 5 }}>
@@ -214,9 +257,22 @@ const handleDelete = async (orderId) => {
 
                           {/* 주문취소/반품 버튼 */}
                           <TableCell style={{textAlign:'center'}}>
-                            <Button variant="contained" color="error" onClick={() => handleDelete(order.oid)}>
-                              주문취소/반품
+                            <Button variant="contained" color="error" size="small" onClick={() => handleDelete(order.oid)}>
+                              주문취소
                             </Button>
+                            {order.review === 0 && order.status === '배송완료' && (
+                              <>
+                                <br/>
+                                <Button variant="contained" color="primary" size="small" onClick={() => openModal(order.iid, order.oiid)}>리뷰작성</Button>
+                                <ReviewFormModal isOpen={isModalOpen} handleClose={closeModal} iid={iid} oiid={oiid} /> 
+                              </>
+                            )}
+                            {order.review === 1 && (
+                              <>
+                                <br/>
+                                <div>리뷰 작성 완료</div>
+                              </>
+                            )}
                           </TableCell>
                         </TableRow>
                       ))}
