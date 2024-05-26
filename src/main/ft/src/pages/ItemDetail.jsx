@@ -514,6 +514,8 @@ export default function ItemDetail() {
       alert("옵션을 선택해주세요");
       return;
     }
+
+  // ======== orderPage로 보낼 orderItems =============
   
     const orderItems = selectedOptions.map(option => ({
       iid: item.iid, // db
@@ -531,6 +533,8 @@ export default function ItemDetail() {
     // Order 페이지로 이동할 때 orderItems 상태를 함께 전달
     navigate("/order", { state: { orderItems } });
   };    
+  
+   // ======== orderPage로 보낼 orderItems 끝=============
 
   return (
     <Grid container spacing={2} className="itemDetail">
