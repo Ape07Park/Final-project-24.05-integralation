@@ -8,36 +8,36 @@
 # 팀원
 6명
 
-# 목차
-- [[1] 주요 기능](#1-주요 기능)
-- [[2] 기술 스택](#2-기술 스택)
-- [[3] 서비스 구성](#3-서비스 구성)
-
-
-# [1] 주요 기능
-*Provide **general information** about your project describing:*
-- ❗️Short❗️ introduction/motivation
-- What your project does
-- Why people should consider using your project
-
-
-# [2] 기술 스택
+# [1] 기술 스택
 ![image](https://github.com/Ape07Park/Final-project-24.05-integralation/assets/132667775/5b77c38a-1026-4411-a1e4-659baab2391e)
 
+# [2] 주요 기능
+## 유저
+회원가입, 로그인, 유저 마이페이지, 유저 정보 수정, 이메일로 비밀번호 변경, sms로 비밀번호 변경
+
+## 관리자
 
 
-# [3] 서비스 구성
-## ERD ![image](https://github.com/Ape07Park/Final-project-24.05-integralation/assets/132667775/1acb14e4-d903-44ff-9902-b30729a0a6ce)
-## 업무 플로우 ![image](https://github.com/Ape07Park/Final-project-24.05-integralation/assets/132667775/56fda504-e0bf-4460-bc2c-1721d16251a0)
-## API 명세 ![image](https://github.com/Ape07Park/Final-project-24.05-integralation/assets/132667775/3a5ba29d-a5d8-4643-9bef-6842265f0861)
+## 아이템
 
 
+## 장바구니
 
-# [4] Contribution
-Any contributions you make are greatly appreciated. Here is the [`contributing guide`][contribution-url].
-These are contributors to this project. Thank you!🙆‍♀️
-*If you like to use emoji, you can use 🐞 for **fixing bug**, 💡 for **suggestion**, ✨ for creating **new feature***
-- 🐞 [dev-ujin](https://github.com/dev-ujin): Fix bug on the main page
+
+## 주문
+
+
+# [3] 업무 플로우
+![image](https://github.com/Ape07Park/Final-project-24.05-integralation/assets/132667775/56fda504-e0bf-4460-bc2c-1721d16251a0)
+
+# [4] ERD
+![image](https://github.com/Ape07Park/Final-project-24.05-integralation/assets/132667775/1acb14e4-d903-44ff-9902-b30729a0a6ce)
+
+# [5] API 명세
+![image](https://github.com/Ape07Park/Final-project-24.05-integralation/assets/132667775/3a5ba29d-a5d8-4643-9bef-6842265f0861)
+
+# [6] 서비스 구성
+
 
 
 
