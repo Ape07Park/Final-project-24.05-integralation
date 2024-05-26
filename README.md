@@ -6,12 +6,13 @@
 - 2024년 4월 16일 ~ 2024년 6월 14일
 
 # 팀원
+6명
 
-# Table of Contents
+# 목차
 - [[1] 주요 기능](#1-주요 기능)
 - [[2] 기술 스택](#2-기술 스택)
-- [[3] 서비스 구성](#2-서비스 구성)
-- [[4] 기술 스택](#2-기술 스택)
+- [[3] 서비스 구성](#3-서비스 구성)
+
 
 # [1] 주요 기능
 *Provide **general information** about your project describing:*
@@ -19,24 +20,17 @@
 - What your project does
 - Why people should consider using your project
 
-## 주요 기능
-*Provide **main features** or **unique features** which you want to emphasize.*
-- Provide **guidelines** in *italic* font to help you write aaaaawesome **README** easily.
-- Provide **language option** in badge
 
-## 기술 스택
+# [2] 기술 스택
 ![image](https://github.com/Ape07Park/Final-project-24.05-integralation/assets/132667775/5b77c38a-1026-4411-a1e4-659baab2391e)
 
 
 
-# [2] Usage
-*Show **instructions** and **useful examples** of how your project can be used with **screenshots**, **code examples**, etc. You can make h2 headers for each usage example to clarify your explanation.*
+# [3] 서비스 구성
+- ERD ![image](https://github.com/Ape07Park/Final-project-24.05-integralation/assets/132667775/1acb14e4-d903-44ff-9902-b30729a0a6ce)
+- 업무 플로우 ![image](https://github.com/Ape07Park/Final-project-24.05-integralation/assets/132667775/56fda504-e0bf-4460-bc2c-1721d16251a0)
+- 라우팅 테이블 ![image](https://github.com/Ape07Park/Final-project-24.05-integralation/assets/132667775/3a5ba29d-a5d8-4643-9bef-6842265f0861)
 
-![usage](res-readme/img/usage.png)
-
-```java
-// Show useful code examples of some of your APIs 
-```
 
 
 # [4] Contribution
