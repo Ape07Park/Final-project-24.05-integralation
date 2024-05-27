@@ -1,112 +1,99 @@
 import React, { useState } from "react";
 import { login, loginWithKakao, loginWithGoogle } from '../api/firebase';
 import { useNavigate, Link } from "react-router-dom";
-import { IconButton } from '@mui/material';
-import GoogleIcon from '@mui/icons-material/Google';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Stack from '@mui/material/Stack';
+import { CssBaseline, TextField, Grid, Box, Typography, Container, createTheme, ThemeProvider, Stack, Modal, Backdrop, Fade, Divider } from '@mui/material';
+import FindPassModalSpring from "../components/FindPassModalSpring";
+import FindPassModal from "../components/FindPassModal";
+import FindPassModalPhone from "../components/FindPassModalPhone";
+import CustomButton from "./CustomButton.jsx";
+import FindEmailModalPhone from "../components/FindEmailModalPhone.jsx";
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="#">
-        FUNniture
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
-const defaultTheme = createTheme();
-
-export default function SignIn() {
-  // 상태 변수 정의
+function SignIn() {
   const [userInfo, setUserInfo] = useState({ email: '', password: '' });
+  const [modalType, setModalType] = useState(null);
   const navigate = useNavigate();
-  
-  // 이벤트 핸들러 - input 값 변화 처리
+
   const handleChange = e => {
     setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
   }
 
-  // 이벤트 핸들러 - 로그인 시도
   const handleSubmit = async e => {
     e.preventDefault();
     try {
       if (userInfo.email.trim() === '' || userInfo.password.trim() === '') {
         alert('이메일 혹은 패스워드를 모두 입력해주세요.');
-      }
-      else {
-        // 로그인 시도
+      } else {
         const userData = await login(userInfo);
         console.log("일반 로그인 성공:", userData);
-        
+
         const prevPage = localStorage.getItem('prevPage');
-        if (prevPage === '/signUp') {
-          navigate('/'); // 이전 페이지가 없거나 회원가입 페이지인 경우 홈페이지로 이동
+        if (prevPage && prevPage !== '/signUp') {
+          navigate(-1);
         } else {
-          navigate(-1); // 이전 페이지로 이동
+          navigate('/');
         }
       }
-      // * 나중에 수정 필요
-      localStorage.removeItem('prevPage');
     } catch (error) {
-      // 로그인 실패 시 오류 메시지 표시
       console.error('로그인 오류:', error);
     }
   }
 
-  // 이벤트 핸들러 - 구글 로그인
   const handleGoogle = async () => {
     try {
       await loginWithGoogle();
       console.log("구글 로그인 성공");
 
       const prevPage = localStorage.getItem('prevPage');
-      if (prevPage === '/signUp') {
-        navigate('/'); // 이전 페이지가 없거나 회원가입 페이지인 경우 홈페이지로 이동
+      if (prevPage && prevPage !== '/signUp') {
+        navigate(-1);
       } else {
-        navigate(-1); // 이전 페이지로 이동
+        navigate('/');
       }
-        localStorage.removeItem('prevPage');
     } catch (error) {
-      // 로그인 실패 시 오류 메시지 표시
       alert('구글 로그인에 실패했습니다.');
       console.error('구글 로그인 오류:', error);
     }
   }
 
-  // 이벤트 핸들러 - 카카오 로그인
   const handleKakao = async () => {
     try {
       await loginWithKakao();
       console.log("카카오 로그인 성공");
-      
+
       const prevPage = localStorage.getItem('prevPage');
-      if (prevPage === '/signUp') {
-        navigate('/'); // 이전 페이지가 없거나 회원가입 페이지인 경우 홈페이지로 이동
+      if (prevPage && prevPage !== '/signUp') {
+        navigate(-1);
       } else {
-        navigate(-1); // 이전 페이지로 이동
+        navigate('/');
       }
-        localStorage.removeItem('prevPage');
     } catch (error) {
-      // 로그인 실패 시 오류 메시지 표시
       alert('카카오 로그인에 실패했습니다.');
       console.error('카카오 로그인 오류:', error);
     }
   }
 
+  const handleOpenFindPassModalSpring = () => {
+    setModalType('spring');
+  };
+
+  const handleOpenFindPassModalFirebase = () => {
+    setModalType('firebase');
+  };
+
+  const handleOpenFindPassPhone= () => {
+    setModalType('mobile');
+  };
+
+  const handleOpenFindEmailPhone= () => {
+    setModalType('email');
+  };
+
+  const handleCloseFindPassModal = () => {
+    setModalType(null);
+  };
+
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <ThemeProvider theme={createTheme()}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -121,9 +108,7 @@ export default function SignIn() {
             로그인
           </Typography>
 
-          {/* 폼 요소 */}
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-            {/* email 입력창 */}
             <TextField
               margin="normal"
               fullWidth
@@ -136,7 +121,6 @@ export default function SignIn() {
               onChange={handleChange}
               required
             />
-
             <TextField
               margin="normal"
               fullWidth
@@ -150,49 +134,103 @@ export default function SignIn() {
               required
             />
 
-            {/* 로그인 버튼 */}
-            <Button
+            <CustomButton
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-              onClick={handleSubmit}
             >
               로그인
-            </Button>
+            </CustomButton>
 
-            {/* 사용자 등록 링크 */}
-            <Box sx={{ mt: 2 }}>
-              <Typography variant="body2" color="text.secondary" align="center">
+            <Box sx={{ mt: 4, p: 2, border: '1px solid #e0e0e0', borderRadius: 2, boxShadow: 2 }}>
+              <Typography variant="body2" color="text.secondary" align="center" sx={{ mb: 2 }}>
                 아직 계정이 없으신가요?
               </Typography>
-              <Box sx={{ textAlign: 'center' }}>
+              <Box sx={{ textAlign: 'center', mb: 2 }}>
                 <Link to='/signUp' style={{ textDecoration: 'none' }}>
-                  <Button variant="contained" color="primary">
+                  <CustomButton variant="contained" color="primary" sx={{ mb: 1 }}>
                     사용자 등록
-                  </Button>
+                  </CustomButton>
                 </Link>
+                <Divider sx={{ my: 2 }} />
+                <CustomButton variant="contained" color="primary" onClick={handleOpenFindPassModalSpring} sx={{ mb: 1 }}>
+                  스프링으로 비번 찾기(이메일)
+                </CustomButton>
+                <CustomButton variant="contained" color="primary" onClick={handleOpenFindPassModalFirebase}>
+                  파이어베이스로 비번 변경(이메일)
+                </CustomButton>
+                <CustomButton variant="contained" color="primary" onClick={handleOpenFindPassPhone}>
+                  휴대폰으로 비번 찾기
+                </CustomButton>
+                <CustomButton variant="contained" color="primary" onClick={handleOpenFindEmailPhone}>
+                  휴대폰으로 아이디 찾기 찾기
+                </CustomButton>
               </Box>
             </Box>
 
-            {/* 소셜 로그인 버튼 */}
-            <Grid container justifyContent="center" spacing={2}>
+            <Grid container justifyContent="center" spacing={2} sx={{ mt: 2 }}>
               <Grid item>
-                <Stack direction="row">
-                  <Button onClick={handleGoogle} aria-label="Google 로그인">
+                <Stack direction="row" spacing={2}>
+                  <CustomButton onClick={handleGoogle} aria-label="Google 로그인">
                     <img src="img/googlelogo.png" alt="Google Logo" style={{ width: 30 }} />
-                  </Button>
-                  <Button onClick={handleKakao}>
+                  </CustomButton>
+                  <CustomButton onClick={handleKakao}>
                     <img src="img/kakaologo.png" alt="Kakao Logo" style={{ width: 30 }} />
-                  </Button>
+                  </CustomButton>
                 </Stack>
               </Grid>
             </Grid>
-
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
+
+        {/* Modal for FindPassModal */}
+        <Modal
+          open={modalType !== null}
+          onClose={handleCloseFindPassModal}
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={modalType !== null}>
+            <Box
+              sx={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: 400,
+                bgcolor: 'background.paper',
+                border: '2px solid #000',
+                boxShadow: 24,
+                p: 4,
+              }}
+            >
+              {modalType === 'spring' && <FindPassModalSpring handleClose={handleCloseFindPassModal} />}
+              {modalType === 'firebase' && <FindPassModal handleClose={handleCloseFindPassModal} />}
+              {modalType === 'mobile' && <FindPassModalPhone open={modalType === 'mobile'} onClose={handleCloseFindPassModal} />}
+              {modalType === 'email' && <FindEmailModalPhone open={modalType === 'email'} onClose={handleCloseFindPassModal} />}
+            </Box>
+          </Fade>
+        </Modal>
+
+        <Box mt={8}>
+          <Typography variant="body2" color="text.secondary" align="center">
+            Copyright ©{' '}
+            <Link color="inherit" href="#">
+              FUNniture
+            </Link>{' '}
+            {new Date().getFullYear()}
+            {'.'}
+          </Typography>
+        </Box>
       </Container>
     </ThemeProvider>
-  )
+  );
 }
+
+export default SignIn;
