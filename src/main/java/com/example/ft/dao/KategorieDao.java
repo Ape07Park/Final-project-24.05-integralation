@@ -19,7 +19,7 @@ public interface KategorieDao {
 			+ " i.category AS category, "
 			+ " i.company AS company, "
 			+ " io.option AS options, "
-			+ " o.totalPrice AS orderPrice, " 
+			+ " oi.price AS orderPrice, " 
 			+ " i.cost AS itemPrice, "
 			+ " oi.count AS orderCount " 
 			+ "FROM " + " orderitem oi " 
@@ -38,14 +38,14 @@ public interface KategorieDao {
 	        + " io.option AS options, "
 	        + "i.cost AS itemPrice, "
 	        + "SUM(oi.count) AS orderCount, "
-	        + "o.totalPrice AS orderPrice, "
+	        + "oi.price AS orderPrice, "
 	        + "o.regDate AS orderDate "
 	        + "FROM orderItem oi "
 	        + "JOIN item i ON oi.iid = i.iid "
 	        + "JOIN `order` o ON oi.oid = o.oid "
 	        + "JOIN " + " itemoption io ON oi.ioid = io.ioid " 
 	        + "WHERE o.regDate BETWEEN #{startDate} AND #{endDate} "
-	        + "group by i.iid, i.company, i.category, io.option, i.name, i.cost, o.totalPrice, o.regDate "
+	        + "group by i.iid, i.company, i.category, io.option, i.name, i.cost, oi.price, o.regDate "
 	        + "order by category DESC ")
 	List<KategorieDto> getCategoryItemByDateRange(LocalDate startDate, LocalDate endDate);
 
@@ -57,14 +57,14 @@ public interface KategorieDao {
 			+ " io.option AS options, "
 			+ " i.cost AS itemPrice, " 
 			+ "SUM(oi.count) AS orderCount, "
-			+ " o.totalPrice AS orderPrice, " 
+			+ " oi.price AS orderPrice, " 
 			+ "o.regDate AS orderDate "
 			+ "FROM orderItem oi " 
 			+ "JOIN item i ON oi.iid = i.iid " 
 			+ "JOIN `order` o ON oi.oid = o.oid " 
 			+ "JOIN " + " itemoption io ON oi.ioid = io.ioid " 
 			+ "WHERE o.regDate BETWEEN #{startDate} AND #{endDate} "
-			+ "GROUP BY i.iid, i.category, i.company, io.option, i.name, i.cost, o.totalPrice, o.regDate "
+			+ "GROUP BY i.iid, i.category, i.company, io.option, i.name, i.cost, oi.price, o.regDate "
 			+ "order by company DESC ")
 	List<KategorieDto> getByCompanyAndDateRange(LocalDate startDate, LocalDate endDate);
 }

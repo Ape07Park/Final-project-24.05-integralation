@@ -30,8 +30,6 @@ import com.example.ft.service.ReviewService;
 
 import org.springframework.web.bind.annotation.RequestBody;
 
-
-
 @SpringBootApplication(exclude = SecurityAutoConfiguration.class)
 @Slf4j  //log로 값을 출력
 @RestController   // 이건 Controller 꼭 필요한 기능

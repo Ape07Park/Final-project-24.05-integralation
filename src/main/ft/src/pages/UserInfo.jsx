@@ -80,7 +80,6 @@ export default function UserInfo() {
   
   return (
     <ThemeProvider theme={defaultTheme}>
-      
       <Container maxWidth="sm">
         <Box mt={4}>
           <Paper elevation={3} sx={{ p: 4, borderRadius: 4 }}>

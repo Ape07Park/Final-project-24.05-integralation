@@ -65,7 +65,7 @@ function RecentItems() {
         style={{
           borderRadius: '5px',
           padding: isExpanded ? '10px' : '5px',
-          maxHeight: isExpanded ? '530px' : '40px',
+          maxHeight: isExpanded ? '530px' : '50px',
           overflowY: 'auto', 
           position: 'fixed',
           top: '50%',
@@ -75,7 +75,7 @@ function RecentItems() {
           boxShadow: '0 0 10px rgba(0, 0, 0, 0)',
           zIndex: 9999,
           transition: 'all 0.3s ease',
-          width: isExpanded ? '400px' : '25px',
+          width: isExpanded ? '400px' : '30px',
           border: isExpanded ? '1px solid gray' : '0px'
         }}
       >

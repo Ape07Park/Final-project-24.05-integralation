@@ -42,7 +42,7 @@ const DeveloperPage = () => {
     { id: 1, name: '이강성 :', description: '상품, 리뷰, 문의의 기능과 결제, 택배 api, 통합 담당', imgUrl: '/img/circle01.png' },
     { id: 2, name: '송햇님 :', description: '나는 집에 가고싶다.', imgUrl: '/img/circle02.png' },
     { id: 3, name: '정아름 :', description: '휴먼양아치 지구망해라', imgUrl: '/img/circle03.png' },
-    { id: 4, name: '박성민 :', description: '유저, 주문 기능 및 화면 담당. 한줄 평: 개발하면서 내가 할 수 있을까라는 생각이 들었지만 포기하지 않고 제 역할을 다할 수 있어 기쁩니다.  ', imgUrl: '/img/circle04.png' },
+    { id: 4, name: '박성민 :', description: '개발 중 복잡한 문제를 쪼개어 해결한 후 통합하는 방식이 효과적이고 효율적임을 깨달았습니다. 이를 통해 복잡한 문제도 체계적으로 접근할 수 있었습니다. 또한, 파이어베이스를 공부하면서 새로운 기술을 빠르게 습득하는 역량과 검색 및 자료 활용 능력이 개발자에게 얼마나 중요한지 깨달았습니다. ', imgUrl: '/img/circle04.png' },
     { id: 5, name: '홍시표 :', description: '이타치 ', imgUrl: '/img/circle05.png' },
     { id: 6, name: '김용현 :', description: '강점 ', imgUrl: '/img/circle06.png' },
   ];

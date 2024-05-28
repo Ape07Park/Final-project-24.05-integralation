@@ -8,7 +8,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import Checkbox from "@mui/material/Checkbox";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import Card from "@mui/material/Card";
@@ -23,6 +22,12 @@ import { DemoItem } from "@mui/x-date-pickers/internals/demo";
 import axios from "axios";
 import AdminCategoryBar from "../components/AdminCategoryBar";
 import { useNavigate } from "react-router-dom";
+import * as XLSX from "xlsx";
+import { Container } from "@mui/material";
+
+const formatCurrency = (number) => {
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '원';
+};
 
 function Label({ componentName, valueType, isProOnly }) {
   const content = (
@@ -34,7 +39,7 @@ function Label({ componentName, valueType, isProOnly }) {
 
 const theme = createTheme({
   typography: {
-    fontFamily: "Roboto, sans-serif", // Set the desired font family here
+    fontFamily: "Roboto, sans-serif",
   },
 });
 
@@ -57,13 +62,24 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const groupAndSumData = (data) => {
+const filterAndGroupData = (data, view) => {
   const groupedData = {};
 
-  // 데이터를 주문일, 상품명, 옵션별로 그룹화
   data.forEach((item) => {
-    const { orderDate, itemName, options, orderPrice, orderCount } = item;
-    const key = `${orderDate}-${itemName}-${options}`;
+    const { orderDate, itemName, options, orderPrice, orderCount, category, company } = item;
+    let key;
+// key값 분류 다시하고
+    switch (view) {
+      case 'category':
+        key = `${orderDate}-${category}-${itemName}-${options}`;
+        break;
+      case 'company':
+        key = `${orderDate}-${company}-${itemName}-${options}`;
+        break;
+      case 'all':
+      default:
+        key = `${orderDate}-${itemName}-${options}`;
+    }
 
     if (groupedData[key]) {
       groupedData[key].orderPrice += orderPrice;
@@ -77,7 +93,6 @@ const groupAndSumData = (data) => {
     }
   });
 
-  // 그룹화된 데이터를 배열로 변환
   return Object.values(groupedData);
 };
 
@@ -91,13 +106,14 @@ const HamburgerCheckbox = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const groupedData = groupAndSumData(datas);
+    const groupedData = filterAndGroupData(datas, selectedView);
     setGroupedData(groupedData);
-  }, [datas]);
+  }, [datas, selectedView]);
 
   const handleViewChange = (event) => {
     setSelectedView(event.target.value);
   };
+
   const handleChange = (event) => {
     if (event.target.id === "start-date") {
       setStartDate(event.target.value);
@@ -112,16 +128,15 @@ const HamburgerCheckbox = () => {
     );
     const result = response.data;
     setDatas(result);
-    console.log(result);
   };
 
   const handleReset = () => {
-    setDatas([])
+    setDatas([]);
   };
 
-  const handleViewClick = (index) => {
-    setSelectedView(index)
-  }
+  const handleViewClick = (view) => {
+    setSelectedView(view);
+  };
 
   const handleButtonClick = (index) => {
     setSelectedButton(index);
@@ -149,30 +164,47 @@ const HamburgerCheckbox = () => {
       setStartDate(twoWeeksAgo.toISOString().split("T")[0]);
     }
   };
+// 엑셀 코드 수정했습니다.
+  const exportToExcel = () => {
+    const currentDate = new Date().toISOString().split('T')[0];
+    const filteredData = filterAndGroupData(datas, selectedView);
+    const formattedData = filteredData.map(row => ({
+      주문일: row.orderDate,
+      카테고리: row.category,
+      상품명: row.itemName,
+      옵션: row.options,
+      주문금액: formatCurrency(row.orderPrice * row.orderCount),
+      원가: formatCurrency(row.itemPrice * row.orderCount),
+      수익: formatCurrency((row.orderPrice - row.itemPrice) * row.orderCount),
+      제조사: row.company,
+      결제수량: row.orderCount,
+    }));
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(formattedData);
+    XLSX.utils.book_append_sheet(wb, ws, "Data");
+    XLSX.writeFile(wb, `FUNniture_${currentDate}.xlsx`);
+  };
 
   return (
     <ThemeProvider theme={theme}>
-      <>
-        <AdminCategoryBar/>
+      <Container>
+        <AdminCategoryBar />
         <Card>
-          <CardContent style={{ alignItems: "center", display: "flex" }}>
-            <Typography
-              variant="subtitle1"
-              gutterBottom
-              style={{ marginRight: "45px" }}
-            >
-              기간
+          <CardContent>
+            <Typography variant="h5" component="div" style={{ marginBottom: "20px" }}>
+              데이터 조회
             </Typography>
             <ButtonGroup
-              variant="contained"
-              aria-label="outlined primary button group"
+              value={selectedButton}
+              aria-label="기간 선택"
               style={{ marginRight: "20px" }}
             >
               <Button
                 variant={selectedButton === 0 ? "contained" : "outlined"}
                 onClick={() => handleButtonClick(0)}
               >
-                어제
+                전일
               </Button>
               <Button
                 variant={selectedButton === 1 ? "contained" : "outlined"}
@@ -187,200 +219,104 @@ const HamburgerCheckbox = () => {
                 지난 15일
               </Button>
             </ButtonGroup>
-
             <TextField
               id="start-date"
-              label="Start Date"
+              label="시작 날짜"
               type="date"
-              InputLabelProps={{
-                shrink: true,
-              }}
               value={startDate}
               onChange={handleChange}
-              style={{ marginRight: "10px" }}
-            />
-            <div style={{ margin: "0 10px" }}>-</div>
-            <TextField
-              id="end-date"
-              label="End Date"
-              type="date"
               InputLabelProps={{
                 shrink: true,
               }}
-              value={endDate}
-              onChange={handleChange}
               style={{ marginRight: "20px" }}
             />
-
-            <DemoItem
-              label={
-                <Label
-                  componentName="DateRangePicker"
-                  valueType="date range"
-                  isProOnly
-                />
-              }
-              component="DateRangePicker"
-              style={{ marginLeft: "10px" }} // 추가된 부분
+            <TextField
+              id="end-date"
+              label="종료 날짜"
+              type="date"
+              value={endDate}
+              onChange={handleChange}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              style={{ marginRight: "20px" }}
             />
-          </CardContent>
-
-          <CardContent>
-            <Typography
-              variant="subtitle1"
-              gutterBottom
-              style={{
-                display: "flex",
-                alignItems: "center",
-                marginBottom: "10px",
-              }}
+            <Button
+              variant="contained"
+              onClick={searchData}
+              style={{ marginRight: "20px" }}
             >
-              <span
-                style={{
-                  marginRight: "30px",
-                  fontFamily: "Roboto, sans-serif",
-                }}
-              >
-                쇼핑몰
-              </span>
-              <Select
-                displayEmpty
-                defaultValue=""
-                style={{
-                  width: "150px",
-                  height: "42px",
-                  fontFamily: "Roboto, sans-serif",
-                }} // 글꼴 변경
-              >
-                <MenuItem
-                  value=""
-                  disabled
-                  style={{ fontFamily: "Arial, sans-serif" }}
-                >
-                  {" "}
-                  전체
-                </MenuItem>
-              </Select>
-
-              <div
-                style={{
-                  marginLeft: "auto",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={searchData}
-                  style={{ padding: "32px 41px" }}
-                >
-                  검색
-                </Button>
-              </div>
-            </Typography>
-            <DemoItem
-              label={
-                <Label
-                  componentName="DateRangePicker"
-                  valueType="date range"
-                  isProOnly
-                />
-              }
-              component="DateRangePicker"
-            ></DemoItem>
-            <Typography
-              variant="subtitle1"
-              gutterBottom
-              style={{ display: "flex", alignItems: "center" }}
+              조회
+            </Button>
+            <Button variant="outlined"  style={{ marginRight: "20px" }} onClick={handleReset}>
+              초기화
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<FontAwesomeIcon icon={faDownload} />}
+              onClick={exportToExcel}
             >
-              분석 관점
-              <ButtonGroup
-                value={selectedView}
-                aria-label="분석 관점 선택"
-                style={{ marginLeft: "10px" }}
-              >
-                <Button
-                  variant={selectedView === 'all' ? "contained" : "outlined"}
-                  onClick={() => handleViewClick('all')}
-                  value="all"
-                >전체</Button>
-                <Button
-                  variant={selectedView === 'category' ? "contained" : "outlined"}
-                  onClick={() => handleViewClick('category')}
-                  value="category"
-                >카테고리</Button>
-                <Button
-                  variant={selectedView === 'company' ? "contained" : "outlined"}
-                  onClick={() => handleViewClick('company')}
-                  value="company"
-                >제조사</Button>
-              </ButtonGroup>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleReset}
-                style={{ marginLeft: "auto", padding: "22px 34px" }}
-              >
-                초기화
-              </Button>
-            </Typography>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                marginBottom: "10px",
-                alignItems: "center",
-              }}
-            >
-              <Checkbox />
-              <span style={{ marginLeft: "5px" }}>금액 상세보기</span>
-              <FontAwesomeIcon
-                icon={faDownload}
-                style={{ marginLeft: "5px" }}
-              />
-              <span style={{ marginLeft: "5px" }}>현재 데이터 다운로드</span>
-              <FontAwesomeIcon
-                icon={faDownload}
-                style={{ marginLeft: "5px" }}
-              />
-              <span style={{ marginLeft: "5px" }}>원본 데이터 다운로드</span>
-            </div>
-            <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                <TableHead>
-                <TableRow style={{width: '100%'}}>
-                  <StyledTableCell align="right" style={{width: '7%'}}>주문일</StyledTableCell>
-                  <StyledTableCell align="right" style={{width: '8%'}}>카테고리</StyledTableCell>
-                  <StyledTableCell align="right" style={{width: '38%'}}>상품명</StyledTableCell>
-                  <StyledTableCell align="right" style={{width: '8%'}}>옵션</StyledTableCell>
-                  <StyledTableCell align="right" style={{width: '8%'}}>주문 금액</StyledTableCell>
-                  <StyledTableCell align="right" style={{width: '8%'}}>수익</StyledTableCell>
-                  <StyledTableCell align="right" style={{width: '8%'}}>판매가</StyledTableCell>
-                  <StyledTableCell align="right" style={{width: '7%'}}>제조사</StyledTableCell>
-                  <StyledTableCell align="right" style={{width: '8%'}}>결제 수량</StyledTableCell>
-              </TableRow>
-                </TableHead>
-                <TableBody>
-                  {groupedData.map((row, index) => (
-                    <StyledTableRow key={index} onClick={() => (navigate(`/item/detail/${row.iid}`))}>
-                      <StyledTableCell component="th" scope="row">{row.orderDate}</StyledTableCell>
-                      <StyledTableCell align="right">{row.category}</StyledTableCell>
-                      <StyledTableCell align="right">{row.itemName}</StyledTableCell>
-                      <StyledTableCell align="right">{row.options}</StyledTableCell>
-                      <StyledTableCell align="right">{row.orderPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</StyledTableCell>
-                      <StyledTableCell align="right">{row.itemPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</StyledTableCell>
-                      <StyledTableCell align="right">{(row.orderPrice - row.itemPrice).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</StyledTableCell>
-                      <StyledTableCell align="right">{row.company}</StyledTableCell>
-                      <StyledTableCell align="right">{row.orderCount}</StyledTableCell>
-                    </StyledTableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+              엑셀 다운로드
+          </Button>
           </CardContent>
         </Card>
-      </>
+        <div style={{ margin: "20px 0" }}>
+          <ButtonGroup
+            value={selectedView}
+            aria-label="분석 관점 선택"
+            style={{ marginLeft: "10px" }}
+          >
+            <Button
+              variant={selectedView === 'all' ? "contained" : "outlined"}
+              onClick={() => handleViewClick('all')}
+              value="all"
+            >전체</Button>
+            <Button
+              variant={selectedView === 'category' ? "contained" : "outlined"}
+              onClick={() => handleViewClick('category')}
+              value="category"
+            >카테고리</Button>
+            <Button
+              variant={selectedView === 'company' ? "contained" : "outlined"}
+              onClick={() => handleViewClick('company')}
+              value="company"
+            >제조사</Button>
+          </ButtonGroup>
+        </div>
+        <TableContainer component={Paper}>
+          <Table aria-label="customized table">
+            <TableHead>
+              <TableRow>
+                <StyledTableCell>주문일</StyledTableCell>
+                <StyledTableCell>카테고리</StyledTableCell>
+                <StyledTableCell>상품명</StyledTableCell>
+                <StyledTableCell>옵션</StyledTableCell>
+                <StyledTableCell>주문금액</StyledTableCell>
+                <StyledTableCell>원가</StyledTableCell>
+                <StyledTableCell>수익</StyledTableCell>
+                <StyledTableCell>제조사</StyledTableCell>
+                <StyledTableCell>결제수량</StyledTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody> 
+              {groupedData.map((row) => (
+                <StyledTableRow key={`${row.orderDate}-${row.itemName}-${row.options}`}>
+                  <StyledTableCell>{row.orderDate}</StyledTableCell>
+                  <StyledTableCell>{row.category}</StyledTableCell>
+                  <StyledTableCell>{row.itemName}</StyledTableCell>
+                  <StyledTableCell>{row.options}</StyledTableCell>
+                  <StyledTableCell>{formatCurrency(row.orderPrice * row.orderCount)}</StyledTableCell>
+                  <StyledTableCell>{formatCurrency(row.itemPrice * row.orderCount)}</StyledTableCell>
+                  <StyledTableCell>{formatCurrency((row.orderPrice - row.itemPrice) * row.orderCount)}</StyledTableCell>
+                  <StyledTableCell>{row.company}</StyledTableCell>
+                  <StyledTableCell>{row.orderCount}</StyledTableCell>
+                </StyledTableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Container>
     </ThemeProvider>
   );
 };

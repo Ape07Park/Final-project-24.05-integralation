@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, MenuItem, Select, IconButton, Modal, useMediaQuery, Accordion, AccordionSummary, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ImgModal from './ImgModal';
-import BuildIcon from '@mui/icons-material/Build';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import QnAEditModal from '../components/QnAEditModal';
@@ -12,6 +11,7 @@ import { fetchReplies } from '../api/replyApi';
 import { deleteBoard } from '../api/boardApi';
 import LockIcon from '@mui/icons-material/Lock';
 import { useAuthContext } from '../context/AuthContext';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 export default function ProductQnA({ posts, reloadQnAData }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -158,7 +158,7 @@ export default function ProductQnA({ posts, reloadQnAData }) {
               {!isMobile && (
                 <TableCell style={{ width: '8%', fontWeight: 'bold', fontSize: '80%' }}>작성일</TableCell>
               )}
-              <TableCell style={{ width: isMobile ? '8%' : '8%', fontWeight: 'bold', fontSize: '80%', textAlign: 'center', }}><BuildIcon/></TableCell>
+              <TableCell style={{ width: isMobile ? '8%' : '8%', fontWeight: 'bold', fontSize: '80%', textAlign: 'center', }}><SettingsIcon/></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

@@ -2,17 +2,20 @@ import React, { useState } from "react";
 import { authRegister, loginWithGoogle, loginWithKakao } from '../api/firebase';
 import { Link, useNavigate } from "react-router-dom";
 import { useDaumPostcodePopup } from 'react-daum-postcode';
-import { getDatabase, ref, child, get } from "firebase/database";
 
 // mui 
-import CustomButton from "./CustomButton";
+import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 
 // 디자인
 function Copyright(props) {
@@ -33,12 +36,9 @@ const defaultTheme = createTheme();
 // 기능
 export default function SignUp() {
   const [userInfo, setUserInfo] = useState({
-    email: '', password: '', confirmPassword: '', name: '', postCode: '', addr: '',
+    email: '', password: '', confirmPassword: '', name: '', postCode:'', addr: '',
     detailAddr: '', tel: '', req: ''
   });
-  const [isDuplicate, setIsDuplicate] = useState(null);
-  const [isReadOnly, setIsReadOnly] = useState(false); // 읽기 전용 상태 추가
-
   localStorage.setItem('prevPage', '/signUp');
   const navigate = useNavigate();
 
@@ -48,7 +48,8 @@ export default function SignUp() {
 
     if (name === "req" && value.trim() === '') {
       setUserInfo({ ...userInfo, [name]: '조심히 와주세요' });
-    } else if (name === "tel") {
+    }
+    else if (name === "tel") {
       // 전화번호 입력 시 '-' 추가
       const telValue = value.replace(/[^0-9]/g, ''); // 숫자 이외의 문자 제거
       const formattedTel = telValue.replace(/(\d{3})(\d{3,4})(\d{4})/, '$1-$2-$3');
@@ -60,51 +61,20 @@ export default function SignUp() {
     }
   }
 
-  // 이메일 중복 확인 함수
-  const handleCheckEmail = async () => {
-    const email = userInfo.email;
-    if (!email) {
-      alert("이메일을 입력해주세요.");
-      return;
+  // 이메일 중복 확인 핸들러
+  const handleEmailBlur = () => {
+    // 여기서는 간단히 이메일이 비어있지 않으면 중복된 것으로 가정합니다.
+    if (userInfo.email !== '') {
+      setUserInfo({ ...userInfo, emailExists: true });
     }
-
-    console.log(email); // 이메일 값이 콘솔에 출력됨
-
-    try {
-      const db = getDatabase();
-      const dbRef = ref(db);
-      const snapshot = await get(child(dbRef, `users`));
-
-      if (snapshot.exists()) {
-        const users = snapshot.val();
-        const emails = Object.values(users).map(user => user.email);
-
-        // 이메일이 중복되는지 확인
-        if (emails.includes(email)) {
-          setIsDuplicate(true);
-          setIsReadOnly(false); // 중복되면 읽기 전용으로 설정하지 않음
-        } else {
-          setIsDuplicate(false);
-          setIsReadOnly(true); // 중복되지 않으면 읽기 전용으로 설정
-        }
-      } else {
-        console.log("데이터가 없습니다.");
-        setIsDuplicate(false);
-        setIsReadOnly(true); // 데이터가 없을 경우 읽기 전용으로 설정
-      }
-    } catch (error) {
-      console.error(error);
-      setIsDuplicate(false);
-      setIsReadOnly(false); // 에러가 발생할 경우 읽기 전용으로 설정하지 않음
-    }
-  };
+  }
 
   // 폼 제출 핸들러
   const handleSubmit = e => {
     e.preventDefault(); // 기본 제출 동작 방지
 
     // 필수 정보가 입력되었는지 확인
-    if (!userInfo.email || !userInfo.password || !userInfo.confirmPassword || !userInfo.name ||
+    if (!userInfo.email || !userInfo.password || !userInfo.confirmPassword || !userInfo.name || 
       !userInfo.addr || !userInfo.addr || !userInfo.detailAddr || !userInfo.tel || !userInfo.req) {
       alert("모든 필수 정보를 입력해주세요.");
       return;
@@ -154,30 +124,31 @@ export default function SignUp() {
   }
 
   // Daum 우편번호 팝업 열기 함수
-  const openPostcode = useDaumPostcodePopup("//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js");
+const openPostcode = useDaumPostcodePopup("//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js");
 
-  // Daum 우편번호 팝업에서 주소 선택 시 호출되는 완료 핸들러
-  const handleComplete = data => {
-    let fullAddress = data.address; // 선택된 주소
-    let extraAddress = '';
-    let postCode = data.zonecode; // 우편번호
+// Daum 우편번호 팝업에서 주소 선택 시 호출되는 완료 핸들러
+const handleComplete = data => {
+  let fullAddress = data.address; // 선택된 주소
+  let extraAddress = '';
+  let postCode = data.zonecode; // 우편번호
 
-    if (data.addressType === 'R') {
-      if (data.bname !== '') {
-        extraAddress += data.bname;
-      }
-      if (data.buildingName !== '') {
-        extraAddress += extraAddress !== '' ? `, ${data.buildingName}` : data.buildingName;
-      }
-      fullAddress += extraAddress !== '' ? ` (${extraAddress})` : '';
+  if (data.addressType === 'R') {
+    if (data.bname !== '') {
+      extraAddress += data.bname;
     }
+    if (data.buildingName !== '') {
+      extraAddress += extraAddress !== '' ? `, ${data.buildingName}` : data.buildingName;
+    }
+    fullAddress += extraAddress !== '' ? ` (${extraAddress})` : '';
+  }
 
-    setUserInfo({
-      ...userInfo,
-      addr: fullAddress, // 선택된 주소를 사용자 정보에 업데이트
-      postCode: postCode // 우편번호를 사용자 정보에 업데이트
-    });
-  };
+  setUserInfo({
+    ...userInfo,
+    addr: fullAddress, // 선택된 주소를 사용자 정보에 업데이트
+    postCode: postCode // 우편번호를 사용자 정보에 업데이트
+  });
+};
+
 
   return (
     <>
@@ -211,25 +182,9 @@ export default function SignUp() {
                     autoFocus
                     value={userInfo.email}
                     onChange={handleChange}
+                    onBlur={handleEmailBlur}
                     required
-                    InputProps={{
-                      readOnly: isReadOnly, // 읽기 전용 상태 반영
-                    }}
                   />
-                </Grid>
-
-                <Grid item xs={12} style={{ textAlign: 'center' }}>
-                  <CustomButton
-                    fullWidth
-                    variant="contained"
-                    onClick={handleCheckEmail}
-                    sx={{ mt: 3, mb: 1 }}
-
-                  >
-                    이메일 중복 확인
-                  </CustomButton>
-                  {isDuplicate === true && <div style={{ color: 'red' }}>이 이메일은 이미 사용 중입니다.</div>}
-                  {isDuplicate === false && isReadOnly && <div style={{ color: 'green' }}>이 이메일은 사용 가능합니다.</div>}
                 </Grid>
 
                 <Grid item xs={12}>
@@ -277,7 +232,7 @@ export default function SignUp() {
 
                 {/*우편번호찾기*/}
                 <Grid item xs={12}>
-                  <CustomButton
+                  <Button
                     type="button"
                     fullWidth
                     variant="contained"
@@ -285,7 +240,7 @@ export default function SignUp() {
                     onClick={() => openPostcode({ onComplete: handleComplete })}
                   >
                     우편번호 찾기
-                  </CustomButton>
+                  </Button>
                 </Grid>
 
                 {/*우편번호*/}
@@ -298,7 +253,7 @@ export default function SignUp() {
                     autoComplete="sample6_postcode"
                     value={userInfo.postCode}
                     readOnly
-                    required
+                    required                   
                   />
                 </Grid>
 
@@ -312,7 +267,7 @@ export default function SignUp() {
                     autoComplete="sample6_postcode"
                     value={userInfo.addr}
                     readOnly
-                    required
+                    required                  
                   />
                 </Grid>
 
@@ -363,35 +318,31 @@ export default function SignUp() {
             </Box>
 
             {/* 사용자 등록 버튼 */}
-            <CustomButton fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} onClick={handleSubmit}>
+            <Button fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} onClick={handleSubmit}>
               사용자 등록
-            </CustomButton>
+            </Button>
 
             {/* 이미 계정이 있으신가요? */}
-            <Grid container justifyContent="center" spacing={2}>
+            <Grid container justifyContent="flex-end">
               <Grid item>
                 <Link to="/SignIn" variant="body2" style={{ marginRight: '10px' }}>
                   계정이 있으신가요? 로그인
                 </Link>
-              </Grid>
-              <Grid item>
-                <Box display="flex" flexDirection="row" alignItems="center">
-                  <CustomButton onClick={handleGoogle} startIcon={<img src="img/googlelogo.png" alt="구글 로고" style={{ width: '36px', marginRight: '8px' }} />}>
-                    Google
-                  </CustomButton>
-                  <Box mx={1} />
-                  <CustomButton onClick={handleKakao} startIcon={<img src="img/kakaologo.png" alt="카카오 로고" style={{ width: '36px', marginRight: '8px' }} />}>
-                    Kakao
-                  </CustomButton>
-                </Box>
+                <Button onClick={handleGoogle} startIcon={<img src="img/googlelogo.png" alt="구글 로고" style={{ width: '36px', marginRight: '8px' }} />}>
+                  
+                </Button>
+                <Button onClick={handleKakao} startIcon={<img src="img/kakaologo.png" alt="카카오 로고" style={{ width: '36px', marginRight: '8px' }} />}>
+                  
+                </Button>
+                {/* <Button onClick={handleNaver} startIcon={<img src="img/naver-logo.jpg" alt="네이버 로고" style={{ width: '36px', marginRight: '8px' }} />}>
+                  네이버 로그인
+                </Button> */}
               </Grid>
             </Grid>
-
-            
           </Box>
           <Copyright sx={{ mt: 5 }} />
         </Container>
-      </ThemeProvider>
+      </ThemeProvider >
     </>
   )
 };

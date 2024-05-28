@@ -28,19 +28,16 @@ const Order = () => {
     setOrderId(nanoid())
   }, [])
   // ======== 로그인한 유저정보 불러오기 ==========
-
-  // 로그인한 user의 이메일을 CurrentUserEmail에 set
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        setCurrentUserEmail(user.email); 
+        setCurrentUserEmail(user.email);
       } else {
         setCurrentUserEmail(null);
       }
     });
   }, [auth]);
 
-  // 이메일로 user의 정보 불러옴
   useEffect(() => {
     if (currentUserEmail) {
       const fetchUserInfo = async () => {
@@ -53,19 +50,18 @@ const Order = () => {
         }
       };
       fetchUserInfo();
+      // fetchCartItems();
     }
   }, [currentUserEmail]);
-  
   // ======== 로그인한 유저정보 불러오기 끝 ==========
-
   // ======== 아이템 정보 불러오기  ==========
   useEffect(() => {
-    // 로케이션 스테이트에서 주문한 아이템 꺼내기 
+    // Get orderItems from location state
     const locationState = window.history.state;
     if (locationState && locationState.orderItems) {
       setOrderItems(locationState.orderItems);
     } else {
-      // 로컬스토리지에서 orderItems를 가져오기
+      // 로컬스토리지에서 orderItems를 가져옵니다.
       const storedOrderItems = JSON.parse(localStorage.getItem('orderItems'));
       if (storedOrderItems) {
         setOrderItems(storedOrderItems);
@@ -73,7 +69,6 @@ const Order = () => {
     }
   }, []);
   // ======== 아이템 정보 불러오기 끝 ==========
-
   // ======== 아이템 총 금액 계산 ==========
   useEffect(() => {
     // 주문 아이템이 변경될 때마다 총 결제 금액을 다시 계산
@@ -86,12 +81,10 @@ const Order = () => {
     calculateTotalPayment();
   }, [orderItems]);
   // ======== 아이템 총 금액 계산 끝 ==========
-
   // ======== order로 통합하기 ==========
-
   // order로 통합하기 
   useEffect(() => {
-    // 로케이션 스테이트에서 주문한 아이템 꺼내기 
+    // Get orderItems from location state
     const locationState = window.history.state;
     if (locationState && locationState.orderItems) {
       setOrderItems(locationState.orderItems);
@@ -153,9 +146,6 @@ const Order = () => {
     };
     calculateTotalPayment();
   }, [orderItems]);
-
-  // ======== order로 통합하기 끝==========
-
   // ----------------------- user 관련 -------------------------------
   // =================== 자동으로 구매자 정보 들어가게 함 ============
   // useState는 함수 컴포넌트에서 어떤 상태(state)를 관리
@@ -169,7 +159,7 @@ const Order = () => {
   const [customMessage, setCustomMessage] = useState('');
   const openPostcode = useDaumPostcodePopup("//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js");
 
-  useEffect(() => { // 컴포넌트가 렌더링될 때마다 실행되기 때문에, 기본적으로 매 렌더링마다 실행. 
+  useEffect(() => { // 컴포넌트가 렌더링될 때마다 실행되기 때문에, 기본적으로 매 렌더링마다 실행됩니다. 
     // 두 번째 인자로 배열을 전달하여 특정 상황에만 실행되도록 제어
     if (userInfo) {
       const { name, postCode, addr, detailAddr, tel, req } = userInfo;
@@ -182,7 +172,6 @@ const Order = () => {
     }
   }, [userInfo]);
   // =================== 자동으로 구매자 정보 들어가게 함 끝============
-
   // =========================== 받는 사람 정보 보내기 함수 ======================
   // ================ 받는 사람 정보 입력 ===================
   // Daum 우편번호 팝업 관련 함수
@@ -318,7 +307,7 @@ const Order = () => {
                   required
                 />
               </Grid>
-            
+             
 
               <Grid item xs={12}>
                 <Grid container alignItems="flex-start">
