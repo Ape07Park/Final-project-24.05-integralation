@@ -44,6 +44,7 @@ const OrderHistoryList = () => {
         try {
           const info = await selectUserData(currentUserEmail);
           setUserInfo(info);
+
         } catch (error) {
           console.error('사용자 정보를 불러오는 중 에러:', error);
         }
@@ -175,7 +176,7 @@ const OrderHistoryList = () => {
       setOrders([]);
     }
   };
-
+  
   return (
     <Container fixed sx={{ mt: 5, mb: 5 }}>
       {/* 날짜별로 주문 목록 표시 */}

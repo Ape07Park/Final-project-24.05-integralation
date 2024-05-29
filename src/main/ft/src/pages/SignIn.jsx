@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { login, loginWithKakao, loginWithGoogle } from '../api/firebase';
 import { useNavigate, Link } from "react-router-dom";
-import { Button, CssBaseline, TextField, Grid, Box, Typography, Container, createTheme, ThemeProvider, Stack, Modal, Backdrop, Fade, Divider } from '@mui/material';
-import FindPassModalSpring from "../components/user/FindPassModalSpring";
-import FindPassModal from "../components/user/FindPassModal";
+import { CssBaseline, TextField, Grid, Box, Typography, Container, createTheme, ThemeProvider, Stack, Modal, Backdrop, Fade, Divider } from '@mui/material';
+
+import FindPassModal from "../components/user/ChangePassModal.jsx";
 import FindPassModalPhone from "../components/user/FindPassModalPhone";
+import CustomButton from "../components/CustomButton.jsx";
+import FindEmailModalPhone from "../components/user/FindEmailModalPhone.jsx";
+import FindPassModalSpring from "../components/user/FindPassModalSpring.jsx";
 
 function SignIn() {
   const [userInfo, setUserInfo] = useState({ email: '', password: '' });
@@ -75,16 +78,21 @@ function SignIn() {
   };
 
   const handleOpenFindPassModalFirebase = () => {
-    setModalType('firebase');
+    setModalType('findPassToUsedFirebase');
   };
 
-  const handleOpenFindPassPhone= () => {
+  const handleOpenFindPassPhone = () => {
     setModalType('mobile');
+  };
+
+  const handleOpenFindEmailPhone = () => {
+    setModalType('findEmail');
   };
 
   const handleCloseFindPassModal = () => {
     setModalType(null);
   };
+
 
   return (
     <ThemeProvider theme={createTheme()}>
@@ -128,14 +136,15 @@ function SignIn() {
               required
             />
 
-            <Button
+            <CustomButton
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
               로그인
-            </Button>
+            </CustomButton>
+
             <Box sx={{ mt: 4, p: 2, border: '1px solid #e0e0e0', borderRadius: 2, boxShadow: 2 }}>
               <Typography variant="body2" color="text.secondary" align="center" sx={{ mb: 2 }}>
                 아직 계정이 없으신가요?
@@ -145,16 +154,27 @@ function SignIn() {
               </Typography>
               <Box sx={{ textAlign: 'center', mb: 2 }}>
                 <Divider sx={{ my: 2 }} />
-                
                 <Typography>
-                  비밀번호 찾기
-                  <Link onClick={handleOpenFindPassModalFirebase} style={{marginLeft: 3}}>
-                    이메일
+                  <Link onClick={handleOpenFindEmailPhone} style={{ textDecoration: 'none' }}>
+                    휴대폰으로 아이디 찾기
                   </Link>
-                  <Link onClick={handleOpenFindPassPhone} style={{marginLeft: 5}}>
-                    휴대폰
-                  </Link>
+                </Typography>
+                <Divider sx={{ my: 2 }} />
+                <Typography>
 
+                  <Link onClick={handleOpenFindPassModalFirebase} style={{ marginLeft: 3, textDecoration: 'none' }}>
+                    이메일로 비밀번호 변경
+                  </Link>
+                  <Divider sx={{ my: 2 }} />
+                  <Link onClick={handleOpenFindPassPhone} style={{ marginLeft: 5, textDecoration: 'none' }}>
+                    휴대폰으로 비밀번호 찾기
+                  </Link>
+                  {/* 스프링으로 비번 찾기 버튼 */}
+                  <Divider sx={{ my: 2 }} />
+                  <Link onClick={handleOpenFindPassModalSpring} style={{ marginLeft: 5, textDecoration: 'none' }}>
+                    스프링으로 비밀번호 찾기
+                  </Link>
+                   {/* 스프링으로 비번 찾기 버튼 끝 */}
                 </Typography>
               </Box>
             </Box>
@@ -162,19 +182,19 @@ function SignIn() {
             <Grid container justifyContent="center" spacing={2} sx={{ mt: 2 }}>
               <Grid item>
                 <Stack direction="row" spacing={2}>
-                  <Button onClick={handleGoogle} aria-label="Google 로그인">
+                  <CustomButton onClick={handleGoogle} aria-label="Google 로그인">
                     <img src="img/googlelogo.png" alt="Google Logo" style={{ width: 30 }} />
-                  </Button>
-                  <Button onClick={handleKakao}>
+                  </CustomButton>
+                  <CustomButton onClick={handleKakao}>
                     <img src="img/kakaologo.png" alt="Kakao Logo" style={{ width: 30 }} />
-                  </Button>
+                  </CustomButton>
                 </Stack>
               </Grid>
             </Grid>
           </Box>
         </Box>
 
-        
+        {/* Modal for FindPassModal */}
         <Modal
           open={modalType !== null}
           onClose={handleCloseFindPassModal}
@@ -200,9 +220,11 @@ function SignIn() {
                 p: 4,
               }}
             >
+              {modalType === 'findEmail' && <FindEmailModalPhone open={modalType === 'findEmail'} onClose={handleCloseFindPassModal} />}
+              {modalType === 'findPassToUsedFirebase' && <FindPassModal handleClose={handleCloseFindPassModal} />}
               {modalType === 'spring' && <FindPassModalSpring handleClose={handleCloseFindPassModal} />}
-              {modalType === 'firebase' && <FindPassModal handleClose={handleCloseFindPassModal} />}
               {modalType === 'mobile' && <FindPassModalPhone open={modalType === 'mobile'} onClose={handleCloseFindPassModal} />}
+            
             </Box>
           </Fade>
         </Modal>

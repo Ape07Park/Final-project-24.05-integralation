@@ -46,7 +46,6 @@ public class RealTimeController {
 	
 	@GetMapping("/list")
 	public JSONArray getList() {
-		System.out.println("진입");
 		List<RealTime> list = realTimeService.getRealTimeList();
 		JSONArray jArr = new JSONArray();
 		for(RealTime query : list) {

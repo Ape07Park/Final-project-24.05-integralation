@@ -175,10 +175,8 @@ public class OrderController {
     
     @PostMapping("/orderDelete")
     public ResponseEntity<?> deleteOrder(@RequestBody Map<String, String> data) {
+    	
         int oid = Integer.parseInt(data.get("oid"));
-       
-        System.out.println(oid);  
-
         try {
             // 주문 정보 업데이트
             orderService.deleteOrder(oid);

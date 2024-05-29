@@ -4,10 +4,8 @@ import axios from 'axios';
 // Wish List를 가져오는 Axios 요청을 수행하는 함수
 export const fetchWishList = async (userInfo) => {
   try {
-    console.log(userInfo.email);
     const response = await axios.post('/ft/wish/list', { email: userInfo.email }); // 이메일 데이터 보내기
     const wishList = response.data;
-    console.log("Wish List:", wishList);
     return wishList;
   } catch (error) {
     console.error('Error fetching wish list:', error);

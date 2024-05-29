@@ -96,7 +96,7 @@ const FindEmailModalPhone = ({ open, onClose }) => {
       <Box sx={{ ...modalStyle }}>
         {!isCodeSent ? (
           <>
-            <Typography variant="h6">휴대폰 번호로 인증 코드 보내기(이메일)</Typography>
+            <Typography variant="h6">인증 코드 보내기(mobile)</Typography>
             <TextField
               label="이름"
               value={name}
@@ -112,7 +112,7 @@ const FindEmailModalPhone = ({ open, onClose }) => {
               margin="normal"
             />
             <Button variant="contained" onClick={sendCodeToMobile}>
-              인증 코드 보내기
+              휴대폰으로 인증 코드 보내기
             </Button>
           </>
         ) : (

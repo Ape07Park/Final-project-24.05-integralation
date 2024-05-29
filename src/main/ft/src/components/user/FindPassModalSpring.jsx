@@ -31,7 +31,7 @@ const FindPassModalSpring = ({ handleClose }) => {
   return (
     <Box>
       <Typography variant="h6">
-        이메일을 입력하세요
+        이메일을 입력하세요(스프링)
       </Typography>
       <TextField
         type="email"
@@ -44,9 +44,7 @@ const FindPassModalSpring = ({ handleClose }) => {
       <Button variant='contained' onClick={() => getEmailMessage(email)}>
         제출
       </Button>
-      <Button variant='contained' onClick={handleClose} sx={{ mt: 2 }}>
-        닫기
-      </Button>
+      
       {message && (
         <Box mt={2}>
           <Typography variant="body1">{message}</Typography>

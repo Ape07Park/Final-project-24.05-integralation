@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import { CardContent, CardMedia, Stack } from "@mui/material";
+import { CardContent, CardMedia, Container, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import CountDown from "../components/CountDown";
 import Rating from "../components/Rating";
@@ -10,15 +10,18 @@ import '../css/itemList.css'; // 분리된 CSS 파일 import
 import { selectUserData } from '../api/firebase';
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
 import { fetchWishList } from "../api/wishApi ";
+import ImageDownload from "../components/AI/ImageDownload";
+import { Button } from "react-bootstrap";
 
 
-export default function ItemList() {
+export default function WishItemList() {
   const [isLoading, setIsLoading] = useState(true);
   const [list, setList] = useState([]);
   const navigate = useNavigate();
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [image, setImage] = useState('');
   const auth = getAuth();
 
   useEffect(() => {
@@ -62,8 +65,23 @@ export default function ItemList() {
     fetchData();
   }, [userInfo]);
 
+  const handleAiImg = (img) => {
+    setImage(img)
+    resetImageAfterDelay()
+  };
+
+  const resetImageAfterDelay = () => {
+    setTimeout(() => {
+      setImage(null);
+    }, 3000); 
+  };
+
   return (
-    <>
+    <Container>
+      <Typography variant="h4">
+        찜 목록
+      </Typography>
+      <ImageDownload img={image} />
       <Grid container spacing={2} className="itemList">
         {list.map((item, index) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={index} marginBottom={10}>
@@ -96,9 +114,10 @@ export default function ItemList() {
                 </Stack>
               </CardContent>
             </Paper>
+            <Button onClick={() => { handleAiImg(item.img1) }}>ai 생성 이미지</Button>
           </Grid>
         ))}
       </Grid>
-    </>
+    </Container>
   )
 }

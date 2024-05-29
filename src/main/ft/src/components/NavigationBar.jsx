@@ -395,7 +395,7 @@ export default function NavigationBar() {
               alignItems: 'center', // 세로 방향 가운데 정렬
             }}
           >
-            <Link to={'/'} className='mainPageLink'>FUNniture</Link>
+            <Link to={'/'} className='mainPageLink'>FURNiture</Link>
           </Typography>
           <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 2 }}>
             <Stack direction="column" style={{marginTop: 30}}>

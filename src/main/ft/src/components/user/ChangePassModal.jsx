@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { changePassword } from '../api/firebase';
+import { changePassword } from '../../api/firebase';
 import {
   Box,
   Typography,
   TextField,
   Button,
 } from "@mui/material";
+import { TextAlignment } from '@cloudinary/url-gen/qualifiers';
 
-const FindPassModal = ({ handleClose }) => {
+const ChangePassModal = ({ handleClose }) => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
 
@@ -26,8 +27,8 @@ const FindPassModal = ({ handleClose }) => {
 
   return (
     <Box>
-      <Typography variant="h6">
-        이메일을 입력하세요 - 파이어베이스
+      <Typography variant="h6" style={{ textAlign: 'center' }}>
+        이메일을 입력하세요(비밀번호 변경)
       </Typography>
       <TextField
         type="email"
@@ -37,20 +38,19 @@ const FindPassModal = ({ handleClose }) => {
         fullWidth
         margin="normal"
       />
-      <Button variant='contained' onClick={() => findPassFirebase(email)}>
-        제출
-      </Button>
+      <Box display="flex" justifyContent="center" mt={2}>
+        <Button variant="contained" onClick={() => findPassFirebase(email)}>
+          이메일로 인증코드 보내기
+        </Button>
+      </Box>
       {message && (
         <Box mt={2}>
           <Typography variant="h6">이메일 주소 확인</Typography>
           <Typography variant="body1">{message}</Typography>
         </Box>
       )}
-      <Button variant='contained' onClick={handleClose} sx={{ mt: 2 }}>
-        닫기
-      </Button>
     </Box>
   );
 };
 
-export default FindPassModal;
+export default ChangePassModal;

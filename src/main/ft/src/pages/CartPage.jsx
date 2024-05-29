@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { selectUserData } from '../api/firebase';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Container, Grid, Typography, Table, TableBody, TableCell, TableHead, TableRow,
-        Checkbox, Input, CardMedia, useMediaQuery, useTheme, } from '@mui/material';
+import {
+  Box, Button, Container, Grid, Typography, Table, TableBody, TableCell, TableHead, TableRow,
+  Input, CardMedia, useMediaQuery, useTheme,
+} from '@mui/material';
 import '../css/cartPage.css';
 import { deleteAllCartItems, deleteCartItem, fetchCartItem, updateCartItemQuantity } from '../api/cartApi';
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
-  const [selectedItems, setSelectedItems] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
@@ -65,32 +66,9 @@ const CartPage = () => {
     calculateTotalPrice();
   }, [cartItems]);
 
-  // 개별 선택 버튼
-  const handleToggleItem = (itemId, itemOption) => {
-    const selectedItem = cartItems.find((item) => item.iid === itemId && item.option === itemOption);
-    const isSelected = selectedItems.some((item) => item.cid === selectedItem.cid);
-
-    if (isSelected) {
-      setSelectedItems((prevItems) => prevItems.filter((item) => item.cid !== selectedItem.cid));
-    } else {
-      setSelectedItems((prevItems) => [...prevItems, selectedItem]);
-    }
-  };
-
-  // 전체 선택 버튼
-  const handleToggleAllItems = () => {
-    if (selectedItems.length === cartItems.length) {
-      // If all items are selected, clear the selection
-      setSelectedItems([]);
-    } else {
-      // Otherwise, select all items
-      setSelectedItems([...cartItems]);
-    }
-  };
-
   // 카트 아이템 삭제
   const handleDeleteItem = (cid) => {
-    deleteCartItem(currentUserEmail, cid )
+    deleteCartItem(currentUserEmail, cid)
       .then((response) => {
         if (response.data === true) {
           // 성공적으로 삭제된 경우
@@ -171,16 +149,9 @@ const CartPage = () => {
     const handleClick = (item) => {
       navigate(`/item/detail/${item.iid}`);
     };
-    
+
     return cartItems.map((item) => (
       <TableRow key={`${item.iid}-${item.option}`}>
-        <TableCell>
-          <Checkbox
-            checked={selectedItems.some((selectedItem) => selectedItem.cid === item.cid)}
-            onChange={() => handleToggleItem(item.iid, item.option)}
-            size="small"
-          />
-        </TableCell>
         <TableCell>
           <CardMedia
             component="img"
@@ -193,10 +164,10 @@ const CartPage = () => {
         </TableCell>
         <TableCell>{item.name}</TableCell>
         {!isSmallScreen &&
-        <>
           <TableCell>{item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell>
+        }
+        {!isSmallScreen &&
           <TableCell>{item.option}</TableCell>
-        </>
         }
         <TableCell>
           <Input
@@ -204,20 +175,13 @@ const CartPage = () => {
             value={item.count}
             onChange={(e) => handleQuantityChange(item.cid, item.iid, item.ioid, e.target.value)}
             inputProps={{ min: 1, max: item.stockCount }}
-            style={{ fontSize: '16px', padding: '4px' }}
           />
         </TableCell>
         <TableCell>{item.totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell>
         <TableCell>
-        <button
-          onClick={() => handleDeleteItem(item.cid)}
-          variant="contained"
-          color="error"
-          size="mini"
-          style={{ borderRadius: '20%', backgroundColor: 'rgb(219, 68, 85)', paddingTop: 3, border: 0, color:'white' }}
-        >
-          X
-        </button>
+          <Button onClick={() => handleDeleteItem(item.cid)} variant="contained" color="error">
+            X
+          </Button>
         </TableCell>
       </TableRow>
     ));
@@ -225,10 +189,8 @@ const CartPage = () => {
 
   // =================== order 관련 ======================
 
-
-  // orderpage로 보내주는 역활
+  // orderpage로 보내주는 역할
   const handleOrder = async () => {
-
     if (!userInfo || !userInfo.email) {
       // 사용자가 로그인되어 있지 않은 경우, 로그인 페이지로 리다이렉트
       window.location.href = '/signIn'; // 로그인 페이지 URL을 실제로 사용하는 주소로 변경해주세요
@@ -236,7 +198,7 @@ const CartPage = () => {
     }
 
     // 넘어갈 데이터들
-    const orderItems = selectedItems.map((item) => ({
+    const orderItems = cartItems.map((item) => ({
       iid: item.iid, // orderItem
       img: item.img1, // 띄우기
       name: item.name, // order
@@ -245,15 +207,13 @@ const CartPage = () => {
       count: item.count, // orderItem
       price: item.salePrice && new Date(item.saleDate) > new Date() ? item.salePrice : item.price, // orderItem
       totalPrice: item.totalPrice, // order
-     
     }));
 
-   // orderItems를 로컬 스토리지에 저장
-   localStorage.setItem('orderItems', JSON.stringify(orderItems)); //  객체나 배열을 JSON 문자열로 변환
-   console.log(orderItems);
-   // Order 페이지로 이동할 때 orderItems 상태를 함께 전달
-   navigate("/order", { state: { orderItems } });
-
+    // orderItems를 로컬 스토리지에 저장
+    localStorage.setItem('orderItems', JSON.stringify(orderItems)); //  객체나 배열을 JSON 문자열로 변환
+    console.log(orderItems);
+    // Order 페이지로 이동할 때 orderItems 상태를 함께 전달
+    navigate("/order", { state: { orderItems } });
   };
 
   // =================== order 관련 끝======================
@@ -263,35 +223,18 @@ const CartPage = () => {
       maxWidth="lg"
       sx={{ mt: 5 }}
     >
-      {/* <Typography variant="h4" gutterBottom>
-        장바구니
-      </Typography> */}
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         <Grid item xs={12} md={15}>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ width: isSmallScreen ? '10%' : '10%' }}>
-                  <Checkbox
-                    variant="contained"
-                    color="primary"
-                    onClick={handleToggleAllItems}
-                    size="small"
-                  >
-                    {selectedItems.length === cartItems.length ? '전체 선택 해제' : '전체 선택'}
-                  </Checkbox>
-                </TableCell>
-                <TableCell sx={{ width: isSmallScreen ? '30%' : '10%' }}>이미지</TableCell>
-                <TableCell sx={{ width: isSmallScreen ? '30%' : '30%' }}>상품명</TableCell>
-                {!isSmallScreen && 
-                <>
-                  <TableCell sx={{ width: isSmallScreen ? '0%' : '10%' }}>가격</TableCell>
-                  <TableCell sx={{ width: isSmallScreen ? '0%' : '10%' }}>옵션</TableCell>
-                </>
-                }
-                <TableCell sx={{ width: isSmallScreen ? '10%' : '10%' }}>수량</TableCell>
-                <TableCell sx={{ width: isSmallScreen ? '10%' : '10%' }}>합계</TableCell>
-                <TableCell sx={{ width: isSmallScreen ? '10%' : '10%' }}>삭제</TableCell>
+                <TableCell>이미지</TableCell>
+                <TableCell>상품명</TableCell>
+                {!isSmallScreen && <TableCell>가격</TableCell>}
+                {!isSmallScreen && <TableCell>옵션</TableCell>}
+                <TableCell>수량</TableCell>
+                <TableCell>합계</TableCell>
+                <TableCell>삭제</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>{renderCartItemRows()}</TableBody>
@@ -303,15 +246,6 @@ const CartPage = () => {
             >
               총 상품 가격: {totalCount.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원
             </Typography>
-            <Button
-              variant="contained"
-              color="error"
-              onClick={handleDeleteAllItems}
-              disabled={selectedItems.length === 0}
-              sx={{ marginBottom: 2, mr: 'auto', whiteSpace: 'nowrap' }}
-            >
-              전체 삭제
-            </Button>
           </Box>
           <Box
             xs={12}
@@ -323,7 +257,6 @@ const CartPage = () => {
               variant="contained"
               color="primary"
               onClick={handleOrder}
-              disabled={selectedItems.length === 0}
               sx={{ marginTop: 2 }}
             >
               주문하기
