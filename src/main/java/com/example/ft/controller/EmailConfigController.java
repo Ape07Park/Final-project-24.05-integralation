@@ -1,5 +1,6 @@
 package com.example.ft.controller;
 
+import org.json.simple.JSONObject;
 import org.springframework.http.HttpStatus; 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,5 +31,18 @@ public class EmailConfigController {
         log.info("인증코드 : " + code);
         System.out.println("성공 @@@@@@@@@@@@");
         return code;
+    }
+	
+	// ePw 전송하기
+	@GetMapping("/getEpw")
+    public JSONObject getEpw() {
+        String ePw = emailService.sendEpwForCompare();
+               
+    	System.out.println("ePw---" + ePw);
+    	
+    	JSONObject jCode = new JSONObject();
+    	jCode.put("ePw", ePw);
+    	
+        return jCode;
     }
 }

@@ -8,5 +8,6 @@ public interface EmailService {
 	MimeMessage createMessage(String recipient) throws MessagingException, UnsupportedEncodingException;
 
 	String sendSimpleMessage(String recipient) throws Exception;
-
+	
+	String sendEpwForCompare();
 }
