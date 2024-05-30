@@ -3,6 +3,7 @@ import { Modal, Box, TextField, Button, Typography } from "@mui/material";
 import {selectUserEmailPassword, login, auth, changePasswordFromDB, 
   updatePassword, signInWithEmailAndPassword, logout} from "../../api/firebase";
 import axios from 'axios';
+import CustomButton from "../CustomButton";
 
 
 const FindPassModalPhone = ({ open, onClose }) => {
@@ -48,6 +49,7 @@ const FindPassModalPhone = ({ open, onClose }) => {
   
         // 로그인 시도
         loginUser();
+        
       } else {
         setIsCodeVerified(false);
         console.log('인증번호 불일치');
@@ -130,9 +132,9 @@ const FindPassModalPhone = ({ open, onClose }) => {
               fullWidth
               margin="normal"
             />
-            <Button variant="contained" onClick={sendCodeToMobile}>
+            <CustomButton variant="contained" onClick={sendCodeToMobile}>
               휴대폰으로 인증 코드 보내기
-            </Button>
+            </CustomButton>
           </>
         ) : (
           <>
@@ -144,9 +146,9 @@ const FindPassModalPhone = ({ open, onClose }) => {
               fullWidth
               margin="normal"
             />
-            <Button variant="contained" onClick={checkVerificationCode}>
+            <CustomButton variant="contained" onClick={checkVerificationCode}>
               코드 확인
-            </Button>
+            </CustomButton>
           </>
         )}
         {isCodeVerified && (
@@ -168,9 +170,9 @@ const FindPassModalPhone = ({ open, onClose }) => {
               fullWidth
               margin="normal"
             />
-            <Button variant="contained" onClick={changePassword}>
+            <CustomButton variant="contained" onClick={changePassword}>
               비밀번호 변경
-            </Button>
+            </CustomButton>
           </>
         )}
       </Box>

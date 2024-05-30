@@ -13,7 +13,8 @@ function SignIn() {
   const [userInfo, setUserInfo] = useState({ email: '', password: '' });
   const [modalType, setModalType] = useState(null);
   const navigate = useNavigate();
-
+  const [isHoveredGoogle, setIsHoveredGoogle] = useState(false);
+  const [isHoveredKakao, setIsHoveredKakao] = useState(false);
   const handleChange = e => {
     setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
   }
@@ -93,6 +94,14 @@ function SignIn() {
     setModalType(null);
   };
 
+  const hoverGoogle = () => {
+    setIsHoveredGoogle(!isHoveredGoogle);
+  };
+
+  const hoverKakao = () => {
+    setIsHoveredKakao(!isHoveredKakao);
+  };
+
 
   return (
     <ThemeProvider theme={createTheme()}>
@@ -149,45 +158,81 @@ function SignIn() {
               <Typography variant="body2" color="text.secondary" align="center" sx={{ mb: 2 }}>
                 아직 계정이 없으신가요?
                 <Link to='/signUp' style={{ textDecoration: 'none', marginLeft: 3 }}>
-                  사용자 등록
+                  회원가입
                 </Link>
               </Typography>
               <Box sx={{ textAlign: 'center', mb: 2 }}>
-                <Divider sx={{ my: 2 }} />
+                <Divider sx={{ my: 4 }} />
+                <Typography variant="h6">
+                  아이디 찾기
+                </Typography>
+                <br />
                 <Typography>
                   <Link onClick={handleOpenFindEmailPhone} style={{ textDecoration: 'none' }}>
-                    휴대폰으로 아이디 찾기
+                    아이디 찾기
                   </Link>
                 </Typography>
-                <Divider sx={{ my: 2 }} />
-                <Typography>
 
-                  <Link onClick={handleOpenFindPassModalFirebase} style={{ marginLeft: 3, textDecoration: 'none' }}>
-                    이메일로 비밀번호 변경
-                  </Link>
-                  <Divider sx={{ my: 2 }} />
-                  <Link onClick={handleOpenFindPassPhone} style={{ marginLeft: 5, textDecoration: 'none' }}>
-                    휴대폰으로 비밀번호 찾기
-                  </Link>
-                  {/* 스프링으로 비번 찾기 버튼 */}
-                  <Divider sx={{ my: 2 }} />
-                  <Link onClick={handleOpenFindPassModalSpring} style={{ marginLeft: 5, textDecoration: 'none' }}>
-                    스프링으로 비밀번호 찾기
-                  </Link>
-                   {/* 스프링으로 비번 찾기 버튼 끝 */}
-                </Typography>
+                <br />
+
+                <Box>
+                  <Typography variant="h6">
+                    비밀번호 찾기 & 변경
+                  </Typography>
+                  <Typography style={{ margin: 10 }}>
+                    <Box mb={2}>
+                      <Link onClick={handleOpenFindPassModalFirebase} style={{ textDecoration: 'none' }}>
+                        이메일
+                      </Link>
+                    </Box>
+                    <Box mb={2}>
+                      <Link onClick={handleOpenFindPassPhone} style={{ textDecoration: 'none' }}>
+                        휴대폰
+                      </Link>
+                    </Box>
+                    <Box mb={2}>
+                      <Link onClick={handleOpenFindPassModalSpring} style={{ textDecoration: 'none' }}>
+                        (스프링 공부용)
+                      </Link>
+                    </Box>
+                  </Typography>
+                </Box>
               </Box>
             </Box>
 
             <Grid container justifyContent="center" spacing={2} sx={{ mt: 2 }}>
               <Grid item>
                 <Stack direction="row" spacing={2}>
-                  <CustomButton onClick={handleGoogle} aria-label="Google 로그인">
-                    <img src="img/googlelogo.png" alt="Google Logo" style={{ width: 30 }} />
-                  </CustomButton>
-                  <CustomButton onClick={handleKakao}>
-                    <img src="img/kakaologo.png" alt="Kakao Logo" style={{ width: 30 }} />
-                  </CustomButton>
+
+                  <img
+                    src="img/googlelogo.png"
+                    alt="Google Logo"
+                    style={{
+                      width: 40,
+                      height: 40,
+                      cursor: 'pointer',
+                      ...(isHoveredGoogle && { transform: 'scale(1.1)', transition: 'transform 0.3s' }),
+                    }}
+                    onClick={() => {
+                      handleGoogle();
+                      hoverGoogle();
+                    }}
+                  />
+                  <img
+                    src="img/kakaologo.png"
+                    alt="Kakao Logo"
+                    style={{
+                      width: 40,
+                      height: 40,
+                      cursor: 'pointer',
+                      ...(isHoveredKakao && { transform: 'scale(1.1)', transition: 'transform 0.3s' }),
+                    }}
+                    onClick={() => {
+                      handleKakao();
+                      hoverKakao();
+                    }}
+                  />
+
                 </Stack>
               </Grid>
             </Grid>
@@ -222,9 +267,9 @@ function SignIn() {
             >
               {modalType === 'findEmail' && <FindEmailModalPhone open={modalType === 'findEmail'} onClose={handleCloseFindPassModal} />}
               {modalType === 'findPassToUsedFirebase' && <FindPassModal handleClose={handleCloseFindPassModal} />}
-              {modalType === 'spring' && <FindPassModalSpring handleClose={handleCloseFindPassModal} />}
+              {modalType === 'spring' && <FindPassModalSpring open={modalType === 'spring'} onClose={handleCloseFindPassModal} />}
               {modalType === 'mobile' && <FindPassModalPhone open={modalType === 'mobile'} onClose={handleCloseFindPassModal} />}
-            
+
             </Box>
           </Fade>
         </Modal>

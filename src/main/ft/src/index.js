@@ -32,6 +32,7 @@ import ProductAnalysis from './pages/Productanalysis'
 import NonMemberOrderHistory from './pages/NonMemberOrderHistory';
 import ItemMenuList from './pages/ItemMenuList';
 import DeveloperPage from './pages/DeveloperPage';
+import Calendar from './pages/Calendar';
 
 const router = createBrowserRouter([
   {
@@ -65,6 +66,7 @@ const router = createBrowserRouter([
       { path: 'admin/QnAlist', element: <AdminQnAList/> },
       { path: 'admin/order/list', element: <AdminOrderLists /> },
       { path: 'admin/chart', element: <Dashboard /> },
+      { path: 'calendar', element: <Calendar /> },
     ]
   }
 ]);

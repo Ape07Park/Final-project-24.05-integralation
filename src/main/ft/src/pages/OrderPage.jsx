@@ -1,55 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Box,
-  Button,
-  Card,
-  Container,
-  Grid,
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableContainer,
-  TableRow,
-  CardMedia,
-  TextField,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Select,
-  Divider,
-  useTheme,
-  useMediaQuery,
+  Box, Button, Card, Container, Grid, Typography, Table, TableBody, TableCell, TableHead, TableContainer,useTheme,
+  TableRow, Checkbox, CardMedia, TextField, MenuItem, FormControl, InputLabel, Select, Divider, useMediaQuery,
 } from "@mui/material";
-
+import { nanoid } from "nanoid";
 import { useDaumPostcodePopup } from 'react-daum-postcode';
-import axios from 'axios';
 import { selectUserData } from '../api/firebase';
 import { useNavigate } from 'react-router-dom';
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
 import CustomButton from '../components/CustomButton';
 
+
 const Order = () => {
+  const [cartItems, setCartItems] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+  // order
   const [orderItems, setOrderItems] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0); // 총 결제 금액 추가
   const [totalPayment, setTotalPayment] = useState(0);
+  // user
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
-
-  const [name, setName] = useState('');
-  const [postCode, setPostCode] = useState('');
-  const [addr, setAddr] = useState('');
-  const [detailAddr, setDetailAddr] = useState('');
-  const [tel, setTel] = useState('');
-  const [req, setReq] = useState('');
-  const [messageType, setMessageType] = useState('');
-
   const navigate = useNavigate();
   const auth = getAuth();
+  const [orderId, setOrderId] = useState(null);
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('lg'));
 
+  useEffect(() => {
+    setOrderId(nanoid())
+  }, [])
+  // ======== 로그인한 유저정보 불러오기 ==========
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -66,19 +49,52 @@ const Order = () => {
         try {
           const info = await selectUserData(currentUserEmail);
           setUserInfo(info);
+
         } catch (error) {
           console.error('사용자 정보를 불러오는 중 에러:', error);
         }
       };
       fetchUserInfo();
+      // fetchCartItems();
     }
   }, [currentUserEmail]);
-
+  // ======== 로그인한 유저정보 불러오기 끝 ==========
+  // ======== 아이템 정보 불러오기  ==========
   useEffect(() => {
+    // Get orderItems from location state
     const locationState = window.history.state;
     if (locationState && locationState.orderItems) {
       setOrderItems(locationState.orderItems);
     } else {
+      // 로컬스토리지에서 orderItems를 가져옵니다.
+      const storedOrderItems = JSON.parse(localStorage.getItem('orderItems'));
+      if (storedOrderItems) {
+        setOrderItems(storedOrderItems);
+      }
+    }
+  }, []);
+  // ======== 아이템 정보 불러오기 끝 ==========
+  // ======== 아이템 총 금액 계산 ==========
+  useEffect(() => {
+    // 주문 아이템이 변경될 때마다 총 결제 금액을 다시 계산
+    const calculateTotalPayment = () => {
+      // 주문 아이템의 가격과 수량을 곱하여 총 결제 금액 계산
+      const totalPrice = orderItems.reduce((acc, item) => acc + (item.price * item.count), 0);
+      setTotalPayment(totalPrice);
+    };
+
+    calculateTotalPayment();
+  }, [orderItems]);
+  // ======== 아이템 총 금액 계산 끝 ==========
+  // ======== order로 통합하기 ==========
+  // order로 통합하기 
+  useEffect(() => {
+    // Get orderItems from location state
+    const locationState = window.history.state;
+    if (locationState && locationState.orderItems) {
+      setOrderItems(locationState.orderItems);
+    } else {
+      // 로컬스토리지에서 orderItems를 가져옵니다.
       const storedOrderItems = JSON.parse(localStorage.getItem('orderItems'));
       if (storedOrderItems) {
         setOrderItems(storedOrderItems);
@@ -86,15 +102,70 @@ const Order = () => {
     }
   }, []);
 
+  const handleSendOrder = async () => {
+    // 필수 정보가 모두 입력되었는지 확인
+    if (!name || !postCode || !addr || !detailAddr || !tel) {
+      alert('모든 필수 정보를 입력해주세요.');
+      return;
+    }
+    try {
+      // 입력된 정보를 객체로 만듦
+      const order = {
+        email: currentUserEmail,
+        name: name,
+        postCode: postCode,
+        addr: addr,
+        detailAddr: detailAddr,
+        tel: tel,
+        req: req,
+        totalPrice: totalPrice, // 총 결제 금액 추가
+        orderId: orderId,
+      };
+      const orderItemData = orderItems.map(orderItem => ({
+        iid: orderItem.iid,
+        ioid: orderItem.ioid,
+        count: orderItem.count,
+        price: orderItem.price,
+        oid: null // oid를 초기화합니다.
+      }));
+      // 서버로 전송할 데이터 구조 수정
+      const data = {
+        order: order,  // 주문 정보
+        orderItems: orderItemData  // 주문 아이템 정보
+      };
+      navigate('/checkout', { state: { orderData: data } });
+      // 모든 주문이 성공적으로 생성되었을 때 메시지 출력
+      alert('주문이 성공적으로 생성되었습니다.');
+    } catch (error) {
+      console.error('주문 처리 중 오류:', error);
+      alert('주문 생성 중 오류가 발생했습니다.');
+    }
+  };
+
   useEffect(() => {
+    // 주문 아이템이 변경될 때마다 총 결제 금액을 다시 계산
     const calculateTotalPayment = () => {
+      // 주문 아이템의 가격과 수량을 곱하여 총 결제 금액 계산
       const totalPrice = orderItems.reduce((acc, item) => acc + (item.price * item.count), 0);
-      setTotalPayment(totalPrice);
+      setTotalPrice(totalPrice);
     };
     calculateTotalPayment();
   }, [orderItems]);
+  // ----------------------- user 관련 -------------------------------
+  // =================== 자동으로 구매자 정보 들어가게 함 ============
+  // useState는 함수 컴포넌트에서 어떤 상태(state)를 관리
+  const [name, setName] = useState('');
+  const [postCode, setPostCode] = useState('');
+  const [addr, setAddr] = useState('');
+  const [detailAddr, setDetailAddr] = useState('');
+  const [tel, setTel] = useState('');
+  const [req, setReq] = useState('');
+  const [messageType, setMessageType] = useState('');
+  const [customMessage, setCustomMessage] = useState('');
+  const openPostcode = useDaumPostcodePopup("//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js");
 
-  useEffect(() => {
+  useEffect(() => { // 컴포넌트가 렌더링될 때마다 실행되기 때문에, 기본적으로 매 렌더링마다 실행됩니다. 
+    // 두 번째 인자로 배열을 전달하여 특정 상황에만 실행되도록 제어
     if (userInfo) {
       const { name, postCode, addr, detailAddr, tel, req } = userInfo;
       setName(name || '');
@@ -105,53 +176,15 @@ const Order = () => {
       setReq(req || '');
     }
   }, [userInfo]);
-
-  const handleSendOrder = async () => {
-    if (!name || !postCode || !addr || !detailAddr || !tel) {
-      alert('모든 필수 정보를 입력해주세요.');
-      return;
-    }
-
-    try {
-      const order = {
-        email: currentUserEmail,
-        name: name,
-        postCode: postCode,
-        addr: addr,
-        detailAddr: detailAddr,
-        tel: tel,
-        req: req,
-        totalPrice: totalPayment
-      };
-
-      const orderItemData = orderItems.map(orderItem => ({
-        iid: orderItem.iid,
-        ioid: orderItem.ioid,
-        count: orderItem.count,
-        price: orderItem.price,
-        oid: null
-      }));
-
-      const data = {
-        order: order,
-        orderItems: orderItemData
-      };
-
-      const response = await axios.post('/ft/order/insert', data);
-      console.log(response);
-      alert('주문이 성공적으로 생성되었습니다.');
-    } catch (error) {
-      console.error('주문 처리 중 오류:', error);
-      alert('주문 생성 중 오류가 발생했습니다.');
-    }
-  };
-
-  const openPostcode = useDaumPostcodePopup("//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js");
-
+  // =================== 자동으로 구매자 정보 들어가게 함 끝============
+  // =========================== 받는 사람 정보 보내기 함수 ======================
+  // ================ 받는 사람 정보 입력 ===================
+  // Daum 우편번호 팝업 관련 함수
+  // Daum 우편번호 팝업에서 주소 선택 시 호출되는 함수
   const handleComplete = data => {
-    let fullAddress = data.address;
+    let fullAddress = data.address; // 선택된 주소
     let extraAddress = '';
-    let postCode = data.zonecode;
+    let postCode = data.zonecode; // 우편번호
 
     if (data.addressType === 'R') {
       if (data.bname !== '') {
@@ -162,15 +195,20 @@ const Order = () => {
       }
       fullAddress += extraAddress !== '' ? ` (${extraAddress})` : '';
     }
+    // 주소 설정
     setAddr(fullAddress);
     setPostCode(postCode);
   }
-
+  // 취소 버튼 클릭 시 이전 페이지로 이동
+  const handleCancel = () => {
+    navigate(-1);
+  };
   const handleTelChange = (e) => {
     const { value } = e.target;
+    // 숫자 이외의 문자 제거
     const telValue = value.replace(/[^0-9]/g, '');
+    // 하이픈(-) 추가
     let formattedTel = '';
-
     if (telValue.length <= 3) {
       formattedTel = telValue;
     } else if (telValue.length <= 7) {
@@ -180,9 +218,21 @@ const Order = () => {
     } else {
       formattedTel = telValue.slice(0, 3) + '-' + telValue.slice(3, 7) + '-' + telValue.slice(7, 11);
     }
-    const maxLength = 13;
+
+    // 최대 길이 제한을 넘지 않도록 자르기
+    const maxLength = 13; // 최대 길이는 13자리 (010-1234-5678)
     const updatedTel = formattedTel.slice(0, maxLength);
+
+    // 상태 업데이트
     setTel(updatedTel);
+  };
+
+  const handleMessageChange = (e) => {
+    const selectedMessageType = e.target.value;
+    setMessageType(selectedMessageType);
+    if (selectedMessageType !== '직접 입력') {
+      setCustomMessage('');
+    }
   };
 
   return (

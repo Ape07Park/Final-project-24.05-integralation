@@ -1,0 +1,94 @@
+/* 여기가 달력 컨테이너 스타일 */
+.calendar-container {
+  font-family: Arial, sans-serif; /* 폰트 설정 */
+  width: 60%;  /* 전체 너비의 60% */ 
+  margin: 0 auto;  /* 가운데 정렬 */
+}
+/* 여기가 달력 헤더 스타일 */
+.calendar-header {
+  display: flex; /* 유연한 박스 레이아웃 사용 */
+  justify-content: space-between;  /* 공간을 균등하게 배분 */
+  align-items: center;  /* 수직 중앙 정렬 */
+  padding: 10px 0;  /* 상하 패딩 */
+  list-style: none; /* 리스트 스타일 제거 */
+  margin: 0;   /* 외부 여백 제거 */
+}
+/* 여기가 < 이전달, 다음달 > 버튼 스타일 */
+.calendar-header .prev, .calendar-header .next {
+  flex: 1;  /* 동일한 공간 배분 */
+  display: flex; /* 유연한 박스 레이아웃 사용 */
+  justify-content: center; /* 가운데 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+}
+/* 여기가 현재 날짜 표시 스타일 */
+.calendar-header .date {
+  flex: 2; /* 다른 요소보다 2배 공간 차지 */
+  text-align: center; /* 중앙 정렬 */
+  font-size: 1.2em; /* 폰트 크기 설정 */
+}
+/* 여기가 버튼 기본 스타일 */
+.calendar-header button {
+  background: none; /* 배경 제거 */
+  border: none; /* 테두리 제거 */
+  cursor: pointer; /* 커서 모양 변경 */
+  font-size: 1em; /* 폰트 크기 설정 */
+  display: flex; /* 유연한 박스 레이아웃 사용 */
+  align-items: center; /* 수직 중앙 정렬 */
+}
+/* 여기가 버튼 텍스트 스타일 */
+.calendar-header button span {
+  margin: 0 5px; /* 좌우 여백 */
+}
+/* 테이블 기본 스타일 */
+table {
+  width: 100%; /* 전체 너비 */
+  border-collapse: collapse; /* 테두리 겹침 제거 */
+}
+/* 테이블 헤더와 셀 기본 스타일 */
+th, td {
+  padding: 8px; /* 패딩 설정 */
+  text-align: center; /* 중앙 정렬 */
+  border: 1px solid #ddd; /* 테두리 설정 */
+}
+/* 테이블 헤더 스타일 */
+th {
+  background-color: #f2f2f2; /* 배경색 설정 */
+}
+/* 테이블 셀 스타일 */
+td {
+  width: 80px; /* 셀 너비 조정 */
+  height: 110px; /* 셀 높이 조정 */
+  vertical-align: top; /* 수직 정렬: 상단 */
+}
+/* 달력 일자 셀 스타일 */
+.calendar-day {
+  cursor: default;  /* 커서 모양 기본으로 변경 */
+  position: relative; /* 자식 요소 절대 위치 설정 */
+}
+/* 달력 일자 텍스트 스타일 */
+.calendar-day p {
+  margin: 0;  /* 외부 여백 제거 */
+  position: absolute; /* 절대 위치 */
+  top: 5px; /* 상단 여백 */
+  left: 5px; /* 좌측 여백 */
+  font-size: 14px; /* 폰트 크기 설정 */
+}
+/* 주문 건수 표시 스타일 */
+.order-count { 
+  display: block; /* 블록 요소로 변경 */
+  margin-top: 20px;  /* 상단 여백 */
+  font-size: 0.8em; /* 폰트 크기 설정 */
+  color: #666; /* 텍스트 색상 설정 */
+}
+/* 빈 셀 스타일 */
+.empty-day {
+  visibility: hidden; /* 가시성 숨김 */
+}
+/* 일요일 스타일 */
+.t0 {
+  color: red;  /* 텍스트 색상: 빨간색 */
+}
+/* 토요일 스타일 */
+.t6 {
+  color: blue; /* 텍스트 색상: 파란색 */
+}

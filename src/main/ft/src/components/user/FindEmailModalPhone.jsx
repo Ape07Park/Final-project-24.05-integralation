@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Modal, Box, TextField, Button, Typography } from "@mui/material";
 import axios from 'axios';
 import { getDatabase, ref, get } from "firebase/database";
+import CustomButton from "../CustomButton";
 
 const FindEmailModalPhone = ({ open, onClose }) => {
   const [email, setEmail] = useState("");
@@ -111,9 +112,9 @@ const FindEmailModalPhone = ({ open, onClose }) => {
               fullWidth
               margin="normal"
             />
-            <Button variant="contained" onClick={sendCodeToMobile}>
+            <CustomButton variant="contained" onClick={sendCodeToMobile}>
               휴대폰으로 인증 코드 보내기
-            </Button>
+            </CustomButton>
           </>
         ) : (
           <>
@@ -125,9 +126,9 @@ const FindEmailModalPhone = ({ open, onClose }) => {
               fullWidth
               margin="normal"
             />
-            <Button variant="contained" onClick={checkVerificationCode}>
+            <CustomButton variant="contained" onClick={checkVerificationCode}>
               코드 확인
-            </Button>
+            </CustomButton>
           </>
         )}
         {isCodeVerified && (

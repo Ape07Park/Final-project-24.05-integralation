@@ -13,7 +13,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Divider } from "@mui/material";
+import { Divider, Stack } from "@mui/material";
 
 // 디자인
 function Copyright(props) {
@@ -42,6 +42,40 @@ export default function SignUp() {
 
   localStorage.setItem('prevPage', '/signUp');
   const navigate = useNavigate();
+
+  const [isHoveredGoogle, setIsHoveredGoogle] = useState(false);
+  const [isHoveredKakao, setIsHoveredKakao] = useState(false);
+
+  const handleGoogle = async () => {
+    try {
+      const userInfo = await loginWithGoogle();
+      console.log("구글로 로그인한 사용자 정보:", userInfo);
+      navigate('/UserInfo');
+      setTimeout(() => {
+        alert("업데이트 페이지에서 사용자 정보를 업데이트 해주세요");
+      }, 700); // setTimeout을 사용하여 다음 이벤트 큐에 넣어 순서를 조정합니다.
+    } catch (error) {
+      console.error("구글 로그인 오류:", error);
+      alert("구글 로그인에 오류가 발생했습니다.");
+      navigate(-1); // 또는 다른 경로로 리다이렉트
+    }
+  }
+
+  const handleKakao = async () => {
+    try {
+      const userInfo = await loginWithKakao();
+      console.log("카카오로 로그인한 사용자 정보:", userInfo);
+      // 'UserInfo' 페이지로 이동 후, 일정 시간 뒤에 알림을 띄우고 'UserUpdate' 페이지로 이동
+      navigate('/UserInfo');
+      setTimeout(() => {
+        alert("업데이트 페이지에서 사용자 정보를 업데이트 해주세요");
+      }, 700);
+    } catch (error) {
+      console.error("카카오 로그인 오류:", error);
+      alert("카카오 로그인에 오류가 발생했습니다.");
+      navigate(-1); // 또는 다른 경로로 리다이렉트
+    }
+  }
 
   // 사용자 정보 변경 핸들러
   const handleChange = e => {
@@ -121,39 +155,6 @@ export default function SignUp() {
     navigate('/signIn');
   }
 
-  // 구글 로그인 핸들러
-  const handleGoogle = async () => {
-    try {
-      const userInfo = await loginWithGoogle();
-      console.log("구글로 로그인한 사용자 정보:", userInfo);
-      navigate('/UserInfo');
-      setTimeout(() => {
-        alert("업데이트 페이지에서 사용자 정보를 업데이트 해주세요");
-      }, 700); // setTimeout을 사용하여 다음 이벤트 큐에 넣어 순서를 조정합니다.
-    } catch (error) {
-      console.error("구글 로그인 오류:", error);
-      alert("구글 로그인에 오류가 발생했습니다.");
-      navigate(-1); // 또는 다른 경로로 리다이렉트
-    }
-  }
-
-  // 카카오 로그인 핸들러
-  const handleKakao = async () => {
-    try {
-      const userInfo = await loginWithKakao();
-      console.log("카카오로 로그인한 사용자 정보:", userInfo);
-      // 'UserInfo' 페이지로 이동 후, 일정 시간 뒤에 알림을 띄우고 'UserUpdate' 페이지로 이동
-      navigate('/UserInfo');
-      setTimeout(() => {
-        alert("업데이트 페이지에서 사용자 정보를 업데이트 해주세요");
-      }, 700);
-    } catch (error) {
-      console.error("카카오 로그인 오류:", error);
-      alert("카카오 로그인에 오류가 발생했습니다.");
-      navigate(-1); // 또는 다른 경로로 리다이렉트
-    }
-  }
-
   // Daum 우편번호 팝업 열기 함수
   const openPostcode = useDaumPostcodePopup("//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js");
 
@@ -179,6 +180,15 @@ export default function SignUp() {
       postCode: postCode // 우편번호를 사용자 정보에 업데이트
     });
   };
+
+  const hoverGoogle = () => {
+    setIsHoveredGoogle(!isHoveredGoogle);
+  };
+
+  const hoverKakao = () => {
+    setIsHoveredKakao(!isHoveredKakao);
+  };
+
 
   return (
     <>
@@ -368,6 +378,8 @@ export default function SignUp() {
               사용자 등록
             </CustomButton>
 
+            <Divider sx={{ my: 2 }} />
+
             {/* 이미 계정이 있으신가요? */}
             <Grid container justifyContent="center" spacing={2}>
               <Grid item>
@@ -375,23 +387,43 @@ export default function SignUp() {
                   계정이 있으신가요? 로그인
                 </Link>
               </Grid>
-              </Grid>
-              <Divider sx={{ my: 1 }} />
+            </Grid>
 
+            <Grid container justifyContent="center" spacing={2} sx={{ mt: 2 }}>
               <Grid item>
-                <Box display="flex" flexDirection="row" alignItems="center">
-                  <CustomButton onClick={handleGoogle} startIcon={<img src="img/googlelogo.png" alt="구글 로고" style={{ width: '36px', marginRight: '8px' }} />}>
-                    
-                  </CustomButton>
-                  <Box mx={1} />
-                  <CustomButton onClick={handleKakao} startIcon={<img src="img/kakaologo.png" alt="카카오 로고" style={{ width: '36px', marginRight: '8px' }} />}>
-                    
-                  </CustomButton>
-                </Box>
+                <Stack direction="row" spacing={2}>
+                  <img
+                    src="img/googlelogo.png"
+                    alt="Google Logo"
+                    style={{
+                      width: 40,
+                      height: 40,
+                      cursor: 'pointer',
+                      ...(isHoveredGoogle && { transform: 'scale(1.1)', transition: 'transform 0.3s' }),
+                    }}
+                    onClick={() => {
+                      handleGoogle();
+                      hoverGoogle();
+                    }}
+                  />
+                  <img
+                    src="img/kakaologo.png"
+                    alt="Kakao Logo"
+                    style={{
+                      width: 40,
+                      height: 40,
+                      cursor: 'pointer',
+                      ...(isHoveredKakao && { transform: 'scale(1.1)', transition: 'transform 0.3s' }),
+                    }}
+                    onClick={() => {
+                      handleKakao();
+                      hoverKakao();
+                    }}
+                  />
+                </Stack>
               </Grid>
-            
+            </Grid>
 
-            
           </Box>
           <Copyright sx={{ mt: 5 }} />
         </Container>

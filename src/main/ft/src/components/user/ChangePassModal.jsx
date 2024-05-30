@@ -6,7 +6,8 @@ import {
   TextField,
   Button,
 } from "@mui/material";
-import { TextAlignment } from '@cloudinary/url-gen/qualifiers';
+
+import CustomButton from '../CustomButton';
 
 const ChangePassModal = ({ handleClose }) => {
   const [email, setEmail] = useState('');
@@ -39,9 +40,9 @@ const ChangePassModal = ({ handleClose }) => {
         margin="normal"
       />
       <Box display="flex" justifyContent="center" mt={2}>
-        <Button variant="contained" onClick={() => findPassFirebase(email)}>
+        <CustomButton variant="contained" onClick={() => findPassFirebase(email)}>
           이메일로 인증코드 보내기
-        </Button>
+        </CustomButton>
       </Box>
       {message && (
         <Box mt={2}>

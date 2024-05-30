@@ -46,7 +46,7 @@ public class MessageController {
 	
 	private MakeRandomNum makeRandomNum = new MakeRandomNum();
 	
-	int verifyCode = Integer.parseInt(makeRandomNum.createRandomNumber());
+	int verifyCode; 
 	
 	
 	/**
@@ -66,6 +66,8 @@ public class MessageController {
 	// axios를 이용해 받는 사람의 번호를 가져오고 코드와 메시지 발송
     @PostMapping("/sendsms")
     public SingleMessageSentResponse sendOne(@RequestBody String to) {
+    	
+    	verifyCode = Integer.parseInt(makeRandomNum.createRandomNumber());
     	
     	String recipient = to.replaceAll("[^0-9]", "");
     	
