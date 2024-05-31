@@ -153,50 +153,29 @@ function SignIn() {
             >
               로그인
             </CustomButton>
-
             <Box sx={{ mt: 4, p: 2, border: '1px solid #e0e0e0', borderRadius: 2, boxShadow: 2 }}>
               <Typography variant="body2" color="text.secondary" align="center" sx={{ mb: 2 }}>
                 아직 계정이 없으신가요?
                 <Link to='/signUp' style={{ textDecoration: 'none', marginLeft: 3 }}>
-                  회원가입
+                  사용자 등록
                 </Link>
               </Typography>
               <Box sx={{ textAlign: 'center', mb: 2 }}>
-                <Divider sx={{ my: 4 }} />
-                <Typography variant="h6">
-                  아이디 찾기
-                </Typography>
-                <br />
+                <Divider sx={{ my: 2 }} />
                 <Typography>
-                  <Link onClick={handleOpenFindEmailPhone} style={{ textDecoration: 'none' }}>
+                  <Link onClick={handleOpenFindEmailPhone} style={{textDecoration: 'none'}}>
                     아이디 찾기
                   </Link>
                 </Typography>
-
-                <br />
-
-                <Box>
-                  <Typography variant="h6">
-                    비밀번호 찾기 & 변경
-                  </Typography>
-                  <Typography style={{ margin: 10 }}>
-                    <Box mb={2}>
-                      <Link onClick={handleOpenFindPassModalFirebase} style={{ textDecoration: 'none' }}>
-                        이메일
-                      </Link>
-                    </Box>
-                    <Box mb={2}>
-                      <Link onClick={handleOpenFindPassPhone} style={{ textDecoration: 'none' }}>
-                        휴대폰
-                      </Link>
-                    </Box>
-                    <Box mb={2}>
-                      <Link onClick={handleOpenFindPassModalSpring} style={{ textDecoration: 'none' }}>
-                        (스프링 공부용)
-                      </Link>
-                    </Box>
-                  </Typography>
-                </Box>
+                <Typography>
+                  비밀번호 찾기
+                  <Link onClick={handleOpenFindPassModalFirebase} style={{marginLeft: 3, textDecoration: 'none'}}>
+                    이메일
+                  </Link>
+                  <Link onClick={handleOpenFindPassPhone} style={{marginLeft: 5, textDecoration: 'none'}}>
+                    휴대폰
+                  </Link>
+                </Typography>
               </Box>
             </Box>
 

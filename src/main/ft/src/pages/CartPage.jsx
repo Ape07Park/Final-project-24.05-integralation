@@ -255,9 +255,8 @@ const CartPage = () => {
           >
             <Button
               variant="contained"
-              color="primary"
               onClick={handleOrder}
-              sx={{ marginTop: 2 }}
+              sx={{ marginTop: 2, }}
             >
               주문하기
             </Button>

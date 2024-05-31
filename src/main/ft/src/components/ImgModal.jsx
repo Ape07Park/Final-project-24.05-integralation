@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
+import { Grid } from '@mui/material';
 
 const style = {
   position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: { xs: '50%', md: '60%', lg: '80%' }, // 모달 창의 너비를 80%로 설정
+  width: { xs: '80%', md: '80%', lg: '80%' }, // 모달 창의 너비를 80%로 설정
+
   maxWidth: 600, // 모달 창의 최대 너비를 600px로 제한
   maxHeight: '80%', // 모달 창의 최대 높이를 80%로 설정
   bgcolor: 'background.paper',
@@ -18,7 +20,8 @@ const style = {
 };
 
 const imgStyle = {
-  height: '100%'
+  height: '100%',
+  width: '100%'
 };
 
 export default function ImgModal(img) {
@@ -43,9 +46,9 @@ export default function ImgModal(img) {
         >
           <Box sx={style}>
             <span style={{ position: 'absolute', top: 10, right: 10, cursor: 'pointer'}} onClick={closeModal}>&times;</span>
-            <div style={{height: 700}}>
+            <Grid style={{height: {xs: 500, md: 700, lg: 700},}}>
               <img src={img.img} alt="Gallery" style={imgStyle} />
-            </div>
+            </Grid>
           </Box>
         </Modal>
       </div>

@@ -28,7 +28,6 @@ export default function BackgroundRemoval({ imageFile }) {
       const fileReader = new FileReader();
       fileReader.onloadend = async () => {
         const arrayBuffer = fileReader.result;
-
         const response = await axios.post(
           `${azureEndpoint}/computervision/imageanalysis:segment?api-version=2023-02-01-preview&mode=backgroundRemoval`,
           arrayBuffer,
@@ -75,15 +74,12 @@ export default function BackgroundRemoval({ imageFile }) {
     // 캔버스의 크기를 이미지와 같게 설정
     canvas.width = imageData.width;
     canvas.height = imageData.height;
-
-    // 검정색 배경을 그리기
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
     // 백그라운드가 제거된 이미지를 그리기
     ctx.drawImage(imageData, 0, 0);
 
-    return canvas.toDataURL(); // 이미지 데이터 URL 반환
+    return canvas.toDataURL();
   };
 
   const setMaskImageFile = (base64Data) => {
@@ -95,11 +91,7 @@ export default function BackgroundRemoval({ imageFile }) {
       ia[i] = byteString.charCodeAt(i);
     }
     const blob = new Blob([ab], { type: 'image/png' });
-
-    // Blob으로부터 File 객체 생성
     const file = new File([blob], 'mask_image.png', { type: 'image/png' });
-
-    // File 객체를 상태에 저장
     setMaskImage(file);
   };
 

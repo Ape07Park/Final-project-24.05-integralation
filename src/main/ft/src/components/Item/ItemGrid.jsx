@@ -1,7 +1,6 @@
 import { Container, Grid } from "@mui/material";
 import ItemCard from "./ItemCard";
 
-
 export default function ItemGrid({ items, navigate }) {
   return (
     <Container>

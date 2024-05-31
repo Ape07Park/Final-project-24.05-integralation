@@ -4,6 +4,13 @@
   width: 60%;  /* 전체 너비의 60% */ 
   margin: 0 auto;  /* 가운데 정렬 */
 }
+
+/* 주문 취소에 대한 것 */
+.has-cancelled-order .cancelled-count {
+  color: red; /* 취소된 주문 개수의 텍스트 색상 */
+  font-size: 12px; /* 원하는 크기로 조정 */
+}
+
 /* 여기가 달력 헤더 스타일 */
 .calendar-header {
   display: flex; /* 유연한 박스 레이아웃 사용 */

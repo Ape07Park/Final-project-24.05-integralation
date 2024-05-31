@@ -21,7 +21,7 @@ export function CheckoutPage() {
         const loadedWidget = await loadPaymentWidget(widgetClientKey, customerKey);
         setPaymentWidget(loadedWidget);
       } catch (error) {
-        console.error("Error fetching payment widget:", error);
+        console.log("Error fetching payment widget:", error);
       }
     };
 
@@ -80,12 +80,12 @@ export function CheckoutPage() {
         
         // 결제 성공 후 /success 페이지로 이동, orderData도 함께 전달
     } catch (error) {
-        console.error("Error requesting payment:", error);
+        console.log("Error requesting payment:", error);
         
         // 에러 처리
         if (error.message.includes("SDKBridgeError")) {
             // Bridge 연결이 끊어졌을 때의 처리
-            console.error("Bridge 연결이 끊겼습니다.");
+            console.log("Bridge 연결이 끊겼습니다.");
             // 적절한 에러 메시지 표시 또는 사용자에게 안내
         } else {
             // 기타 일반적인 에러 처리

@@ -445,18 +445,18 @@ export default function ItemDetail() {
       fetchUserInfo();
     }
   }, [currentUserEmail]);
-
+  
   // 공유하기 노멀링크
   const handleCopyLink = () => {
-    const shareLink = window.location.href;
-    const textField = document.createElement('textarea');
-    textField.innerText = shareLink;
-    document.body.appendChild(textField);
-    textField.select();
-    document.execCommand('copy');
-    textField.remove();
-    console.log('링크가 클립보드에 복사되었습니다.');
-    setIsSnackbarOpen(true);
+      const shareLink = window.location.href;
+      const textField = document.createElement('textarea');
+      textField.innerText = shareLink;
+      document.body.appendChild(textField);
+      textField.select();
+      document.execCommand('copy');
+      textField.remove();
+      console.log('링크가 클립보드에 복사되었습니다.');
+      setIsSnackbarOpen(true);
   };
 
   const handleCloseSnackbar = () => {

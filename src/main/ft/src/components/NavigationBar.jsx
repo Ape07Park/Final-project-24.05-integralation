@@ -31,6 +31,7 @@ import { FaBoltLightning } from "react-icons/fa6";
 import DeveloperBoardIcon from '@mui/icons-material/DeveloperBoard';
 import axios from 'axios';
 import RealTime from './RealTime';
+import zIndex from '@mui/material/styles/zIndex';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -366,8 +367,8 @@ export default function NavigationBar() {
             <ListItemIcon>
               <DeveloperBoardIcon />
             </ListItemIcon>
-            <ListItemText primary="개발자페이지?" />
-          </ListItemButton>
+            <ListItemText primary="개발자 소개페이지" />
+          </ListItemButton> 
         </ListItem>
       </List>
     </Box>
@@ -411,70 +412,8 @@ export default function NavigationBar() {
                   />
                 </Search>
               </form>
-              <RealTime/>
+              <RealTime />
             </Stack>
-            
-            {/* <Menu
-              anchorEl={anchorEl}
-              id="account-menu"
-              open={open}
-              onClose={handleClose}
-              onClick={handleClose}
-              PaperProps={{
-                elevation: 0,
-                sx: {
-                  overflow: 'visible',
-                  filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                  mt: 1.5,
-                  '& .MuiAvatar-root': {
-                    width: 32,
-                    height: 32,
-                    ml: -0.5,
-                    mr: 1,
-                  },
-                  '&::before': {
-                    content: '""',
-                    display: 'block',
-                    position: 'absolute',
-                    top: 0,
-                    right: 14,
-                    width: 10,
-                    height: 10,
-                    bgcolor: 'background.paper',
-                    transform: 'translateY(-50%) rotate(45deg)',
-                    zIndex: 0,
-                  },
-                },
-              }}
-              transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-            >
-              <MenuItem onClick={handleClose}>
-                <Avatar /> Profile
-              </MenuItem>
-              <MenuItem onClick={handleClose}>
-                <Avatar /> My account
-              </MenuItem>
-              <Divider />
-              <MenuItem onClick={handleClose}>
-                <ListItemIcon>
-                  <PersonAdd fontSize="small" />
-                </ListItemIcon>
-                Add another account
-              </MenuItem>
-              <MenuItem onClick={handleClose}>
-                <ListItemIcon>
-                  <Settings fontSize="small" />
-                </ListItemIcon>
-                Settings
-              </MenuItem>
-              <MenuItem onClick={handleClose}>
-                <ListItemIcon>
-                  <Logout fontSize="small" />
-                </ListItemIcon>
-                Logout
-              </MenuItem>
-            </Menu> */}
             <IconButton size="small" color="inherit" onClick={handleToOrderHistory}>
               <Stack direction="column" alignItems="center">
                 <Badge badgeContent={0} color="error">

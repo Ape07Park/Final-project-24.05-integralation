@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { base64Encode } from 'base64-arraybuffer'; // base64 인코딩을 위한 라이브러리 (설치 필요)
 import LoadingIndicator from '../publics/LoadingIndicator';
-import { CircularProgress } from '@mui/material';
+import { CircularProgress, Typography } from '@mui/material';
 
 const REST_API_KEY = process.env.REACT_APP_KAKAO_API_KEY;
 
 export default function Karlo({ image, maskImage }) {
-  const [imageURL, setImageURL] = useState([]);
+  const [imageURL, setImageURL] = useState('');
   const [loading, setLoading] = useState(false); 
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedMask, setSelectedMask] = useState(null);
@@ -21,7 +21,6 @@ export default function Karlo({ image, maskImage }) {
     if (selectedImage) {
       handleImageUpload();
     }
-
   }, [selectedImage]); 
 
   const inpainting = async (image, mask) => {
@@ -32,7 +31,7 @@ export default function Karlo({ image, maskImage }) {
         {
           image: image,
           mask: mask,
-          prompt: 'room, living room, sit',
+          prompt: 'room, living room, realistic, modern, Maintain original, original, picture',
           negative_prompt: 'person',
           image_quality: 100,
           prior_num_inference_steps: 100,
@@ -77,11 +76,10 @@ export default function Karlo({ image, maskImage }) {
   return (
     <>
       {loading ? ( 
-        <CircularProgress /> 
+        <LoadingIndicator sx={{ width:'100%' }}/> 
       ) : (
         <>
-        <img src={imageURL} />
-        {imageURL}
+          <img src={imageURL} style={{width:'100%'}} />
         </>
       )}
     </>

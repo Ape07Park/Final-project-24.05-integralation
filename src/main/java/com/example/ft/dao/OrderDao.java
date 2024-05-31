@@ -124,11 +124,4 @@ public interface OrderDao {
 			+ " JOIN itemOption ON oi.iid = itemOption.iid AND oi.ioid = itemOption.ioid "
 			+ " WHERE o.name=#{name} AND o.tel=#{tel} AND o.isDeleted=0 AND oi.isDeleted=0 " + " ORDER BY o.regDate DESC")
 	List<OrderHistory> nonMembersOrderHistory(String name, String tel);
-	
-	
-	/*
-	 * orderCalendar
-	 */
-	
-	
 }

@@ -4,14 +4,6 @@ import Button from '@mui/material/Button';
 import '../css/footer.css';
 import { Grid } from '@mui/material';
 
-const footerStyle = {
-    position: 'fixed',
-    bottom: 0,
-    width: '100%',
-    backgroundColor: 'rgba(0, 0, 0, 0.9)'
-};
-
-
 function Footer() {
     return (
         <div className='footer-container'>

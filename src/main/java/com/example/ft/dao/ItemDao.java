@@ -94,7 +94,7 @@ public interface ItemDao {
 	List<Item> getMostReviewItemList();
 	
 	// 세일중
-	@Select("SELECT * FROM item WHERE regDate < saleDate and isDeleted=0 order by regDate desc")
+	@Select("SELECT * FROM item WHERE now() < saleDate and isDeleted=0 order by regDate desc")
 	List<Item> getSaleItemList();
 	
 	// 구매가 많은 아이템(7일 기준으로) // 많이 팔린순인 경우 COUNT(oi.iid)를 sum(oi.count)으로 변경

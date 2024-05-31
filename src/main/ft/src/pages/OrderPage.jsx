@@ -199,10 +199,7 @@ const Order = () => {
     setAddr(fullAddress);
     setPostCode(postCode);
   }
-  // 취소 버튼 클릭 시 이전 페이지로 이동
-  const handleCancel = () => {
-    navigate(-1);
-  };
+  
   const handleTelChange = (e) => {
     const { value } = e.target;
     // 숫자 이외의 문자 제거
@@ -360,28 +357,41 @@ const Order = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="요청사항"
-              value={req}
-              onChange={(e) => setReq(e.target.value)}
-              sx={{ mt: 1, mb: 1 }}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <FormControl fullWidth sx={{ mt: 1, mb: 1 }}>
-              <InputLabel>배송 메세지 선택</InputLabel>
+            <FormControl fullWidth>
+              <InputLabel id="message-label">배송 시 요청사항</InputLabel>
               <Select
+                labelId="message-label"
+                id="message"
                 value={messageType}
-                label="배송 메세지 선택"
-                onChange={(e) => setMessageType(e.target.value)}
+                onChange={(e) => {
+                  const selectedMessageType = e.target.value;
+                  setMessageType(selectedMessageType);
+                  if (selectedMessageType !== '직접 입력') {
+                    setReq(selectedMessageType);
+                  }
+                }}
+                label="배송 시 요청사항"
+                sx={{ mt: 1 }}
               >
-                <MenuItem value="">선택해주세요</MenuItem>
-                <MenuItem value="message1">배송 전에 미리 연락바랍니다</MenuItem>
-                <MenuItem value="message2">부재시 경비실에 맡겨주세요</MenuItem>
-                <MenuItem value="message3">부재시 문앞에 놓아주세요</MenuItem>
+                <MenuItem value="배송 전 연락바랍니다.">배송 전 연락바랍니다.</MenuItem>
+                <MenuItem value="경비실에 맡겨주세요.">경비실에 맡겨주세요.</MenuItem>
+                <MenuItem value="집앞에 놔주세요.">집앞에 놔주세요.</MenuItem>
+                <MenuItem value="택배함에 놔주세요.">택배함에 놔주세요.</MenuItem>
+                <MenuItem value="부재시 핸드폰으로 연락주세요.">부재시 핸드폰으로 연락주세요.</MenuItem>
+                <MenuItem value="부재시 경비실에 맡겨주세요.">부재시 경비실에 맡겨주세요.</MenuItem>
+                <MenuItem value="부재시 집 앞에 놔주세요.">부재시 집 앞에 놔주세요.</MenuItem>
+                <MenuItem value="직접 입력">직접 입력</MenuItem>
               </Select>
             </FormControl>
+            {messageType === '직접 입력' && (
+              <TextField
+                fullWidth
+                label="Delivery Request"
+                value={req}
+                onChange={(e) => setReq(e.target.value)}
+                sx={{ mt: 1 }}
+              />
+            )}
           </Grid>
         </Grid>
         <Grid item xs={12} md={4}>

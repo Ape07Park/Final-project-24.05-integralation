@@ -82,27 +82,6 @@ export default function ItemCard({ item, navigate }) {
             </span>
            )}
         </Typography>
-        {new Date(item.saleDate) > new Date() && (
-          <Typography
-            sx={{
-              position: 'absolute',
-              top: '2px', 
-              right: '2px', 
-              backgroundColor: 'rgba(0, 0, 0, 0.8)', 
-              color: 'white',
-              padding: '3px 7px', 
-              width: '28px',
-              height: '28px',
-              borderRadius: '5px',
-              zIndex: 1, 
-              textAlign: 'center',
-              fontSize: '0.8rem', 
-              lineHeight: '28px',
-            }}
-          >
-            {((item.price - item.salePrice) / item.price * 100).toFixed(0)}%
-          </Typography>
-        )}
       </div>
       <CardContent sx={{ flexGrow: 0.7 }}>
         <Typography variant="body2" className="item-name" noWrap style={{ height: '1.8em' }}>
@@ -115,7 +94,7 @@ export default function ItemCard({ item, navigate }) {
         <Stack direction={'row'} justifyContent="space-between">
           {item.salePrice !== 0 && item.salePrice && new Date(item.saleDate) > new Date() ? (
             <>
-              <Typography variant="body2">{((item.price - item.salePrice) / item.price * 100).toFixed(0)}%</Typography>
+              <Typography variant="body2" style={{ backgroundColor: 'rgba(220, 22, 26, 0.8)', color:'white', padding: '3px 7px', fontWeight: "bold", borderRadius: '5px',}}>{((item.price - item.salePrice) / item.price * 100).toFixed(0)}%</Typography>
               <Typography variant="body2" style={{ textDecoration: 'line-through', fontSize: '0.9rem', marginTop: '0.4px' }}>{item.price.toLocaleString()}원</Typography>
               <Typography variant="body2" className="price">{item.salePrice.toLocaleString()}원</Typography>
             </>

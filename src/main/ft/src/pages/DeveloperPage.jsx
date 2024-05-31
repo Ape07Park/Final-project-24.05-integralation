@@ -53,8 +53,11 @@ const DeveloperPage = () => {
       imgUrl: '/img/circle02.png' },
     { id: 3, 
       name: '정아름', 
-      description: '휴먼양아치 지구망해라', 
-      oneLine: '',
+      description: '후기, 회원 주문, footer, ERD, 통계(상품 분석), 실시간 검색어', 
+      oneLine: 'React를 사용하면서 타 언어보다 효과적이게 작업 할 수 있다는 걸 알게 됐습니다. ' +
+                '이걸 계기로 리액트 공부에 더 집중할 수 있도록 하겠습니다. ' +
+                '그리고 검색 활용을 많이 해야 되는 걸 느꼈습니다. ' +
+                '코드 에러가 나면 무엇 때문인지 찾는 게 재밌고 전보다 많은 공부를 하게 됐습니다.',
       imgUrl: '/img/circle03.png' },
     { id: 4, 
       name: '박성민', 

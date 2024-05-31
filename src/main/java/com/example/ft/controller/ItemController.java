@@ -343,7 +343,6 @@ public class ItemController {
 	
 	@GetMapping("itemMenu/{menu}")
 	public JSONArray getlist(@PathVariable String menu) {
-		System.out.println(menu);
 		List<Item> list = new ArrayList<>();
 		switch (menu) {
 			case "hot": {
