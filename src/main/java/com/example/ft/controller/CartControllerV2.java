@@ -14,7 +14,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v2/carts")
 public class CartControllerV2 {
-
     private final CartServiceV2 cartServiceV2;
 
     @PostMapping
@@ -46,8 +45,4 @@ public class CartControllerV2 {
         int result = cartServiceV2.deleteAllCartItem(email);
         return ResponseEntity.ok(result == 0 ? false : true);
     }
-
-
-
-
 }

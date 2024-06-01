@@ -4,13 +4,6 @@
   width: 60%;  /* 전체 너비의 60% */ 
   margin: 0 auto;  /* 가운데 정렬 */
 }
-
-/* 주문 취소에 대한 것 */
-.has-cancelled-order .cancelled-count {
-  color: red; /* 취소된 주문 개수의 텍스트 색상 */
-  font-size: 12px; /* 원하는 크기로 조정 */
-}
-
 /* 여기가 달력 헤더 스타일 */
 .calendar-header {
   display: flex; /* 유연한 박스 레이아웃 사용 */
@@ -47,22 +40,22 @@
   margin: 0 5px; /* 좌우 여백 */
 }
 /* 테이블 기본 스타일 */
-table {
+.claendarTable {
   width: 100%; /* 전체 너비 */
   border-collapse: collapse; /* 테두리 겹침 제거 */
 }
 /* 테이블 헤더와 셀 기본 스타일 */
-th, td {
+.claendarTable th, .claendarTable td {
   padding: 8px; /* 패딩 설정 */
   text-align: center; /* 중앙 정렬 */
   border: 1px solid #ddd; /* 테두리 설정 */
 }
 /* 테이블 헤더 스타일 */
-th {
+.claendarTable th {
   background-color: #f2f2f2; /* 배경색 설정 */
 }
 /* 테이블 셀 스타일 */
-td {
+.claendarTable td {
   width: 80px; /* 셀 너비 조정 */
   height: 110px; /* 셀 높이 조정 */
   vertical-align: top; /* 수직 정렬: 상단 */
@@ -99,3 +92,13 @@ td {
 .t6 {
   color: blue; /* 텍스트 색상: 파란색 */
 }
+/* 주문 취소에 대한 것 */
+.has-cancelled-order .cancelled-count {
+  color: red; /* 취소된 주문 개수의 텍스트 색상 */
+  font-size: 12px; /* 원하는 크기로 조정 */
+}
+
+.total-count {
+  font-size: 13px; /* 원하는 크기로 조정 */
+}
+

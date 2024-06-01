@@ -108,7 +108,8 @@ const RevenueItems = () => {
     elements: {
       bar: {
         backgroundColor: "rgba(153, 102, 255, 1)", // 바의 배경 색상을 보라색으로 설정
-        borderColor: "rgba(153, 102, 255, 1)" // 바의 테두리 색상을 보라색으로 설정
+        borderColor: "rgba(153, 102, 255, 1)", // 바의 테두리 색상을 보라색으로 설정
+        
       }
     },
     onClick: handleItemClick
@@ -116,8 +117,8 @@ const RevenueItems = () => {
 
   return (
     <Box>
-      <Typography variant="h5" mt={5} mb={5}>순이익 Top 5 상품</Typography>
-      <Bar data={chartData} options={options} height={300}  />
+      <Typography variant="h5" mt={5} mb={1}>순이익 Top 5 상품</Typography>
+      <Bar data={chartData} options={options} height={300} width={330} />
     </Box>
   );
 };

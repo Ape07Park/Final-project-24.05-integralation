@@ -13,6 +13,7 @@ import com.example.ft.entity.Order;
 import com.example.ft.entity.OrderHistory;
 import com.example.ft.entity.OrderItem;
 import com.example.ft.entity.OrderRequest;
+import com.example.ft.service.ItemService;
 import com.example.ft.service.OrderService;
 
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/order")
 @RequiredArgsConstructor
 public class OrderController {
-
+	private final ItemService itemService;
 	private final OrderService orderService;
 
 	// 주문 1개 가져오기
@@ -166,6 +167,14 @@ public class OrderController {
         try {
             // 주문 정보 업데이트
             orderService.deleteOrder(oid);
+            
+            List<OrderItem> orderItemList = orderService.getOrderItems(oid);
+            System.out.println(orderItemList);
+            for (OrderItem item : orderItemList) {
+            	itemService.inventoryCalculationCancel(item.getIoid(), item.getCount());
+            	System.out.println(item);
+            }
+            
             return ResponseEntity.ok("주문 취소 되었습니다.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("주문 취소에 실패했습니다.");

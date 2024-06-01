@@ -92,4 +92,9 @@ public class CartServiceV2Impl implements CartServiceV2{
         int result = cartDaoV2.updateCartItem(requestDto.getEmail(), requestDto.getCid(), requestDto.getCount());
         return result;
     }
+
+	@Override
+	public void deletePaymentAllCartItme(int oid) {
+		cartDaoV2.deletePaymentAllCartItme(oid);
+	}
 }

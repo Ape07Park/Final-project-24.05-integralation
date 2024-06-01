@@ -128,18 +128,16 @@ const Calendar = () => {
         if (currentDay <= daysInMonth) {
           const dateString = `${currentYear}-${String(currentMonth).padStart(2, '0')}-${String(currentDay).padStart(2, '0')}`;
           const orderCount = orders[dateString] ? new Set(orders[dateString].map(order => order.oid)).size : 0;
-          
           const cancelledCount = orders[dateString] ? orders[dateString]
-          .filter((order, index, self) => {
-            // oid 기준으로 같은 거 필터링
-            return (
-              index ===
-              self.findIndex((o) => o.oid === order.oid && o.status === '취소')
-            );
-          })
-          .filter((order) => order.status === '취소').length
-        : 0;
-
+              .filter((order, index, self) => {
+                // oid 기준으로 같은 거 필터링
+                return (
+                  index ===
+                  self.findIndex((o) => o.oid === order.oid && o.status === '취소')
+                );
+              })
+              .filter((order) => order.status === '취소').length
+            : 0;
 
           week.push(
             <td
@@ -147,19 +145,16 @@ const Calendar = () => {
               className={`calendar-day ${cancelledCount > 0 ? 'has-cancelled-order' : ''}`}
               onClick={() => handleDateClick(currentDay, orders[dateString])}
             >
-              <p className="day">
-                {currentDay}
+              <p style={{textAlign:'left'}}>
+                <span>
+                  {currentDay}
+                </span>
                 <br />
-
-               
-
-                {cancelledCount > 0 && <span className="cancelled-count">{cancelledCount}건 취소</span>}
-
                 {(orderCount - cancelledCount !== 0
                   ? <span className="total-count">주문:{orderCount - cancelledCount}건</span> 
-                  :<></>)} 
-
-
+                  :<></>)}
+                <br />
+                {cancelledCount > 0 && <span className="cancelled-count">취소 {cancelledCount} 건</span>}
               </p>
             </td>
           );
@@ -192,10 +187,10 @@ const Calendar = () => {
           </button>
         </li>
       </ul>
-      <table>
+      <table className='claendarTable'>
         <thead>
           <tr>
-            <th>월</th> <th>화</th> <th>수</th> <th>목</th> <th>금</th> <th>토</th> <th>일</th>
+            <th className='t0'>일</th><th>월</th> <th>화</th> <th>수</th> <th>목</th> <th>금</th><th className='t6'>토</th>
           </tr>
         </thead>
         <tbody>

@@ -23,7 +23,7 @@ const SelectedItemInfo = ({ selectedItem }) => {
                     image={selectedItem.item.img1}
                     alt="상품 이미지"
                     style={{ height: 200, cursor: 'pointer' }}
-                    onClick={() => { navigate(`/item/detail/${selectedItem.iid}`) }}
+                    onClick={() => { navigate(`/item/detail/${selectedItem.item.iid}`) }}
                   />
                 </td>
                 <td style={{ verticalAlign: 'top', width: '40%' }}>

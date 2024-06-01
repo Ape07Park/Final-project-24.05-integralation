@@ -43,7 +43,6 @@ public class BoardController {
 	
 	@GetMapping("/list/{type}/{iid}")
 	public JSONArray list(@PathVariable String type, @PathVariable int iid) {
-		
 		JSONArray jArr = new JSONArray();
 		if (type.equals("review")) {
 			List<Board> list = reviewService.getReviewList(type, iid);

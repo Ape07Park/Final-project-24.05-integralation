@@ -8,15 +8,14 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: { xs: '80%', md: '80%', lg: '80%' }, // 모달 창의 너비를 80%로 설정
-
-  maxWidth: 600, // 모달 창의 최대 너비를 600px로 제한
-  maxHeight: '80%', // 모달 창의 최대 높이를 80%로 설정
+  width: { xs: '80%', md: '80%', lg: '80%' },
+  maxWidth: 600,
+  maxHeight: '80%', 
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
   p: 4,
-  textAlign: 'center', // 텍스트 가운데 정렬
+  textAlign: 'center', 
 };
 
 const imgStyle = {

@@ -32,7 +32,6 @@ public class EmailConfig {
 	@Bean // @Bean: 이 메서드가 반환하는 객체가 Spring 컨텍스트에 의해 관리되는 빈이 됨
 	public JavaMailSender javaMailService() {
 		JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl(); // 객체를 생성하고 설정 값을 주입
-
 		javaMailSender.setHost(host); // smtp 서버 주소
 		javaMailSender.setUsername(id); // 설정(발신) 메일 아이디
 		javaMailSender.setPassword(password); // 설정(발신) 메일 패스워드

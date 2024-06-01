@@ -92,6 +92,7 @@ function QnAListContent() {
 
   const handlePostClick = async (post, index) => {
     setExpandedPost(expandedPost === index ? null : index);
+    console.log(post);
     if(expandedPost !== index )
     try {
       await fetchRepliesAndItemInfo(post);
@@ -105,7 +106,7 @@ function QnAListContent() {
       if (post && post.bid) { // 유효한 객체 및 bid인지 확인
         const repliesData = await fetchReplies(post.bid); // 답변 목록 가져오기
         setReplies(repliesData);
-        
+    
         // 아이템 정보 가져오기
         if (post.iid) {
           const itemInfo = await getItemDetail(post.iid); // 아이템 정보 가져오기 함수 호출
@@ -170,7 +171,7 @@ function QnAListContent() {
   const indexOfLastPost = currentPage * postsPerPage;
 
    // 답변 내용을 <br> 태그로 변환하여 저장
-   const handleReplySubmit = async (post) => {
+  const handleReplySubmit = async (post) => {
     try {
       // 답변 데이터 생성
       const replyData = {
@@ -199,42 +200,52 @@ function QnAListContent() {
 
   const sortedPosts = () => {
     let sorted = [...posts];
-  
+    let uniqueBids = {}; // 중복되지 않은 bid를 추적하기 위한 객체
+
+    // 포스트를 필터링하여 중복되지 않은 bid를 가진 포스트만 유지
+    sorted = sorted.filter(post => {
+        if (!uniqueBids[post.bid]) {
+            uniqueBids[post.bid] = true;
+            return true;
+        }
+        return false;
+    });
+
     if (selectedType !== "전체") {
-      sorted = sorted.filter(post => post.typeQnA === selectedType);
+        sorted = sorted.filter(post => post.typeQnA === selectedType);
     }
-  
+
     if (sortBy === "unanswered") {
-      sorted.sort((a, b) => {
-        const aHasReply = a.replyStatus === "미답변";
-        const bHasReply = b.replyStatus === "미답변";
-        if (aHasReply && bHasReply) {
-          return 0;
-        } else if (aHasReply) {
-          return -1;
-        } else {
-          return 1;
-        }
-      });
+        sorted.sort((a, b) => {
+            const aHasReply = a.replyStatus === "미답변";
+            const bHasReply = b.replyStatus === "미답변";
+            if (aHasReply && bHasReply) {
+                return 0;
+            } else if (aHasReply) {
+                return -1;
+            } else {
+                return 1;
+            }
+        });
     } else if (sortBy === "answered") {
-      sorted.sort((a, b) => {
-        const aHasReply = a.replyStatus === "답변완료";
-        const bHasReply = b.replyStatus === "답변완료";
-        if (aHasReply && bHasReply) {
-          return 0;
-        } else if (aHasReply) {
-          return -1;
-        } else {
-          return 1;
-        }
-      });
+        sorted.sort((a, b) => {
+            const aHasReply = a.replyStatus === "답변완료";
+            const bHasReply = b.replyStatus === "답변완료";
+            if (aHasReply && bHasReply) {
+                return 0;
+            } else if (aHasReply) {
+                return -1;
+            } else {
+                return 1;
+            }
+        });
     }
-  
+
     return sorted;
   };
   
   const currentPosts = sortedPosts().slice(indexOfFirstPost, indexOfLastPost);
-
+  
   const handleDeleteReply = async (reply) => {
     try {
       await deleteReply(reply.rid);

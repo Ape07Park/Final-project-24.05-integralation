@@ -26,10 +26,7 @@ public class EmailConfigController {
 	@PostMapping("/message")
 	@ResponseBody
     public String mailConfirm(@RequestParam String email) throws Exception {
-		log.info(email);
         String code = emailService.sendSimpleMessage(email);
-        log.info("인증코드 : " + code);
-        System.out.println("성공 @@@@@@@@@@@@");
         return code;
     }
 	
@@ -37,12 +34,8 @@ public class EmailConfigController {
 	@GetMapping("/getEpw")
     public JSONObject getEpw() {
         String ePw = emailService.sendEpwForCompare();
-               
-    	System.out.println("ePw---" + ePw);
-    	
     	JSONObject jCode = new JSONObject();
     	jCode.put("ePw", ePw);
-    	
         return jCode;
     }
 }

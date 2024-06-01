@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.ft.entity.ItemOption;
 import com.example.ft.entity.OrderItem;
 import com.example.ft.service.BoardService;
+import com.example.ft.service.CartServiceV2;
 import com.example.ft.service.ItemService;
 import com.example.ft.service.OrderService;
 import com.example.ft.service.ReviewService;
@@ -39,6 +40,7 @@ import java.util.List;
 public class WidgetController {
 	private final OrderService orderService;
 	private final ItemService itemService;
+	private final CartServiceV2 cartServiceV2;
 	
 	@Value("${widget.secretKey}")
 	private String widgetSecretKey;
@@ -98,7 +100,7 @@ public class WidgetController {
         for (OrderItem item : orderItemList) {
         	itemService.inventoryCalculation(item.getIoid(), item.getCount());
         }
-        
+        cartServiceV2.deletePaymentAllCartItme(oid);
         return ResponseEntity.status(code).body(jsonObject);
     }
 }

@@ -45,7 +45,7 @@ function Footer() {
             </Grid>
             <section className="social-media">
                 <div className="social-media-wrap">
-                    <small className="website-rights">FUNniture © 2024 | 대표 정아름 | 경기도 수원시 팔달구 매산로 30 | daniel07@gmail.com | 사업자번호 : 105-55-55555</small>
+                    <small className="website-rights">FURNniture © 2024 | 대표 정아름 | 경기도 수원시 팔달구 매산로 30 | daniel07@gmail.com | 사업자번호 : 105-55-55555</small>
                 </div>
             </section>
 

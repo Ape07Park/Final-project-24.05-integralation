@@ -33,6 +33,7 @@ function SignIn() {
           navigate(-1);
         } else {
           navigate('/');
+          localStorage.setItem('prevPage', '/signIn');
         }
       }
     } catch (error) {
@@ -50,6 +51,7 @@ function SignIn() {
         navigate(-1);
       } else {
         navigate('/');
+        localStorage.setItem('prevPage', '/signIn');
       }
     } catch (error) {
       alert('구글 로그인에 실패했습니다.');
@@ -67,6 +69,7 @@ function SignIn() {
         navigate(-1);
       } else {
         navigate('/');
+        localStorage.setItem('prevPage', '/signIn');
       }
     } catch (error) {
       alert('카카오 로그인에 실패했습니다.');
@@ -118,7 +121,6 @@ function SignIn() {
           <Typography component="h1" variant="h5">
             로그인
           </Typography>
-
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
@@ -217,8 +219,6 @@ function SignIn() {
             </Grid>
           </Box>
         </Box>
-
-        {/* Modal for FindPassModal */}
         <Modal
           open={modalType !== null}
           onClose={handleCloseFindPassModal}
@@ -252,7 +252,6 @@ function SignIn() {
             </Box>
           </Fade>
         </Modal>
-
         <Box mt={8}>
           <Typography variant="body2" color="text.secondary" align="center">
             Copyright ©{' '}

@@ -21,7 +21,6 @@ import { useNavigate } from 'react-router-dom';
 import TrackerComponent from '../components/TrackerComponent';
 import ReviewFormModal from '../components/ReviewForm';
 import Calendar from '../components/calendar/Calendar';
-import '../css/Calendar.css'; // 캘린더 스타일 임포트
 
 const OrderHistoryList = () => {
   const [currentUserEmail, setCurrentUserEmail] = useState(null);

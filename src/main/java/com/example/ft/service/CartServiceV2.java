@@ -19,5 +19,8 @@ public interface CartServiceV2 {
     int deleteAllCartItem(String email);
 
     int updateCartItem(CartItemRequestDto requestDto);
+    
+    // 결제 후 장바구니 초기화
+    void deletePaymentAllCartItme(int oid);
 
 }

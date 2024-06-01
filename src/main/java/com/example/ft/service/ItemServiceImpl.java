@@ -146,4 +146,9 @@ public class ItemServiceImpl implements ItemService{
 		return itemDao.getCategoryItemList(menu);
 	}
 
+	@Override
+	public void inventoryCalculationCancel(int ioid, int count) {
+		itemDao.inventoryCalculationCancel(ioid, count);
+	}
+
 }

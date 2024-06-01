@@ -126,11 +126,6 @@ export default function QnAEditModal({ isOpen, handleClose, posts }) {
           label="비밀글 문의하기"
           style={{ marginBottom: '20px' }}
         />
-        <FormControlLabel
-          control={<Checkbox checked={receiveNotification} onChange={(e) => setReceiveNotification(e.target.checked)} />}
-          label="답변 알림"
-          style={{ marginBottom: '20px' }}
-        />
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }}>
           <input type="file" accept="image/*" onChange={(e) => handleUpload('img', e.target.files[0])} style={{ marginRight: '10px' }} />
           {form.img ? (

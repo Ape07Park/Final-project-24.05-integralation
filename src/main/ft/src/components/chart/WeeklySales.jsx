@@ -54,8 +54,8 @@ const LineChart = () => {
 
 return (
   <Box>
-    <Typography variant="h5" mt={5} mb={5}>최근 30일간 주간 판매 추이</Typography>
-    <Line data={chartData} options={option} height={250} />
+    <Typography variant="h5" mt={5} mb={1}>최근 30일간 주간 판매 추이</Typography>
+    <Line data={chartData} options={option} height={300} width={330} />
   </Box>
 );
 };

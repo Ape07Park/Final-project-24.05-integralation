@@ -65,4 +65,6 @@ public interface ItemService {
 	List<Item> getHotItemList();
 
 	List<Item> getCategoryItemList(String menu);
+	
+	void inventoryCalculationCancel(int ioid, int count);
 }

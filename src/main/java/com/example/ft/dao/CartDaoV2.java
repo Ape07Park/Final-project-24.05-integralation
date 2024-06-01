@@ -46,4 +46,8 @@ public interface CartDaoV2 {
 
     @Update("update cart set count = #{updateCount} where cid = #{cid} and email = #{email}")
     int updateCartItem(String email, int cid, int updateCount);
+    
+    @Delete("DELETE FROM cart WHERE email IN (SELECT email FROM `order` WHERE oid=#{oid})")
+    void deletePaymentAllCartItme(int oid);
+
 }

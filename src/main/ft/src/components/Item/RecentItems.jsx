@@ -54,7 +54,7 @@ function RecentItems() {
             left: 0,
             right: 0,
             bottom: 0,
-            zIndex: 9998, // 팝업보다 아래에 위치
+            zIndex: 999, // 팝업보다 아래에 위치
 
           }}
           onClick={() => setIsExpanded(false)} // 백그라운드 클릭 시 팝업 닫기
