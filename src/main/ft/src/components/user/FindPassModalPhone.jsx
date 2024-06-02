@@ -1,9 +1,12 @@
 import React, { useState } from "react";
-import { Modal, Box, TextField, Button, Typography } from "@mui/material";
-import {selectUserEmailPassword, login, auth, changePasswordFromDB, 
-  updatePassword, signInWithEmailAndPassword, logout} from "../../api/firebase";
+import { Modal, Box, TextField, Button, Typography, Grid } from "@mui/material";
+import {
+  selectUserEmailPassword, login, auth, changePasswordFromDB,
+  updatePassword, signInWithEmailAndPassword, logout
+} from "../../api/firebase";
 import axios from 'axios';
 import CustomButton from "../CustomButton";
+import { child, get, getDatabase, ref } from "firebase/database";
 
 
 const FindPassModalPhone = ({ open, onClose }) => {
@@ -15,7 +18,10 @@ const FindPassModalPhone = ({ open, onClose }) => {
   const [isCodeVerified, setIsCodeVerified] = useState(null);
   const [newPassword, setNewPassword] = useState("");
   const [newPassword2, setNewPassword2] = useState("");
-  
+
+  const [isDuplicate, setIsDuplicate] = useState(null);
+  const [isReadOnly, setIsReadOnly] = useState(false); // 읽기 전용 상태 추가
+
 
   // 서버에 인증번호 보내라고 요청 보내기
   const sendCodeToMobile = async () => {
@@ -33,23 +39,23 @@ const FindPassModalPhone = ({ open, onClose }) => {
     try {
       // 서버에 인증번호 요청
       const response = await axios.get('/ft/sms/sendVerifyCode');
-  
+
       // JSON 형식의 응답 데이터를 파싱하여 필요한 값 추출
       const responseData = response.data;
       const verifyCodeFromServer = responseData.verifyCode;
-  
+
       console.log('인증번호 요청:', verifyCodeFromServer);
-  
+
       // 서버에서 받은 인증 코드를 상태에 설정
       setVerificationCode(verifyCodeFromServer);
-  
+
       if (parseInt(userInputCode) === verifyCodeFromServer) {
         setIsCodeVerified(true);
         console.log('인증번호 일치');
-  
+
         // 로그인 시도
         loginUser();
-        
+
       } else {
         setIsCodeVerified(false);
         console.log('인증번호 불일치');
@@ -58,14 +64,14 @@ const FindPassModalPhone = ({ open, onClose }) => {
       console.error('인증번호 요청 실패:', error);
     }
   };
-  
+
   const loginUser = async () => {
     try {
       // 강제 로그인을 위해 가져온 이메일과 비밀번호로 로그인 시도
       const userCredentials = await selectUserEmailPassword(email);
       if (userCredentials && userCredentials.email && userCredentials.password) {
         const { email, password } = userCredentials;
-  
+
         // Firebase Authentication을 사용하여 이메일과 비밀번호로 로그인
         const { user } = await signInWithEmailAndPassword(auth, email, password);
         if (user) {
@@ -85,14 +91,14 @@ const FindPassModalPhone = ({ open, onClose }) => {
     try {
       if (newPassword === newPassword2) {
         // 현재 로그인한 사용자를 가져옴
-        const currentUser = auth.currentUser;     
+        const currentUser = auth.currentUser;
 
         // 비밀번호 변경 요청
         await updatePassword(currentUser, newPassword);
 
         //  *** DB에서 비번 변경
         // 어디서 내가 입력한 이메일을 여기로 가져올 것인가?
-        
+
         console.log("email*******" + email);
         await changePasswordFromDB(email, newPassword);
 
@@ -105,9 +111,41 @@ const FindPassModalPhone = ({ open, onClose }) => {
         onClose();
       } else {
         window.alert("비밀번호가 다릅니다.")
-    }
+      }
     } catch (error) {
       console.error("비밀번호 변경에 실패하였습니다.", error);
+    }
+  };
+
+  // 이메일 중복 확인 함수
+  const handleCheckEmail = async () => {
+    if (!email) {
+      alert("이메일을 입력해주세요.");
+      return;
+    }
+
+    console.log(email); // 이메일 값이 콘솔에 출력됨
+
+    try {
+      const db = getDatabase();
+      const dbRef = ref(db);
+      const snapshot = await get(child(dbRef, `users`));
+
+      if (snapshot.exists()) {
+        const users = snapshot.val();
+        const emails = Object.values(users).map(user => user.email);
+
+        // 이메일이 중복되는지 확인
+        if (emails.includes(email)) {
+          setIsDuplicate(true);
+        } else {
+          setIsDuplicate(false);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      setIsDuplicate(false);
+      setIsReadOnly(false); // 에러가 발생할 경우 읽기 전용으로 설정하지 않음
     }
   };
 
@@ -125,6 +163,21 @@ const FindPassModalPhone = ({ open, onClose }) => {
               fullWidth
               margin="normal"
             />
+
+            <Grid item xs={12} style={{ textAlign: 'center' }}>
+              <CustomButton
+                fullWidth
+                variant="contained"
+                onClick={handleCheckEmail}
+                sx={{ mt: 3, mb: 1 }}
+
+              >
+                이메일 중복 확인
+              </CustomButton>
+              {isDuplicate === true && <div style={{ color: 'green' }}>해당 이메일이 존재합니다.</div>}
+              {isDuplicate === false && <div style={{ color: 'red' }}>해당 이메일이 존재하지 않습니다.</div>}
+            </Grid>
+
             <TextField
               label="휴대폰 번호"
               value={phoneNumber}
