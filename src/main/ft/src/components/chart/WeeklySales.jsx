@@ -10,10 +10,9 @@ const LineChart = () => {
     const fetchWeeklySalesData = async () => {
       try {
         const response = await axios.get("/ft/admin/sales/last30days");
-        console.log(response.data);
         setWeeklySalesData(response.data);
       } catch (error) {
-        console.error("최근 30일간 주간 판매 추이 조회 중 오류:", error);
+        console.log("최근 30일간 주간 판매 추이 조회 중 오류:", error);
       }
     };
 

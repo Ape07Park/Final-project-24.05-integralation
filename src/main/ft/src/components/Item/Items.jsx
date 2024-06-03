@@ -13,7 +13,7 @@ export async function Items() {
 
     return itemsWithDetail;
   } catch (error) {
-    console.error('Error fetching product list:', error);
+    console.log('Error fetching product list:', error);
     return [];
   }
 }

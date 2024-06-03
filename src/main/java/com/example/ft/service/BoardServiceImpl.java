@@ -16,7 +16,6 @@ public class BoardServiceImpl implements BoardService{
 	
 	@Override
 	public Board getBoardByBid(int bid) {
-		
 		return boardDao.getBoardByBid(bid);
 	}
 

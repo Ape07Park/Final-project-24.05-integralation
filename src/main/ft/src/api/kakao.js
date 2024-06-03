@@ -43,7 +43,7 @@ const Kakao = () => {
           throw new Error("Access token not found in response");
         }
       } catch (error) {
-        console.log("Error getting Kakao token:", error);
+        console.error("Error getting Kakao token:", error);
         navigate('/');
       }
     };

@@ -1,7 +1,7 @@
 import React from 'react';
 import { TableCell, TableRow, Typography, Accordion, AccordionSummary, TableContainer, Table, TableBody, Button, Stack, TextField } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ImgModal from '../ImgModal';
+import ImgModal from '../publics/ImgModal';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 

@@ -6,7 +6,7 @@ export const fetchQnAList = async () => {
     const response = await axios.get('/ft/board/QnAList'); // 데이터 가져오기
     return response.data; // 가져온 데이터 반환
   } catch (error) {
-    console.error('데이터를 불러오는 중 에러:', error);
+    console.log('데이터를 불러오는 중 에러:', error);
     throw error;
   }
 };
@@ -47,7 +47,7 @@ export const updateBoard = async (formData) => {
     const response = await axios.post('/ft/board/update', formData);
     return response.data;
   } catch (error) {
-    console.error('Error updating review:', error);
+    console.log('Error updating review:', error);
     throw error;
   }
 };
@@ -57,7 +57,7 @@ export const deleteBoard = async (postId) => {
     const response = await axios.post(`/ft/board/delete/${postId}`);
     return response;
   } catch (error) {
-    console.error('Error deleting post:', error);
+    console.log('Error deleting post:', error);
     throw error;
   }
 };
@@ -67,7 +67,7 @@ export const adminQnAList = async () => {
     const response = await axios.get('/ft/board/adminQnAList'); // 데이터 가져오기
     return response.data; // 가져온 데이터 반환
   } catch (error) {
-    console.error('데이터를 불러오는 중 에러:', error);
+    console.log('데이터를 불러오는 중 에러:', error);
     throw error;
   }
 };

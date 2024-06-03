@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Button, CardContent,  Input,  MenuItem, Select, Typography } from "@mui/material";
 import { Card } from "react-bootstrap";
-import CountDown from "../CountDown";
+import CountDown from "./CountDown";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import "../../css/itemInfo.css"

@@ -6,7 +6,9 @@ export default function ImageDownload({ img }) {
   const [downloadedImage, setDownloadedImage] = useState(null);
 
   useEffect(() => {
-    downloadImage();
+    if (img) {
+      downloadImage();
+    }
   }, [img]);
 
   const downloadImage = async () => {
@@ -29,7 +31,7 @@ export default function ImageDownload({ img }) {
         setDownloadedImage(response.data);
       }
     } catch (error) {
-      console.error("이미지를 다운로드하는 중 오류가 발생했습니다:", error);
+      console.log("이미지를 다운로드하는 중 오류가 발생했습니다:", error);
     }
   }
 

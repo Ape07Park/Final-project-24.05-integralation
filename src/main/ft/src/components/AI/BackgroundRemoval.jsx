@@ -6,20 +6,21 @@ const azureApiKey = process.env.REACT_APP_AZURE_API_KEY;
 const azureEndpoint = process.env.REACT_APP_AZURE_ENDPOINT;
 
 export default function BackgroundRemoval({ imageFile }) {
+  const [imgFile, setImgFile] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [maskImage, setMaskImage] = useState('');
 
   useEffect(() => {
-    setSelectedImage(imageFile);
+    setImgFile(imageFile)
   }, [imageFile]);
 
   useEffect(() => {
     removeBackground();
-  }, [selectedImage]);
+  }, [imgFile]);
 
   const removeBackground = async () => {
-    if (!selectedImage) {
-      console.error('No image selected.');
+    if (!imgFile) {
+      console.log('No image selected.');
       return;
     }
 
@@ -45,45 +46,60 @@ export default function BackgroundRemoval({ imageFile }) {
         // 이미지 데이터로 변환
         const image = new Image();
         image.onload = () => {
+          const img = addImage(image)
+          setImageFile(img)
           const resultDataURL = addBlackBackground(image);
           setMaskImageFile(resultDataURL);
         };
         image.src = url;
       };
 
-      fileReader.readAsArrayBuffer(selectedImage);
+      fileReader.readAsArrayBuffer(imgFile);
     } catch (error) {
-      console.error('Error removing background:', error);
+      console.log('Error removing background:', error);
       if (error.response) {
-        console.error('Status:', error.response.status);
+        console.log('Status:', error.response.status);
 
         // Blob 데이터를 텍스트로 변환하여 출력
         const reader = new FileReader();
         reader.onload = () => {
-          console.error('Data:', reader.result);
+          console.log('Data:', reader.result);
         };
         reader.readAsText(error.response.data);
       }
     }
   };
 
-  const addBlackBackground = (imageData) => {
+  const addImage = (imageData) => {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
 
+    // 캔버스의 크기를 이미지에 2배
+    canvas.width = 1000;   
+    canvas.height = 1000; 
+    ctx.fillStyle = 'black';          
+    ctx.fillRect(0, 0, canvas.width, canvas.height);  // 위에서의 내용을 적용 x 0, y 0에서부터 그린다
+    ctx.drawImage(imageData, (1000 - imageData.width) / 2, (1000 - imageData.height) / 2);  // 적용할 그림을 x 0, y 0에서부터 그린다
+    
+    return canvas.toDataURL();
+  };
+
+  // 마스크 백그라운드 검정색으로 채우기
+  const addBlackBackground = (imageData) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
     // 캔버스의 크기를 이미지와 같게 설정
-    canvas.width = imageData.width;
-    canvas.height = imageData.height;
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    // 백그라운드가 제거된 이미지를 그리기
-    ctx.drawImage(imageData, 0, 0);
+    canvas.width = 1000;  
+    canvas.height = 1000; 
+    ctx.fillStyle = 'black';         
+    ctx.fillRect(0, 0, canvas.width, canvas.height);  // 위에서의 내용을 적용 x 0, y 0에서부터 그린다
+    ctx.drawImage(imageData, (1000 - imageData.width) / 2, (1000 - imageData.height) / 2);                   // 적용할 그림을 x 0, y 0에서부터 그린다
 
     return canvas.toDataURL();
   };
 
   const setMaskImageFile = (base64Data) => {
-    // Base64 데이터를 Blob으로 변환
     const byteString = atob(base64Data.split(',')[1]);
     const ab = new ArrayBuffer(byteString.length);
     const ia = new Uint8Array(ab);
@@ -93,6 +109,18 @@ export default function BackgroundRemoval({ imageFile }) {
     const blob = new Blob([ab], { type: 'image/png' });
     const file = new File([blob], 'mask_image.png', { type: 'image/png' });
     setMaskImage(file);
+  };
+
+  const setImageFile = (base64Data) => {
+    const byteString = atob(base64Data.split(',')[1]);
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    const blob = new Blob([ab], { type: 'image/png' });
+    const file = new File([blob], 'mask_image.png', { type: 'image/png' });
+    setSelectedImage(file);
   };
 
   return (

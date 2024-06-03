@@ -5,7 +5,7 @@ export const addToCart = async (cartItem) => {
     const response = await axios.post('/ft/api/v2/carts', cartItem);
     return response.data;
   } catch (error) {
-    console.error('장바구니 추가 실패:', error);
+    console.log('장바구니 추가 실패:', error);
     throw error;
   }
 };
@@ -15,7 +15,7 @@ export const fetchCartItem = async (currentUserEmail) => {
     const response = await axios.get(`/ft/api/v2/carts/list/${currentUserEmail}`);
     return response.data;
   } catch (error) {
-    console.error('장바구니 목록을 불러오는데 실패했습니다:', error);
+    console.log('장바구니 목록을 불러오는데 실패했습니다:', error);
     throw error;
   }
 };
@@ -27,7 +27,7 @@ export const deleteCartItem = async (currentUserEmail, cid) => {
     });
     return response;
   } catch (error) {
-    console.error('상품 삭제 실패:', error);
+    console.log('상품 삭제 실패:', error);
     throw error;
   }
 };
@@ -37,7 +37,7 @@ export const deleteAllCartItems = async (currentUserEmail) => {
     const response = await axios.post(`/ft/api/v2/carts/delete/${currentUserEmail}`);
     return response.data;
   } catch (error) {
-    console.error('상품 삭제 실패:', error);
+    console.log('상품 삭제 실패:', error);
     throw error;
   }
 };
@@ -54,7 +54,7 @@ export const updateCartItemQuantity = async (cartId, currentUserEmail, itemId, i
     });
     return response.data;
   } catch (error) {
-    console.error('상품 수량 업데이트 실패:', error);
+    console.log('상품 수량 업데이트 실패:', error);
     throw error;
   }
 };

@@ -1,7 +1,7 @@
 import React from "react";
 import { CardContent, CardMedia, Typography } from "@mui/material";
 
-import Rating from "../Rating"; 
+import Rating from "../review/Rating"; 
 import { Card } from "react-bootstrap";
 
 const ItemDetailInfo = ({ item, tags, navigate }) => {

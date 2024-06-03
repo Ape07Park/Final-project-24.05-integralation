@@ -106,6 +106,6 @@ public interface ItemDao {
 	@Select("SELECT * from item WHERE category = #{menu} and isDeleted=0 order by regDate desc")
 	List<Item> getCategoryItemList(String menu);
 	
-	@Update("update itemoption set count= count+#{count} where ioid=#{ioid}")
+	@Update("update itemoption set count= count + #{count} where ioid=#{ioid}")
 	void inventoryCalculationCancel(int ioid, int count);
 }

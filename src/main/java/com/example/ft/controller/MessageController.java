@@ -71,10 +71,6 @@ public class MessageController {
     	
     	String recipient = to.replaceAll("[^0-9]", "");
     	
-    	System.out.println("recipient" + recipient ); // {"recipient":"01091872645"}
-    	
-    	System.out.println("verifyCode" + verifyCode);
-    	
     	// Message 객체를 생성하고 발신번호와 수신번호를 설정합니다.
         Message message = new Message();
         
@@ -90,9 +86,6 @@ public class MessageController {
         // 메시지를 발송하고 발송 결과를 반환합니다.
         SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
         
-        // 발송 결과를 콘솔에 출력합니다.
-        System.out.println(response);
-
         return response;
     }
     
@@ -105,8 +98,6 @@ public class MessageController {
     @GetMapping("/sendVerifyCode")
     public JSONObject sendVerifyCode() {
         // 발송된 인증 코드를 반환합니다.
-    	System.out.println("get의 코드" + verifyCode);
-    	
     	JSONObject jCode = new JSONObject();
     	jCode.put("verifyCode", verifyCode);
     	

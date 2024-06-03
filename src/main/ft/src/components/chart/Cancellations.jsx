@@ -21,7 +21,7 @@ const CancellationStatusList = () => {
           exchangeCount: result.exchangeCount
         });
       } catch (error) {
-        console.error('취소/반품/교환 상태 조회 중 오류:', error);
+        console.log('취소/반품/교환 상태 조회 중 오류:', error);
       }
     };
 

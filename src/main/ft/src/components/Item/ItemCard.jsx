@@ -1,6 +1,6 @@
 import { CardContent, CardMedia, Stack, Typography } from "@mui/material";
-import Rating from "../Rating";
-import CountDown from "../CountDown";
+import Rating from "../review/Rating";
+import CountDown from "./CountDown";
 
 export default function ItemCard({ item, navigate }) {
   const isNewItem = new Date(item.regDate) > new Date(new Date().setDate(new Date().getDate() - 14));

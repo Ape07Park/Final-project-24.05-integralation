@@ -1,12 +1,11 @@
-import React, { forwardRef, useEffect, useRef, useState } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import Carousel from 'react-material-ui-carousel';
 import { Paper } from '@mui/material';
 import CarouselImage1 from './carousel1.png';
 import CarouselImage2 from './carousel2.png';
 import './maincarousel.css';
 
-const MainCarousel = forwardRef((props, ref) => {
-    const carouselRef = useRef(null);
+const MainCarousel = forwardRef(() => {
     const [imagesLoaded, setImagesLoaded] = useState(false);
     const [error, setError] = useState(false); // 에러 상태 추가
     
@@ -54,7 +53,7 @@ const MainCarousel = forwardRef((props, ref) => {
             autoPlay={true}
             interval={5000}
             indicatorContainerProps={{ style: { display: 'none' } }}
-            ref={ref}
+            
         >
             {items.map((item, i) => <Item key={i} item={item} />)}
         </Carousel>

@@ -38,7 +38,7 @@ const RevenueItems = () => {
         const response = await axios.get("/ft/admin/sales/revenue");
         setTop5RevenueItems(response.data);
       } catch (error) {
-        console.error("순이익 Top 5 상품 조회 중 오류:", error);
+        console.log("순이익 Top 5 상품 조회 중 오류:", error);
       }
     };
 

@@ -25,7 +25,7 @@ public interface BoardDao {
 	void insertBoard(Board board);
 	
 	@Update("update Board set iid=#{iid}, type=#{type}, typeQnA=#{typeQnA}, title=#{title},"
-			+ " content=#{content}, img=#{img} where bid=#{bid}")  
+			+ " content=#{content}, img=#{img}, secretMsg=#{secretMsg} where bid=#{bid}")  
 	void updateBoard(Board board);
 	
 	@Update("update Board set isDeleted=1 where bid=#{bid}")

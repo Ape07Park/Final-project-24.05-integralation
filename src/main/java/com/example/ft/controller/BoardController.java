@@ -111,7 +111,7 @@ public class BoardController {
 		Board board = Board.builder().bid(boardData.getBid())
 		  		.iid(boardData.getIid()).email(boardData.getEmail()).type(boardData.getType())
 		  		.typeQnA(boardData.getTypeQnA()).title(boardData.getTitle())
-		  		.content(boardData.getContent()).img(img).build();
+		  		.content(boardData.getContent()).img(img).secretMsg(boardData.getSecretMsg()).build();
 		boardService.updateBoard(board);
 		if (boardData.getType().equals("review")) {
 			Review review = Review.builder()

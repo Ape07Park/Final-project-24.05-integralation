@@ -38,11 +38,7 @@ public class EmailServiceImpl implements EmailService {
 
 	@Override
 	public MimeMessage createMessage(String recipient) throws MessagingException, UnsupportedEncodingException {
-		log.info("보내는 대상 : " + recipient);
-		log.info("인증 번호 : " + ePw);
 		MimeMessage message = javaMailSender.createMimeMessage();
-		
-		System.out.println("message1:" + message );
 		
 		message.addRecipients(MimeMessage.RecipientType.TO, recipient); // to 보내는 대상
 		message.setSubject("Funiture 회원가입 인증 코드: "); // 메일 제목
@@ -54,13 +50,9 @@ public class EmailServiceImpl implements EmailService {
 		msg += "<div style=\"padding-right: 30px; padding-left: 30px; margin: 32px 0 40px;\"><table style=\"border-collapse: collapse; border: 0; background-color: #F4F4F4; height: 70px; table-layout: fixed; word-wrap: break-word; border-radius: 6px;\"><tbody><tr><td style=\"text-align: center; vertical-align: middle; font-size: 30px;\">";
 		msg += ePw;
 		msg += "</td></tr></tbody></table></div>";
-		
-		System.out.println(msg);
 
 		message.setText(msg, "utf-8", "html"); // 내용, charset 타입, subtype
 		message.setFrom(new InternetAddress(id, "Funiture")); // 보내는 사람의 메일 주소, 보내는 사람 이름
-		
-		System.out.println("message2:" + message );
 		
 		return message;
 	}
@@ -83,7 +75,6 @@ public class EmailServiceImpl implements EmailService {
 	@Override
 	public String sendSimpleMessage(String recipient) throws Exception {
 		MimeMessage message = createMessage(recipient);
-		System.out.println("message--------" + message);
 		
 		try {
 			// 메일 발송에서 터짐 - 

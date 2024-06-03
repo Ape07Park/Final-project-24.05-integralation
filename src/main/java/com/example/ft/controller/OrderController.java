@@ -104,7 +104,7 @@ public class OrderController {
 
 		// 사용자 이메일을 이용하여 주문 목록을 조회합니다.
 		List<OrderHistory> orderList = orderService.getOrderHistoryList(email);
-
+		
 		if (orderList.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
@@ -115,7 +115,7 @@ public class OrderController {
 	// admin으로 모든 사용자의 주문 목록 가져오기
 	@PostMapping("/admin/historyList")
 	public ResponseEntity<?> getOrderListForAdmin(@RequestBody Map<String, String> data) {
-
+		
 		String adminEmail = data.get("email"); // adminEmail이라는 key를 통해 admin의 이메일을 받음
 
 		if (!adminEmail.equals("admin@gmail.com")) {
@@ -123,7 +123,7 @@ public class OrderController {
 		}
 
 		List<OrderHistory> allOrderList = orderService.getOrderHistoryListForAdmin();
-
+		
 		if (allOrderList.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
@@ -169,10 +169,8 @@ public class OrderController {
             orderService.deleteOrder(oid);
             
             List<OrderItem> orderItemList = orderService.getOrderItems(oid);
-            System.out.println(orderItemList);
             for (OrderItem item : orderItemList) {
             	itemService.inventoryCalculationCancel(item.getIoid(), item.getCount());
-            	System.out.println(item);
             }
             
             return ResponseEntity.ok("주문 취소 되었습니다.");

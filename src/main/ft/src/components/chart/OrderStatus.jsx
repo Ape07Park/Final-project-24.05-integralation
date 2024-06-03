@@ -23,7 +23,7 @@ const OrderStatusList = () => {
           delivertcompleteCount: result.delivertcompleteCount,
         });
       } catch (error) {
-        console.error("주문/배송 상태 조회 중 오류:", error);
+        console.log("주문/배송 상태 조회 중 오류:", error);
       }
     };
 

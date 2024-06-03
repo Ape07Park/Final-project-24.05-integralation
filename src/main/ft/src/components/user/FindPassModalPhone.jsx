@@ -5,7 +5,7 @@ import {
   updatePassword, signInWithEmailAndPassword, logout
 } from "../../api/firebase";
 import axios from 'axios';
-import CustomButton from "../CustomButton";
+import CustomButton from "../publics/CustomButton";
 import { child, get, getDatabase, ref } from "firebase/database";
 
 const FindPassModalPhone = ({ open, onClose }) => {

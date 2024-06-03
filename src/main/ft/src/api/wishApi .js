@@ -8,7 +8,7 @@ export const fetchWishList = async (userInfo) => {
     const wishList = response.data;
     return wishList;
   } catch (error) {
-    console.error('Error fetching wish list:', error);
+    console.log('Error fetching wish list:', error);
     throw error;
   }
 };
@@ -31,7 +31,7 @@ export const fetchItemWishCounts = async (iid) => {
     const response = await axios.get(`/ft/wish/count/${iid}`);
     return response;
   } catch (error) {
-    console.error('아이템 찜 수를 불러오는 중 에러:', error);
+    console.log('아이템 찜 수를 불러오는 중 에러:', error);
     throw error;
   }
 };

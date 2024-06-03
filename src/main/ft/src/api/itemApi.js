@@ -6,7 +6,7 @@ export const getItemDetail = async (iid) => {
     const response = await axios.get(`/ft/item/detail/${iid}/em`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching item detail:', error);
+    console.log('Error fetching item detail:', error);
     throw error;
   }
 };
@@ -16,7 +16,7 @@ export const updateItem = async (requestData) => {
     const response = await axios.post(`/ft/item/update`, requestData);
     return response.data;
   } catch (error) {
-    console.error('Error updating item:', error);
+    console.log('Error updating item:', error);
     throw error;
   }
 };
@@ -26,7 +26,7 @@ export const insertItem = async (requestData) => {
     const response = await axios.post('/ft/item/insert', requestData);
     return response.data;
   } catch (error) {
-    console.error('Error inserting item:', error);
+    console.log('Error inserting item:', error);
     throw error;
   }
 };
@@ -45,7 +45,7 @@ export const fetchItemListAPI = async () => {
   return axios.get('/ft/item/list')
     .then(res => res.data)
     .catch(err => {
-      console.error('Error fetching item list:', err);
+      console.log('Error fetching item list:', err);
       throw err;
     });
 };
@@ -55,7 +55,7 @@ export const deletedItem = async (iid) => {
     const response = await axios.delete(`/ft/item/delete/${iid}`);
     return response;
   } catch (error) {
-    console.error('Error deleting item:', error);
+    console.log('Error deleting item:', error);
     throw error;
   }
 };
@@ -65,7 +65,7 @@ export const addItemSale = async (formData) => {
     const response = await axios.post('/ft/item/sale', formData);
     return response.data;
   } catch (error) {
-    console.error('Error:', error);
+    console.log('Error:', error);
     throw error;
   }
 };

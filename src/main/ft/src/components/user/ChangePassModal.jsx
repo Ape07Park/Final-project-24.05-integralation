@@ -7,7 +7,7 @@ import {
   Button,
 } from "@mui/material";
 
-import CustomButton from '../CustomButton';
+import CustomButton from '../publics/CustomButton';
 
 const ChangePassModal = ({ handleClose }) => {
   const [email, setEmail] = useState('');

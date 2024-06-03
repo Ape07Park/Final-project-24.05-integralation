@@ -49,7 +49,7 @@ public interface OrderDao {
 
 	// 주문 취소
 	@Update("UPDATE `order`"
-	         + " SET isDeleted = 2, status = '취소'"
+	         + " SET isDeleted = 2, status = '취소', way=''"
 	         + " WHERE oid = #{oid};")
 	   void deleteOrder(int oid);
 
@@ -65,6 +65,7 @@ public interface OrderDao {
 
 	// 주문 내역들 email로 가져오기 - 사용 중
 	@Select(" SELECT o.oid, o.email, o.status, o.totalPrice, o.regDate, o.way, "
+			+ " o.postCode, o.addr, o.detailAddr, o.tel, "
 			+ " oi.count, oi.price, oi.review, oi.oiid, i.name, i.img1, i.iid, itemOption.option  " + " FROM `order` o "
 			+ " JOIN orderItem oi ON o.oid = oi.oid " + " JOIN item i ON oi.iid = i.iid "
 			+ " JOIN itemOption ON oi.iid = itemOption.iid AND oi.ioid = itemOption.ioid "
@@ -102,7 +103,8 @@ public interface OrderDao {
 	 */
 
 	// 모든 주문 내역 가져오기
-	@Select(" SELECT o.oid, o.email, o.status, o.totalPrice, o.regDate, o.way, o.isDeleted, "
+	@Select(" SELECT o.oid, o.email, o.status, o.totalPrice, o.regDate, "
+			+ " o.way, o.isDeleted, o.postCode, o.addr, o.detailAddr, o.tel, "
 			+ " oi.count, oi.price, i.name, i.img1, i.iid, itemOption.option  " + " FROM `order` o "
 			+ " JOIN orderItem oi ON o.oid = oi.oid " + " JOIN item i ON oi.iid = i.iid "
 			+ " JOIN itemOption ON oi.iid = itemOption.iid AND oi.ioid = itemOption.ioid "

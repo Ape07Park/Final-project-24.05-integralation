@@ -7,7 +7,7 @@ export const fetchReplies = async (bid) => {
     const response = await axios.get(`/ft/reply/list/${bid}`);
     return response.data; // 가져온 답변 목록 반환
   } catch (error) {
-    console.error('답변 목록을 불러오는 중 에러:', error);
+    console.log('답변 목록을 불러오는 중 에러:', error);
     throw error;
   }
 };
@@ -18,7 +18,7 @@ export const postReply = async (replyData) => {
     const response = await axios.post('/ft/reply/insert', replyData);
     return response.data; // 응답 데이터 반환
   } catch (error) {
-    console.error('답변을 작성하는 중 에러:', error);
+    console.log('답변을 작성하는 중 에러:', error);
     throw error;
   }
 };
@@ -29,7 +29,7 @@ export const updateReply = async (replyData) => {
     const response = await axios.post('/ft/reply/update', replyData);
     return response.data; // 응답 데이터 반환
   } catch (error) {
-    console.error('답변을 수정하는 중 에러:', error);
+    console.log('답변을 수정하는 중 에러:', error);
     throw error;
   }
 };
@@ -40,7 +40,7 @@ export const deleteReply = async (rid) => {
     const response = await axios.post(`/ft/reply/delete/${rid}`);
     return response.data; // 응답 데이터 반환
   } catch (error) {
-    console.error('답변을 삭제하는 중 에러:', error);
+    console.log('답변을 삭제하는 중 에러:', error);
     throw error;
   }
 };

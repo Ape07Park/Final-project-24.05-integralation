@@ -3,6 +3,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { confirmPayment } from '../../api/orderApi';
 
 export function SuccessPage({orderData}) {
   const navigate = useNavigate();
@@ -22,25 +23,12 @@ export function SuccessPage({orderData}) {
       };
       
       try {
-        const response = await fetch('ft/confirm', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestData),
-        });
-
-        const json = await response.json();
-
-        if (!response.ok) {
-          navigate(`/fail?message=${json.message}&code=${json.code}`);
-          return;
-        }
+        await confirmPayment(requestData);
 
         // 결제 성공 시 처리할 로직을 여기에 추가하세요.
         // 예: navigate(`/success?orderId=${json.orderId}`);
       } catch (error) {
-        console.error('Error confirming payment:', error);
+        console.log('Error confirming payment:', error);
       }
     };
 

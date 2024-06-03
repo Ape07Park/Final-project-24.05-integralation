@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { base64Encode } from 'base64-arraybuffer'; // base64 인코딩을 위한 라이브러리 (설치 필요)
+import { base64Encode } from 'base64-arraybuffer';
 import LoadingIndicator from '../publics/LoadingIndicator';
-import { CircularProgress, Typography } from '@mui/material';
 
 const REST_API_KEY = process.env.REACT_APP_KAKAO_API_KEY;
 
@@ -45,7 +44,7 @@ export default function Karlo({ image, maskImage }) {
       );
       setImageURL(response.data.images[0].image);
     } catch (error) {
-      console.error('Error:', error);
+      console.log('Error:', error);
     } finally {
       setLoading(false);
     }
@@ -53,7 +52,7 @@ export default function Karlo({ image, maskImage }) {
 
   const handleImageUpload = async () => {
     if (!selectedImage || !selectedMask) {
-      console.error('Both image and mask must be selected.');
+      console.log('Both image and mask must be selected.');
       return;
     }
 

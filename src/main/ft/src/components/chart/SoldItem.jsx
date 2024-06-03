@@ -15,7 +15,7 @@ const SoldItem = () => {
         const response = await axios.get('/ft/admin/sales/sold');
         setTopSoldItems(response.data);
       } catch (error) {
-        console.error('가장 많이 팔린 상품 Top 5 조회 중 오류:', error);
+        console.log('가장 많이 팔린 상품 Top 5 조회 중 오류:', error);
       }
     };
 

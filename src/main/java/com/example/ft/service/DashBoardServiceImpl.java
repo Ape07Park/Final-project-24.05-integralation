@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class DashBoardServiceImpl implements DashBoardService {
-
 		private final DashBoardDao dashBoardDao;
 
 		@Override

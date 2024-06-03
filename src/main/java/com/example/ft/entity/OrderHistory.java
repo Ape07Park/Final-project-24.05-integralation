@@ -31,4 +31,8 @@ public class OrderHistory {
 	private int isDeleted;
 	private int review;
 	private int oiid;
+	private String postCode;
+	private String addr;
+	private String detailAddr;
+	private String tel;
 }

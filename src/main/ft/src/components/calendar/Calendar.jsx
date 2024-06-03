@@ -8,7 +8,6 @@ import { fetchAdminOrderHistory } from '../../api/orderApi';
 
 const Calendar = () => {
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
-  const [userInfo, setUserInfo] = useState(null);
   const [orders, setOrders] = useState({});
   const [selectedOrders, setSelectedOrders] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,7 +28,6 @@ const Calendar = () => {
       const fetchUserInfo = async () => {
         try {
           const info = await selectUserData(currentUserEmail);
-          setUserInfo(info);
         } catch (error) {
           console.log('사용자 정보를 불러오는 중 에러:', error);
         }
@@ -205,7 +203,7 @@ const Calendar = () => {
       <table className='claendarTable'>
         <thead>
           <tr>
-            <th className='t0'>일</th><th>월</th> <th>화</th> <th>수</th> <th>목</th> <th>금</th><th className='t6'>토</th>
+            <th className='t0'>일</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th className='t6'>토</th>
           </tr>
         </thead>
         <tbody>

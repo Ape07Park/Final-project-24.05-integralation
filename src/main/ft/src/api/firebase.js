@@ -5,6 +5,7 @@ import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider,
   sendEmailVerification, RecaptchaVerifier, signInWithPhoneNumber, updatePassword } from "firebase/auth";
   import {getDatabase, ref, set, get, remove, update } from "firebase/database";
   
+  
   const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
@@ -46,6 +47,7 @@ export function login({ email, password }) {
         alertMessage = '아이디나 비밀번호가 잘못되었습니다.';
       }
       alert(alertMessage);
+      throw error; // 오류를 호출한 곳으로 전달
     });
 }
 

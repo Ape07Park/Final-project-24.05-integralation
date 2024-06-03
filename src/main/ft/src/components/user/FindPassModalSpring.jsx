@@ -8,7 +8,7 @@ import {
   Button,
   Grid,
 } from "@mui/material";
-import CustomButton from '../CustomButton';
+import CustomButton from '../publics/CustomButton';
 import {selectUserEmailPassword, login, auth, changePasswordFromDB, 
   updatePassword, signInWithEmailAndPassword, logout} from "../../api/firebase";
 

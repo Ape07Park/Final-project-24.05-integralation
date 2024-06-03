@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Modal, Box, TextField, Button, Typography } from "@mui/material";
 import axios from 'axios';
 import { getDatabase, ref, get } from "firebase/database";
-import CustomButton from "../CustomButton";
+import CustomButton from "../publics/CustomButton";
 
 const FindEmailModalPhone = ({ open, onClose }) => {
   const [email, setEmail] = useState("");
