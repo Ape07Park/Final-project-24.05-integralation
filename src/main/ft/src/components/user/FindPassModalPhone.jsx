@@ -8,7 +8,6 @@ import axios from 'axios';
 import CustomButton from "../CustomButton";
 import { child, get, getDatabase, ref } from "firebase/database";
 
-
 const FindPassModalPhone = ({ open, onClose }) => {
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -28,10 +27,9 @@ const FindPassModalPhone = ({ open, onClose }) => {
     try {
       // 서버로 번호를 전송
       await axios.post('/ft/sms/sendsms', phoneNumber);
-      console.log('전화번호 전송');
       setIsCodeSent(true);
     } catch (error) {
-      console.error('전화번호 전송 실패:', error);
+      console.log('전화번호 전송 실패:', error);
     }
   };
 
@@ -44,14 +42,11 @@ const FindPassModalPhone = ({ open, onClose }) => {
       const responseData = response.data;
       const verifyCodeFromServer = responseData.verifyCode;
 
-      console.log('인증번호 요청:', verifyCodeFromServer);
-
       // 서버에서 받은 인증 코드를 상태에 설정
       setVerificationCode(verifyCodeFromServer);
 
       if (parseInt(userInputCode) === verifyCodeFromServer) {
         setIsCodeVerified(true);
-        console.log('인증번호 일치');
 
         // 로그인 시도
         loginUser();
@@ -61,7 +56,7 @@ const FindPassModalPhone = ({ open, onClose }) => {
         console.log('인증번호 불일치');
       }
     } catch (error) {
-      console.error('인증번호 요청 실패:', error);
+      console.log('인증번호 요청 실패:', error);
     }
   };
 
@@ -75,15 +70,14 @@ const FindPassModalPhone = ({ open, onClose }) => {
         // Firebase Authentication을 사용하여 이메일과 비밀번호로 로그인
         const { user } = await signInWithEmailAndPassword(auth, email, password);
         if (user) {
-          console.log('로그인 성공');
         } else {
-          console.error("사용자 로그인에 실패하였습니다.");
+          console.log("사용자 로그인에 실패하였습니다.");
         }
       } else {
-        console.error("사용자 정보를 가져오는 데 실패했습니다.");
+        console.log("사용자 정보를 가져오는 데 실패했습니다.");
       }
     } catch (error) {
-      console.error("로그인에 실패하였습니다.", error);
+      console.log("로그인에 실패하였습니다.", error);
     }
   };
 
@@ -93,16 +87,11 @@ const FindPassModalPhone = ({ open, onClose }) => {
         // 현재 로그인한 사용자를 가져옴
         const currentUser = auth.currentUser;
 
-        // 비밀번호 변경 요청
+        // auth 비밀번호 변경 요청
         await updatePassword(currentUser, newPassword);
 
-        //  *** DB에서 비번 변경
-        // 어디서 내가 입력한 이메일을 여기로 가져올 것인가?
-
-        console.log("email*******" + email);
+        //  DB 비번 변경
         await changePasswordFromDB(email, newPassword);
-
-        console.log("비밀번호가 성공적으로 변경되었습니다.");
 
         // 비밀번호 변경 후 사용자 로그아웃
         await logout();
@@ -113,7 +102,7 @@ const FindPassModalPhone = ({ open, onClose }) => {
         window.alert("비밀번호가 다릅니다.")
       }
     } catch (error) {
-      console.error("비밀번호 변경에 실패하였습니다.", error);
+      console.log("비밀번호 변경에 실패하였습니다.", error);
     }
   };
 
@@ -123,8 +112,6 @@ const FindPassModalPhone = ({ open, onClose }) => {
       alert("이메일을 입력해주세요.");
       return;
     }
-
-    console.log(email); // 이메일 값이 콘솔에 출력됨
 
     try {
       const db = getDatabase();

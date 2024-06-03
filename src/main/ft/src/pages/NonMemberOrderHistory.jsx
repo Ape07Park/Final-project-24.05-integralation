@@ -82,12 +82,13 @@ const NonMemberOrderHistory = () => {
   const handleDelete = async (orderId) => {
     const confirmDelete = window.confirm("정말로 주문을 취소하시겠습니까?");
     if (!confirmDelete) return; 
+
     try {
-      await axios.post('/ft/order/orderDelete', { oid: orderId });
-      console.log('주문 삭제 완료');
+      const stringedOrderId = String(orderId);
+      await axios.post('/ft/order/orderDelete', { oid: stringedOrderId }); 
       fetchOrderHistory();
     } catch (error) {
-      console.error('주문 삭제 실패:', error);
+      console.log('주문 삭제 실패:', error);
     }
   };
 

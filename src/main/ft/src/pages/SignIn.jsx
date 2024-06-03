@@ -25,8 +25,7 @@ function SignIn() {
       if (userInfo.email.trim() === '' || userInfo.password.trim() === '') {
         alert('이메일 혹은 패스워드를 모두 입력해주세요.');
       } else {
-        const userData = await login(userInfo);
-        console.log("일반 로그인 성공:", userData);
+        await login(userInfo);
 
         const prevPage = localStorage.getItem('prevPage');
         if (prevPage && prevPage !== '/signUp') {
@@ -37,14 +36,13 @@ function SignIn() {
         }
       }
     } catch (error) {
-      console.error('로그인 오류:', error);
+      console.log('로그인 오류:', error);
     }
   }
 
   const handleGoogle = async () => {
     try {
       await loginWithGoogle();
-      console.log("구글 로그인 성공");
 
       const prevPage = localStorage.getItem('prevPage');
       if (prevPage && prevPage !== '/signUp') {
@@ -55,14 +53,13 @@ function SignIn() {
       }
     } catch (error) {
       alert('구글 로그인에 실패했습니다.');
-      console.error('구글 로그인 오류:', error);
+      console.log('구글 로그인 오류:', error);
     }
   }
 
   const handleKakao = async () => {
     try {
       await loginWithKakao();
-      console.log("카카오 로그인 성공");
 
       const prevPage = localStorage.getItem('prevPage');
       if (prevPage && prevPage !== '/signUp') {

@@ -3,8 +3,8 @@ import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 import '../../css/Calendar.css';
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
 import { selectUserData } from '../../api/firebase';
-import axios from 'axios';
 import OrderInfoModal from './OrderInfoModal';
+import { fetchAdminOrderHistory } from '../../api/orderApi';
 
 const Calendar = () => {
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
@@ -31,7 +31,7 @@ const Calendar = () => {
           const info = await selectUserData(currentUserEmail);
           setUserInfo(info);
         } catch (error) {
-          console.error('사용자 정보를 불러오는 중 에러:', error);
+          console.log('사용자 정보를 불러오는 중 에러:', error);
         }
       };
       fetchUserInfo();
@@ -39,41 +39,42 @@ const Calendar = () => {
   }, [currentUserEmail]);
 
   useEffect(() => {
-    if (currentUserEmail) {
-      const fetchOrderHistory = async () => {
+    const fetchOrderHistory = async () => {
+      if (currentUserEmail) {
         try {
-          const response = await axios.post('/ft/order/historyList', { email: currentUserEmail });
-          const ordersData = response.data.reduce((acc, order) => {
-            const date = order.regDate.substring(0, 10); // 날짜 부분만 추출
+          const response = await fetchAdminOrderHistory(currentUserEmail);
+          const ordersData = (response || []).reduce((acc, order) => {
+            const date = order.regDate.substring(0, 10);
             if (!acc[date]) {
               acc[date] = [];
             }
             acc[date].push({
               oid: order.oid,
               regDate: order.regDate,
-              img1: order.img1, // assuming order object has an imageUrl field
-              name: order.name, // assuming order object has a name field
+              img1: order.img1,
+              name: order.name,
               option: order.option,
-              count: order.count, // assuming order object has a quantity field
+              count: order.count,
               status: order.status,
               iid: order.iid,
+              totalPrice: order.totalPrice,
             });
             return acc;
           }, {});
           setOrders(ordersData);
         } catch (error) {
           if (error.response) {
-            console.error('주문 내역을 불러오는데 실패했습니다:', error.response.status, error.response.data);
+            console.log('주문 내역을 불러오는데 실패했습니다:', error.response.status, error.response.data);
           } else if (error.request) {
-            console.error('주문 내역을 불러오는데 실패했습니다: 서버로부터 응답이 없습니다.');
+            console.log('주문 내역을 불러오는데 실패했습니다: 서버로부터 응답이 없습니다.');
           } else {
-            console.error('주문 내역을 불러오는데 실패했습니다:', error.message);
+            console.log('주문 내역을 불러오는데 실패했습니다:', error.message);
           }
           setOrders({});
         }
-      };
-      fetchOrderHistory();
-    }
+      }
+    };
+    fetchOrderHistory();
   }, [currentUserEmail]);
 
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
@@ -128,9 +129,17 @@ const Calendar = () => {
         if (currentDay <= daysInMonth) {
           const dateString = `${currentYear}-${String(currentMonth).padStart(2, '0')}-${String(currentDay).padStart(2, '0')}`;
           const orderCount = orders[dateString] ? new Set(orders[dateString].map(order => order.oid)).size : 0;
-          const cancelledCount = orders[dateString] ? orders[dateString]
+          
+          const totalPrice = orders[dateString]
+            ? [...new Set(orders[dateString].map(order => order.oid))]
+                .map(oid => orders[dateString].find(order => order.oid === oid))
+                .filter(order => order.status !== '취소')
+                .map(order => order.totalPrice) 
+                .reduce((acc, curr) => acc + curr, 0) 
+            : 0;
+          
+            const cancelledCount = orders[dateString] ? orders[dateString]
               .filter((order, index, self) => {
-                // oid 기준으로 같은 거 필터링
                 return (
                   index ===
                   self.findIndex((o) => o.oid === order.oid && o.status === '취소')
@@ -138,7 +147,7 @@ const Calendar = () => {
               })
               .filter((order) => order.status === '취소').length
             : 0;
-
+           
           week.push(
             <td
               key={currentDay}
@@ -151,10 +160,16 @@ const Calendar = () => {
                 </span>
                 <br />
                 {(orderCount - cancelledCount !== 0
-                  ? <span className="total-count">주문:{orderCount - cancelledCount}건</span> 
+                  ? <span className="total-count">주문: {orderCount - cancelledCount}건</span> 
                   :<></>)}
                 <br />
-                {cancelledCount > 0 && <span className="cancelled-count">취소 {cancelledCount} 건</span>}
+                {cancelledCount > 0 && <span className="cancelled-count">취소: {cancelledCount}건</span>}
+                {totalPrice > 0 && 
+                  <>
+                    <div style={{fontSize:'0.8em'}}>총 판매가 :</div>
+                    <div style={{fontSize:'0.9em'}}>{totalPrice.toLocaleString()}원</div>
+                  </>
+                }
               </p>
             </td>
           );

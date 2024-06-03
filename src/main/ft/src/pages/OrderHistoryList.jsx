@@ -21,6 +21,7 @@ import { useNavigate } from 'react-router-dom';
 import TrackerComponent from '../components/TrackerComponent';
 import ReviewFormModal from '../components/ReviewForm';
 import Calendar from '../components/calendar/Calendar';
+import {deleteOrderHistory, fetchOrderHistory } from '../api/orderApi';
 
 const OrderHistoryList = () => {
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
@@ -40,6 +41,7 @@ const OrderHistoryList = () => {
     });
   }, [auth]);
 
+  // 유저 정보 가져오기 
   useEffect(() => {
     if (currentUserEmail) {
       const fetchUserInfo = async () => {
@@ -47,33 +49,27 @@ const OrderHistoryList = () => {
           const info = await selectUserData(currentUserEmail);
           setUserInfo(info);
         } catch (error) {
-          console.error('사용자 정보를 불러오는 중 에러:', error);
+          console.log('사용자 정보를 불러오는 중 에러:', error);
         }
       };
       fetchUserInfo();
     }
   }, [currentUserEmail]);
 
+  // 주문 가져오기 
   useEffect(() => {
-    if (currentUserEmail) {
-      const fetchOrderHistory = async () => {
+    const fetchOrders = async () => {
+      if (currentUserEmail) {
         try {
-          const response = await axios.post('/ft/order/historyList', { email: currentUserEmail });
-          setOrders(response.data);
-          console.log(response);
+          const orderData = await fetchOrderHistory(currentUserEmail);
+          setOrders(orderData);
         } catch (error) {
-          if (error.response) {
-            console.error('주문 내역을 불러오는데 실패했습니다:', error.response.status, error.response.data);
-          } else if (error.request) {
-            console.error('주문 내역을 불러오는데 실패했습니다: 서버로부터 응답이 없습니다.');
-          } else {
-            console.error('주문 내역을 불러오는데 실패했습니다:', error.message);
-          }
           setOrders([]);
+          console.log('Failed to load order history:', error);
         }
-      };
-      fetchOrderHistory();
-    }
+      }
+    };
+    fetchOrders();
   }, [currentUserEmail]);
 
   const groupedOrdersByDate = orders.reduce((acc, order) => {
@@ -116,20 +112,9 @@ const OrderHistoryList = () => {
   };
 
   const handleDelete = async (orderId) => {
-    const confirmDelete = window.confirm("정말로 주문을 취소하시겠습니까?");
-    if (!confirmDelete) return;
-
-    try {
-      const stringedOrderId = String(orderId);
-      await axios.post('/ft/order/orderDelete', { oid: stringedOrderId });
-      console.log('주문 삭제 완료');
-      fetchOrderHistory();
-    } catch (error) {
-      console.error('주문 삭제 실패:', error);
-    }
+    await deleteOrderHistory(orderId, currentUserEmail, setOrders);
   };
 
-  const [reviews, setReviews] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [iid, setIid] = useState();
   const [oiid, setOiid] = useState();
@@ -148,24 +133,7 @@ const OrderHistoryList = () => {
     setIsModalOpen(false);
     setIid('');
     setOiid('');
-    fetchOrderHistory();
-  };
-
-  const fetchOrderHistory = async () => {
-    try {
-      const response = await axios.post('/ft/order/historyList', { email: currentUserEmail });
-      setOrders(response.data);
-      console.log(response);
-    } catch (error) {
-      if (error.response) {
-        console.error('주문 내역을 다시 불러오는데 실패했습니다:', error.response.status, error.response.data);
-      } else if (error.request) {
-        console.error('주문 내역을 다시 불러오는데 실패했습니다: 서버로부터 응답이 없습니다.');
-      } else {
-        console.error('주문 내역을 다시 불러오는데 실패했습니다:', error.message);
-      }
-      setOrders([]);
-    }
+    fetchOrderHistory(currentUserEmail);
   };
 
   return (

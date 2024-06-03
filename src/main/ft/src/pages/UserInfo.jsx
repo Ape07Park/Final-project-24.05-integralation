@@ -16,8 +16,8 @@ export default function UserInfo() {
   const auth = getAuth();
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
-
+  
+  // 이메일 가져오기
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -28,13 +28,13 @@ export default function UserInfo() {
     });
   }, [auth]);
 
+  // db에서 이메일을 통해 사용자 정보 집어넣기
   useEffect(() => {
     if (currentUserEmail) {
       const fetchUserInfo = async () => {
         try {
           const info = await selectUserData(currentUserEmail);
           setUserInfo(info);
-          setIsAdmin(info && info.isAdmin === 1);
         } catch (error) {
           console.error('사용자 정보를 불러오는 중 에러:', error);
         }
@@ -46,6 +46,7 @@ export default function UserInfo() {
   const handleUpdate = () => {
     navigate('/UserUpdate', { state: { userInfo } });
   };
+
 
   const handleDelete = async () => {
     const userEmail = userInfo?.email;
@@ -96,14 +97,6 @@ export default function UserInfo() {
                 <InfoItem label="주소" value={userInfo?.addr} />
                 <InfoItem label="상세 주소" value={userInfo?.detailAddr} />
                 <InfoItem label="배송 시 요청사항" value={userInfo?.req} />
-                <InfoItem label="이메일 확인" value={userInfo?.emailVerified ? '확인됨' : '미확인'} />
-                {isAdmin && (
-                  <Box mt={2}>
-                    <Typography variant="body1" color="error">
-                      <strong>관리자:</strong> 예
-                    </Typography>
-                  </Box>
-                )}
               </Grid>
             </Grid>
             <Divider sx={{ my: 3 }} />

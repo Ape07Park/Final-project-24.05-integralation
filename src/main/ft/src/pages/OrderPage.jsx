@@ -10,11 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
 import CustomButton from '../components/CustomButton';
 
-
 const Order = () => {
-  const [cartItems, setCartItems] = useState([]);
-  const [selectedItems, setSelectedItems] = useState([]);
-  const [totalCount, setTotalCount] = useState(0);
   // order
   const [orderItems, setOrderItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0); // 총 결제 금액 추가
@@ -51,7 +47,7 @@ const Order = () => {
           setUserInfo(info);
 
         } catch (error) {
-          console.error('사용자 정보를 불러오는 중 에러:', error);
+          console.log('사용자 정보를 불러오는 중 에러:', error);
         }
       };
       fetchUserInfo();
@@ -137,7 +133,7 @@ const Order = () => {
       // 모든 주문이 성공적으로 생성되었을 때 메시지 출력
       alert('주문이 성공적으로 생성되었습니다.');
     } catch (error) {
-      console.error('주문 처리 중 오류:', error);
+      console.log('주문 처리 중 오류:', error);
       alert('주문 생성 중 오류가 발생했습니다.');
     }
   };

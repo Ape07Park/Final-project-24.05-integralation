@@ -45,17 +45,16 @@ export default function SignUp() {
 
   const [isHoveredGoogle, setIsHoveredGoogle] = useState(false);
   const [isHoveredKakao, setIsHoveredKakao] = useState(false);
-
+  
   const handleGoogle = async () => {
     try {
-      const userInfo = await loginWithGoogle();
-      console.log("구글로 로그인한 사용자 정보:", userInfo);
+      await loginWithGoogle();
       navigate('/UserInfo');
       setTimeout(() => {
         alert("업데이트 페이지에서 사용자 정보를 업데이트 해주세요");
       }, 700); // setTimeout을 사용하여 다음 이벤트 큐에 넣어 순서를 조정합니다.
     } catch (error) {
-      console.error("구글 로그인 오류:", error);
+      console.log("구글 로그인 오류:", error);
       alert("구글 로그인에 오류가 발생했습니다.");
       navigate(-1); // 또는 다른 경로로 리다이렉트
     }
@@ -63,15 +62,14 @@ export default function SignUp() {
 
   const handleKakao = async () => {
     try {
-      const userInfo = await loginWithKakao();
-      console.log("카카오로 로그인한 사용자 정보:", userInfo);
+      await loginWithKakao();
       // 'UserInfo' 페이지로 이동 후, 일정 시간 뒤에 알림을 띄우고 'UserUpdate' 페이지로 이동
       navigate('/UserInfo');
       setTimeout(() => {
         alert("업데이트 페이지에서 사용자 정보를 업데이트 해주세요");
       }, 700);
     } catch (error) {
-      console.error("카카오 로그인 오류:", error);
+      console.log("카카오 로그인 오류:", error);
       alert("카카오 로그인에 오류가 발생했습니다.");
       navigate(-1); // 또는 다른 경로로 리다이렉트
     }
@@ -103,8 +101,6 @@ export default function SignUp() {
       return;
     }
 
-    console.log(email); // 이메일 값이 콘솔에 출력됨
-
     try {
       const db = getDatabase();
       const dbRef = ref(db);
@@ -128,7 +124,7 @@ export default function SignUp() {
         setIsReadOnly(true); // 데이터가 없을 경우 읽기 전용으로 설정
       }
     } catch (error) {
-      console.error(error);
+      console.log(error);
       setIsDuplicate(false);
       setIsReadOnly(false); // 에러가 발생할 경우 읽기 전용으로 설정하지 않음
     }
@@ -150,8 +146,8 @@ export default function SignUp() {
       return;
     }
 
+    alert("회원가입 완료")
     authRegister(userInfo); // 사용자 등록 함수 호출
-    console.log("회원가입 정보:", userInfo); // 회원가입 정보 출력
     navigate('/signIn');
   }
 

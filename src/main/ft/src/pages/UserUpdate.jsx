@@ -42,7 +42,6 @@ export default function UserUpdate() {
   const [req, setReq] = useState('');
 
   const [messageType, setMessageType] = useState('');
-  const [customMessage, setCustomMessage] = useState('');
 
   // 현재 페이지의 URL 정보를 가져오기 위해 useLocation 훅 사용
   const location = useLocation();
@@ -120,11 +119,10 @@ export default function UserUpdate() {
     try {
       // 사용자 정보 업데이트 요청
       await updateUserData(updatedUserInfo);
-      console.log('사용자 정보가 업데이트되었습니다.');
       // 업데이트 후, 이전 페이지로 이동
       navigate(-1);
     } catch (error) {
-      console.error('사용자 정보 업데이트 중 오류:', error);
+      console.log('사용자 정보 업데이트 중 오류:', error);
     }
   };
 
@@ -157,14 +155,6 @@ export default function UserUpdate() {
 
     // 상태 업데이트
     setTel(updatedTel);
-  };
-
-  const handleMessageChange = (e) => {
-    const selectedMessageType = e.target.value;
-    setMessageType(selectedMessageType);
-    if (selectedMessageType !== '직접 입력') {
-      setCustomMessage('');
-    }
   };
 
   return (

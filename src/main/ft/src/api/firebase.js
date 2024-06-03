@@ -5,7 +5,6 @@ import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider,
   sendEmailVerification, RecaptchaVerifier, signInWithPhoneNumber, updatePassword } from "firebase/auth";
   import {getDatabase, ref, set, get, remove, update } from "firebase/database";
   
-  
   const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
@@ -20,11 +19,10 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 const database = getDatabase(app);
 
-export { auth, updatePassword, signInWithEmailAndPassword  };
+export { auth, updatePassword, signInWithEmailAndPassword };
 
 /*========================= login =========================*/
 export function login({ email, password }) {
-  console.log('firebase.js:login(): ', email, password);
   return signInWithEmailAndPassword(auth, email, password)  // email, password 받기
     .then((userCredential) => {
       // Signed in 
@@ -35,7 +33,7 @@ export function login({ email, password }) {
     .catch((error) => {
       // 로그인 실패
       const errorMessage = error.message;
-      console.error('로그인 실패:', errorMessage);
+      console.log('로그인 실패:', errorMessage);
       // 오류 메시지에 따라 알림창 띄우기
       let alertMessage = '';
       if (errorMessage === '올바르지 않은 이메일 형식입니다.') {
@@ -48,7 +46,6 @@ export function login({ email, password }) {
         alertMessage = '아이디나 비밀번호가 잘못되었습니다.';
       }
       alert(alertMessage);
-      throw error; // 오류를 호출한 곳으로 전달
     });
 }
 
@@ -58,13 +55,13 @@ export function loginWithGoogle() {
   return signInWithPopup(auth, provider)
   .then((result) => {
 
-      console.log(result.user); // 사용자 정보 찍어보기
+      
       insertUserDataWithSocial(result.user.email, result.user.displayName) // 사용자 정보 db에 저장
       return result.user; // 사용자 정보 반환
     })
     
     .catch(error => {
-      console.error("Google 로그인 오류:", error);
+      console.log("Google 로그인 오류:", error);
       throw error; // 오류 재 throw
     });
 }
@@ -83,39 +80,31 @@ export function loginWithKakao(){
     const accessToken = credential.accessToken;
     const idToken = credential.idToken;
     
-    console.log(result.user); // 사용자 정보 찍어보기
     insertUserDataWithSocial(result.user.email, result.user.displayName) // 사용자 정보 db에 저장
     return result.user;
   })
   .catch((error) => {
-    console.error("kakao 로그인 오류:", error);
+    console.log("kakao 로그인 오류:", error);
       throw error; // 오류 재 throw
   });
 }
 
 export function logout() {
-  signOut(auth).catch(console.error);
+  signOut(auth).catch(console.log);
 }
 
 // --------------------- #login 끝 ----------------------
 
 /*========================= # Authentication =========================*/
+
+// 사용자 등록
 export function authRegister({ email, password, name, postCode, addr, detailAddr, 
   tel, req}) { //  사용처에서 obj로 처리하기에 그것에 맞춰서 제공 
-  console.log('firebase:register():', email, password);
+
   createUserWithEmailAndPassword(auth, email, password)
-  
-  .then(() => {
-    sendEmailVerification(auth.currentUser) // 인증 이메일 발송
-  .then(() => {
-    // Email verification sent!
-    // ...
-  });
-  })
   
     // user 등록하기
     .then(() => {
-      console.log("User created in Firebase Authentication");
       updateProfile(auth.currentUser, {
         email: email,
         password:password,
@@ -126,22 +115,18 @@ export function authRegister({ email, password, name, postCode, addr, detailAddr
         tel: tel,
         req: req,       
       })
-      console.log("User profile updated");
-    })
-    
+    })  
     .then(() => {
       insertUserData(email, password, name, postCode, addr, detailAddr, tel, 
         req);
-        console.log("User added to Database");
-        console.log("auth.currentUser-------" + auth.currentUser);
+        
     })
     .then(() => {logout()})
     
-
     .catch((error) => {
       // Firebase Authentication에 사용자 생성 중 오류 발생한 경우
       const errorCode = error.code;
-      console.error("Error creating user:", error);
+      console.log("Error creating user:", error);
 
       // 오류 코드에 따라 다른 메시지 출력
       let errorMessage = "사용자 등록 중 오류가 발생했습니다. 나중에 다시 시도해주세요.";
@@ -154,29 +139,24 @@ export function authRegister({ email, password, name, postCode, addr, detailAddr
     });
 }
 
-// Authentication에서 user 제거하고 DB에서도 제거
+// Authentication에서 user 제거하고 DB에서도 제거 
 export function authRemoveUser() {
   const user = auth.currentUser; // 현재 로그인된 사용자 가져오기
-  
-  console.log(user);
 
   // Firebase Authentication에서 사용자 삭제
   deleteUser(user).then(() => {
-    // 사용자가 삭제된 경우
-    console.log("User deleted from Authentication");
-
+   
     // DB에서 사용자 삭제
     deleteUserData(user.email).then(() => {
-      // 사용자가 DB에서 삭제된 경우
-      console.log("User deleted from Database");
+      
     }).catch((error) => {
       // DB에서 사용자 삭제 중 오류 발생한 경우
-      console.error("Error deleting user from Database:", error);
+      console.log("Error deleting user from Database:", error);
     });
   })
   .catch((error) => {
     // Firebase Authentication에서 사용자 삭제 중 오류 발생한 경우
-    console.error("Error deleting user from Authentication:", error);
+    console.log("Error deleting user from Authentication:", error);
   });
 }
 
@@ -200,7 +180,7 @@ export function changePassword (email) {
 function insertUserData(email, password, name, postCode, addr, detailAddr, 
   tel, req) {
   if (!email) {
-    console.error("이메일이 유효하지 않습니다.");
+    console.log("이메일이 유효하지 않습니다.");
     return;
   }
   const sanitizedEmail = email.replace(/[.#$[\]]/g, ''); // 특수 문자를 제거한 이메일
@@ -215,11 +195,10 @@ function insertUserData(email, password, name, postCode, addr, detailAddr,
     tel: tel,
     req: req,
   }).then(() => {
-    console.log("사용자 정보가 성공적으로 저장되었습니다.");
-    alert('회원가입이 완료되었습니다.')
+    
     window.location.reload();
   }).catch((error) => {
-    console.error("사용자 정보 저장 중 오류가 발생했습니다:", error);
+    console.log("사용자 정보 저장 중 오류가 발생했습니다:", error);
   });
 }
 
@@ -237,16 +216,15 @@ function insertUserDataWithSocial(email, displayName) {
     tel: '',
     req: '',
   }).then(() => {
-    console.log("사용자 정보가 성공적으로 저장되었습니다.");
   }).catch((error) => {
-    console.error("사용자 정보 저장 중 오류가 발생했습니다:", error);
+    console.log("사용자 정보 저장 중 오류가 발생했습니다:", error);
   });
 }
 
 export async function selectUserData(email) {
 
   if (!email) {
-    console.error("이메일이 유효하지 않습니다.");
+    console.log("이메일이 유효하지 않습니다.");
     return null;
   }
   
@@ -260,7 +238,7 @@ export async function selectUserData(email) {
       return null;
     })
     .catch(error => {
-      console.error("사용자 정보를 가져오는 중 오류가 발생했습니다:", error);
+      console.log("사용자 정보를 가져오는 중 오류가 발생했습니다:", error);
       return null;
     });
 }
@@ -278,14 +256,14 @@ export async function selectUserEmailPassword(email) {
     if (snapshot.exists()) {
       const { email, password } = snapshot.val();
       const result = { email, password };
-      console.log(result);
+      
       return result;
     } else {
-      console.error("사용자 정보가 존재하지 않습니다.");
+      console.log("사용자 정보가 존재하지 않습니다.");
       return null;
     }
   } catch (error) {
-    console.error("사용자 정보를 가져오는 중 오류가 발생했습니다:", error);
+    console.log("사용자 정보를 가져오는 중 오류가 발생했습니다:", error);
     return null;
   }
 }
@@ -304,10 +282,9 @@ export async function changePasswordFromDB(email, newPassword) {
     await update(ref(database, `users/${sanitizedEmail}`), {
       password: newPassword // 새로운 비밀번호로 업데이트합니다.
     });
-
-    console.log('사용자의 비밀번호가 업데이트되었습니다.');
+   
   } catch (error) {
-    console.error('비밀번호 업데이트 중 오류가 발생했습니다:', error);
+    console.log('비밀번호 업데이트 중 오류가 발생했습니다:', error);
   }
 }
 
@@ -327,12 +304,11 @@ export async function updateUserData(user) {
         tel,
         req
       });
-      console.log('사용자 정보가 업데이트되었습니다.');
     } else {
       throw new Error('이메일이 없습니다.'); // email이 없으면 오류를 발생시킵니다.
     }
   } catch (error) {
-    console.error('사용자 정보 업데이트 중 오류:', error);
+    console.log('사용자 정보 업데이트 중 오류:', error);
   }
 }
 
@@ -342,7 +318,7 @@ export async function deleteUserData(email) {
     await remove(ref(database, `users/${sanitizedEmail}`));
     return { success: true, message: '사용자 정보가 성공적으로 삭제되었습니다.' };
   } catch (error) {
-    console.error('사용자 정보 삭제 중 오류:', error);
+    console.log('사용자 정보 삭제 중 오류:', error);
     return { success: false, message: '사용자 정보 삭제 중 오류가 발생했습니다.' };
   }
 }
@@ -381,7 +357,7 @@ export async function getAdminUser(user) {
     }
     return user;
   } catch (error) {
-    console.error("Error getting admin user:", error);
+    console.log("Error getting admin user:", error);
     return user; // 에러 발생 시 기본 사용자 정보 반환
   }
 }

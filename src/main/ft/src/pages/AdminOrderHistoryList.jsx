@@ -8,6 +8,7 @@ import WayModal from '../components/WayModal';
 import AdminCategoryBar from '../components/AdminCategoryBar';
 import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
 import TrackerComponent from '../components/TrackerComponent';
+import { deleteAdminOrderHistory, fetchAdminOrderHistory } from '../api/orderApi';
 
 const queryClient = new QueryClient();
 
@@ -19,16 +20,6 @@ export default function AdminOrderHistoryList() {
   );
 }
 
-const fetchOrderHistory = async (email) => {
-  try {
-    const response = await axios.post('/ft/order/admin/historyList', { email });
-    return response.data;
-  } catch (error) {
-    console.error('주문 내역을 불러오는데 실패했습니다:', error);
-    return [];
-  }
-};
-
 const AdminOrderHistoryListContent = () => {
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
   const [sortBy, setSortBy] = useState('orderId');
@@ -37,16 +28,14 @@ const AdminOrderHistoryListContent = () => {
   const navigate = useNavigate();
   const auth = getAuth();
 
-  const { isLoading, data: orders } = useQuery(['orderHistory', currentUserEmail], () => fetchOrderHistory(currentUserEmail), {
+  const { isLoading, data: orders } = useQuery(['orderHistory', currentUserEmail], () => fetchAdminOrderHistory(currentUserEmail), {
     enabled: !!currentUserEmail,
     refetchInterval: 1000,
   });
 
-
   const handleOpenModal = (orderId) => {
     setSelectedOrderId(orderId);
     setOpenModal(true);
-    //
   };
 
   const handleCloseModal = () => {
@@ -106,7 +95,6 @@ const AdminOrderHistoryListContent = () => {
         }));
     }
   };
-  
   const handleSortChange = (event) => {
     setSortBy(event.target.value);
   };
@@ -122,15 +110,7 @@ const AdminOrderHistoryListContent = () => {
   };
 
   const handleDelete = async (orderId) => {
-    const confirmDelete = window.confirm("정말로 주문을 취소하시겠습니까?");
-    if (!confirmDelete) return;
-
-    try {
-      await axios.post('/ft/order/orderDelete', { oid: orderId });
-      console.log('주문 삭제 완료');
-    } catch (error) {
-      console.error('주문 삭제 실패:', error);
-    }
+    await deleteAdminOrderHistory(orderId);
   };
 
   return (
@@ -173,14 +153,20 @@ const AdminOrderHistoryListContent = () => {
                 {orderList.some(order => order.way) ? (
                   <>송장 번호: {orderList[0].way}</>
                 ) : (
+                  orderList[0].isDeleted !== 2 && (
                   <Button size="small" variant="contained" onClick={() => handleOpenModal(orderId)}>
                     송장 입력
                   </Button>
+                  )
                 )}
               </Typography>
-              <Button size="small" variant="contained" color="error" onClick={() => handleDelete(orderId)}>
-                주문취소
-              </Button>
+
+              {orderList[0].isDeleted !== 2 && (
+                <Button size="small" variant="contained" color="error" onClick={() => handleDelete(orderId)}>
+                  주문취소
+                </Button>
+              )}
+
             </Stack>
             <TableContainer>
               <Table>
