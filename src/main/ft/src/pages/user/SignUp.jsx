@@ -244,6 +244,7 @@ export default function SignUp() {
                     fullWidth
                     name="password"
                     label="비밀번호"
+                    placeholder="6자리 이상"
                     type="password"
                     id="password"
                     autoComplete="new-password"
@@ -259,6 +260,7 @@ export default function SignUp() {
                     fullWidth
                     name="confirmPassword"
                     label="비밀번호 확인"
+                    placeholder="6자리 이상"
                     type="password"
                     id="confirmPassword"
                     autoComplete="confirmPassword"

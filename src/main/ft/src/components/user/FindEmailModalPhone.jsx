@@ -5,7 +5,7 @@ import { getDatabase, ref, get } from "firebase/database";
 import CustomButton from "../publics/CustomButton";
 
 const FindEmailModalPhone = ({ open, onClose }) => {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState([]);
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
@@ -41,7 +41,6 @@ const FindEmailModalPhone = ({ open, onClose }) => {
         // db에 접근해서 이메일 가져오기 
         const emailFromDB = await getEmailFromDB();
         setEmail(emailFromDB);
-
       } else {
         setIsCodeVerified(false);
 
@@ -51,13 +50,10 @@ const FindEmailModalPhone = ({ open, onClose }) => {
     }
   };
 
-  // 전화번호와 이름으로 이메일 가져오는 함수
+  // 전화번호와 이름으로 일치하는 사용자의 이메일들을 가져오는 함수
   const getEmailFromDB = async () => {
-
-    // 전화번호 입력 시 '-' 추가
     const telValue = phoneNumber.replace(/[^0-9]/g, ''); // 숫자 이외의 문자 제거
     const tel = telValue.replace(/(\d{3})(\d{3,4})(\d{4})/, '$1-$2-$3');
-
     const userName = name;
 
     if (!tel || !userName) {
@@ -72,17 +68,25 @@ const FindEmailModalPhone = ({ open, onClose }) => {
 
       if (snapshot.exists()) {
         const users = snapshot.val();
-        for (const key in users) {
+        const matchingEmails = [];
 
+        for (const key in users) {
           if (users[key].tel === tel && users[key].name === userName) {
-            return users[key].email;
+            matchingEmails.push(users[key].email);
           }
         }
+
+        if (matchingEmails.length > 0) {
+          return matchingEmails;
+        } else {
+          // 일치하는 사용자가 없을 경우 처리
+        }
       } else {
-        // alert 필요할 수도
+        // 데이터베이스에 사용자 정보가 없을 경우 처리
       }
     } catch (error) {
       console.log(error);
+      // 오류 발생 시 처리
     }
     return null;
   };
@@ -126,9 +130,9 @@ const FindEmailModalPhone = ({ open, onClose }) => {
             </CustomButton>
           </>
         )}
-        {isCodeVerified && (
-          <>
-            <Typography variant="h6">이메일</Typography>
+
+        {isCodeVerified && email.map((email, index) => (
+          <div key={{index}}>
             <TextField
               label="이메일"
               value={email || "없음"}
@@ -136,9 +140,10 @@ const FindEmailModalPhone = ({ open, onClose }) => {
                 readOnly: true,
               }}
               fullWidth
+              style={{marginTop: 13}}
             />
-          </>
-        )}
+          </div>
+        ))}
       </Box>
     </Modal>
   );

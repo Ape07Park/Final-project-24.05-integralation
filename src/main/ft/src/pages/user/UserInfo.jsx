@@ -9,6 +9,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Container from '@mui/material/Container';
 import {  Paper, Grid, Divider } from '@mui/material';
 import Box from '@mui/material/Box';
+import CustomButton from '../../components/publics/CustomButton';
 
 export default function UserInfo() {
   const defaultTheme = createTheme();
@@ -101,10 +102,10 @@ export default function UserInfo() {
             </Grid>
             <Divider sx={{ my: 3 }} />
             <Stack direction="row" justifyContent="center" spacing={2}>
-              <Button variant="contained" color="primary" onClick={handleUpdate}>
+              <CustomButton variant="contained" color="primary" onClick={handleUpdate}>
                 정보 수정
-              </Button>
-              <Button variant="contained" color="error" onClick={handleDelete}>
+              </CustomButton>
+              <Button variant="contained" color="error"  onClick={handleDelete}>
                 계정 삭제
               </Button>
             </Stack>

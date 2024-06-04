@@ -77,7 +77,7 @@ const FindPassModalPhone = ({ open, onClose }) => {
         console.log("사용자 정보를 가져오는 데 실패했습니다.");
       }
     } catch (error) {
-      console.log("로그인에 실패하였습니다.", error);
+      window.alert('이메일과 휴대폰 번호가 맞지않습니다.');
     }
   };
 

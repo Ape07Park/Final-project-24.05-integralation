@@ -73,6 +73,7 @@ const RevenueItems = () => {
 
   const options = {
     plugins: {
+      labels: ['1','2','3','4','5'],
       datalabels: {
         color: "black",
         anchor: "end",
@@ -93,11 +94,9 @@ const RevenueItems = () => {
           minRotation: 0, // 레이블 최소 회전 각도
           autoSkip: true, // 레이블 자동 스킵 여부
           maxTicksLimit: 10, // 최대 표시할 레이블 수
-          callback: function (value) {
-            if (value.length > 10) {
-              return value.substring(0, 10) + '...'; // 일정 길이 이상인 경우 자르고 줄임표 추가
-            }
-            return value;
+          callback: function (index) {
+            const label = index + 1; // 레이블 값 가져오기
+            return label;
           },
         },
       },

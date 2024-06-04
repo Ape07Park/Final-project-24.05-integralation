@@ -10,11 +10,9 @@ export default function InquiryContent({ isOpen, handleClose, iid }) {
   const [issueType, setIssueType] = useState('');
   const [title, setTitle] = useState('');
   const [isPrivate, setIsPrivate] = useState(false);
-  const [receiveNotification, setReceiveNotification] = useState(false);
   const [form, setForm] = useState({ img: ''});
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
   const auth = getAuth();
 
   useEffect(() => {
@@ -33,7 +31,6 @@ export default function InquiryContent({ isOpen, handleClose, iid }) {
         try {
           const info = await selectUserData(currentUserEmail);
           setUserInfo(info);
-          setIsAdmin(info && info.isAdmin === 1);
         } catch (error) {
           console.log('사용자 정보를 불러오는 중 에러:', error);
         }
@@ -89,7 +86,17 @@ export default function InquiryContent({ isOpen, handleClose, iid }) {
     setTitle(null);
     setInquiry(null);
     setIsPrivate(false);
+    setForm('')
   };
+
+  const formImgDelete = (fieldName) => {
+    if (window.confirm("정말로 사진을 삭제하시겠습니까?")) {
+      setForm(prevForm => ({
+        ...prevForm,
+        [fieldName]: '' 
+      }));
+    }
+  }
 
   return (
     <Modal
@@ -119,11 +126,11 @@ export default function InquiryContent({ isOpen, handleClose, iid }) {
           label="비밀글 문의하기"
           style={{ marginBottom: '20px' }}
         />
-
         <br/>
         <img src={form.img} alt={form.img} className='form-image' style={{width: '20%'}}/>
         <br/>
         <input type="file" accept="image/*" onChange={(e) => handleUpload('img', e.target.files[0])} />
+        <Button size="small" style={{ border: '1px solid #f44336', backgroundColor: 'white', color: '#f44336', fontWeight: 'bold', }} onClick={() => formImgDelete('img')}>사진삭제</Button>
         <br/>
         <div style={{textAlign: 'center'}}>
         <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}

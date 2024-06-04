@@ -228,7 +228,7 @@ const ProductReviews = ({ reviews, item, reloadReviewData }) => {
 
       {/* 페이지네이션 UI */}
       <div className="pagination" style={{ display: 'flex', justifyContent: 'center' }}>
-        <Pagination count={Math.ceil(filteredReviews.length / reviewsPerPage)} page={currentPage} onChange={handlePageChange} />
+        <Pagination count={Math.ceil(filteredReviews.length / reviewsPerPage)} page={currentPage} variant="outlined" color="primary" onChange={handlePageChange} />
       </div>
 
       {/* 추가: 리뷰 수정 모달 */}

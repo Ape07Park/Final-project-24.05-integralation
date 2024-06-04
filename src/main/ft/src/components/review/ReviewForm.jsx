@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Typography, Grid, TextField } from "@mui/material";
-import { Button } from 'react-bootstrap';
+import { Modal, Typography, Grid, TextField, Button } from "@mui/material";
 import '../../css/reviewForm.css';
 import { uploadImage } from "../../api/cloudinary";
 import { selectUserData } from '../../api/firebase';
@@ -15,7 +14,6 @@ const ReviewFormModal = ({ isOpen, handleClose, iid, oiid }) => {
   const [form, setForm] = useState({ img: ''});
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
   const auth = getAuth();
 
   useEffect(() => {
@@ -34,7 +32,6 @@ const ReviewFormModal = ({ isOpen, handleClose, iid, oiid }) => {
         try {
           const info = await selectUserData(currentUserEmail);
           setUserInfo(info);
-          setIsAdmin(info && info.isAdmin === 1);
         } catch (error) {
           console.log('사용자 정보를 불러오는 중 에러:', error);
         }
@@ -92,6 +89,15 @@ const ReviewFormModal = ({ isOpen, handleClose, iid, oiid }) => {
     }
   }
 
+  const formImgDelete = (fieldName) => {
+    if (window.confirm("정말로 사진을 삭제하시겠습니까?")) {
+      setForm(prevForm => ({
+        ...prevForm,
+        [fieldName]: '' 
+      }));
+    }
+  }
+
   return (
     <Modal open={isOpen} onClose={handleClose}>
       <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: 'white', padding: 20 }}>
@@ -123,9 +129,10 @@ const ReviewFormModal = ({ isOpen, handleClose, iid, oiid }) => {
               <img src={form.img} alt={form.img} className='form-image' style={{width: '20%'}}/>
               <br/>
               <input type="file" accept="image/*" onChange={(e) => handleUpload('img', e.target.files[0])} />
+              <Button size="small" style={{ border: '1px solid #f44336', backgroundColor: 'white', color: '#f44336', fontWeight: 'bold', }} onClick={() => formImgDelete('img')}>사진삭제</Button>
             </Grid>
             <Grid item xs={12} textAlign="right">
-              <Button type='submit' variant='contained'>확인</Button>
+              <Button type='submit' variant='contained' style={{ marginRight: 5, border: '1px solid #1976d2', backgroundColor: 'white', color: '#1976d2', fontWeight: 'bold', }}>확인</Button>
             </Grid>
           </Grid>
         </form>

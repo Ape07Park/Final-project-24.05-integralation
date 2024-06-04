@@ -98,6 +98,15 @@ const ReviewEditModal = ({ open, handleClose, review, item }) => {
     }
   }
 
+  const formImgDelete = (fieldName) => {
+    if (window.confirm("정말로 사진을 삭제하시겠습니까?")) {
+      setForm(prevForm => ({
+        ...prevForm,
+        [fieldName]: '' 
+      }));
+    }
+  }
+
   return (
     <Modal open={open} onClose={handleClose}>
       <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: 'white', padding: 20 }}>
@@ -129,6 +138,7 @@ const ReviewEditModal = ({ open, handleClose, review, item }) => {
               <img src={form.img} alt={form.img} className='form-image' style={{width: '20%'}}/>
               <br/>
               <input type="file" accept="image/*" onChange={(e) => handleUpload('img', e.target.files[0])} />
+              <Button size="small" style={{ border: '1px solid #f44336', backgroundColor: 'white', color: '#f44336', fontWeight: 'bold', }} onClick={() => formImgDelete('img')}>사진삭제</Button>
             </Grid>
             <Grid item xs={12} textAlign="right">
               <Button type='submit' variant='contained'>확인</Button>

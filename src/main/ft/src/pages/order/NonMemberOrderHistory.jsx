@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 import {
   Box,
   Container,
@@ -12,26 +11,29 @@ import {
   Divider,
   TableContainer,
   Button,
-  TextField,
   FormControl,
   InputLabel,
   Input,
 } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
 import TrackerComponent from '../../components/deliveryTracker/TrackerComponent';
+import OrderDetailModal from '../../components/order/OrderDetailModal';
+import { deleteAdminOrderHistory, nonMembersOrderHistory } from '../../api/orderApi';
 
 const NonMemberOrderHistory = () => {
   const [name, setName] = useState('');
   const [tel, setTel] = useState('');
   const [orders, setOrders] = useState([]);
+  const [openOrderModal, setOpenOrderModal] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
   const navigate = useNavigate();
 
   const fetchOrderHistory = async () => {
     try {
-      const response = await axios.post('/ft/order/nonMembersOrderHistory', { name, tel });
+      const response = await nonMembersOrderHistory(name, tel);
       setOrders(response.data);
     } catch (error) {
-      console.error('주문 내역을 불러오는데 실패했습니다:', error);
+      console.log('주문 내역을 불러오는데 실패했습니다:', error);
       setOrders([]);
     }
   };
@@ -80,15 +82,7 @@ const NonMemberOrderHistory = () => {
   };
 
   const handleDelete = async (orderId) => {
-    const confirmDelete = window.confirm("정말로 주문을 취소하시겠습니까?");
-    if (!confirmDelete) return; 
-    try {
-      await axios.post('/ft/order/orderDelete', { oid: orderId });
-      console.log('주문 삭제 완료');
-      fetchOrderHistory();
-    } catch (error) {
-      console.error('주문 삭제 실패:', error);
-    }
+    deleteAdminOrderHistory(orderId);
   };
 
   const handleChange = (e) => {
@@ -113,6 +107,16 @@ const NonMemberOrderHistory = () => {
 
     // 상태 업데이트
     setTel(updatedTel);
+  };
+
+  const handleDetail = (order) => {
+    setSelectedOrder(order);
+    setOpenOrderModal(true);
+  };
+
+  const closeOrderDetailModal = () => {
+    setOpenOrderModal(false);
+    setSelectedOrder(null);
   };
 
   return (
@@ -168,6 +172,9 @@ const NonMemberOrderHistory = () => {
                     {/* 주문 번호 표시 */}
                     <Typography variant="subtitle1" sx={{ marginBottom: 1 }}>
                       주문 번호: {orderId}
+                      <Button size="small" sx={{marginLeft: 1}} onClick={() => handleDetail(orderList[0])}>
+                        상세조회
+                      </Button>
                     </Typography>
     
                     {/* 총 가격 표시 */}
@@ -252,6 +259,7 @@ const NonMemberOrderHistory = () => {
           <Typography variant="body1">조회된 주문 내역이 없습니다.</Typography>
         )}
       </Box>
+      <OrderDetailModal isOpen={openOrderModal} handleClose={closeOrderDetailModal} order={selectedOrder} />
     </Container>
   );
 };

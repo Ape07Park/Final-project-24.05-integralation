@@ -138,6 +138,10 @@ export default function ItemDetail() {
   }, [selectedOptions]);
 
   const handleAddToCart = () => {
+    if (!userInfo || !userInfo.email) {
+      window.location.href = '/signIn';
+      return;
+    }
     const cartItem = {
       iid: item.iid,
       email: currentUserEmail,
@@ -554,7 +558,7 @@ export default function ItemDetail() {
             </Container>
           </section>
         </Grid>
-        <Grid item xs={12} md={12}>
+        <Grid item xs={12} md={12} >
           <section id="review">
             <Grid container spacing={2} justifyContent="center" sx={{ paddingLeft: { xs: 2, md: 10 }, paddingRight: { xs: 2, md: 10 } }}>
               <Grid item xs={12}>
@@ -564,11 +568,11 @@ export default function ItemDetail() {
           </section>
         </Grid>
         <Grid item xs={12} md={12}>
-          <section id="qna">
+          <section id="qna" style={{marginTop: 100, marginBottom: 100}}>
             <Grid container spacing={2} justifyContent="center" sx={{ paddingLeft: { xs: 2, md: 10 }, paddingRight: { xs: 2, md: 10 } }}>
               <Grid item xs={12} >
                 <ProductQnA posts={qnAs} reloadQnAData={reloadQnAData}/>
-                <Button variant="contained" style={{ marginBottom: '20px', backgroundColor: '#808080', position:'relative', top:'-50px'}} onClick={() => openInquiryModal(iid)}>문의하기</Button>
+                <Button variant="contained" style={{ marginBottom: '20px', position:'relative', top:'-50px', border: '1px solid #1976d2', backgroundColor: 'white', color: '#1976d2', fontWeight: 'bold',}} onClick={() => openInquiryModal(iid)}>문의하기</Button>
                 <InquiryContent isOpen={isInquiryModalOpen} handleClose={closeInquiryModal} iid={iid}/>
               </Grid>
             </Grid>

@@ -32,7 +32,7 @@ const DashboardPage = () => {
           <Calendar />
           ) : (
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Box className="graph-section" mb={5} sx={{ width: "55%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+            <Box className="graph-section" mb={5} sx={{ width: "75%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
               <WeeklySales />
               <RevenueItems />
             </Box>

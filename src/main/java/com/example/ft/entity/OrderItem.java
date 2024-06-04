@@ -15,7 +15,6 @@ import lombok.ToString;
 @Builder
 
 public class OrderItem {
-	
 	private int oiid;
 	private int oid;
 	private int iid;

@@ -1,5 +1,5 @@
 import React from "react";
-import { CardContent, CardMedia, Typography } from "@mui/material";
+import { CardContent, CardMedia } from "@mui/material";
 
 import Rating from "../review/Rating"; 
 import { Card } from "react-bootstrap";

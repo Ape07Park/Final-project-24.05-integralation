@@ -120,7 +120,7 @@ public interface OrderDao {
 	void oiidReviewUpdate(int oiid);
 	
 	// 비회원
-	@Select(" SELECT o.oid, o.email, o.status, o.totalPrice, o.regDate, o.way, "
+	@Select(" SELECT o.oid, o.email, o.status, o.totalPrice, o.regDate, o.way, o.postCode, o.addr, o.detailAddr, o.tel, "
 			+ " oi.count, oi.price, oi.review, oi.oiid, i.name, i.img1, i.iid, itemOption.option  " + " FROM `order` o "
 			+ " JOIN orderItem oi ON o.oid = oi.oid " + " JOIN item i ON oi.iid = i.iid "
 			+ " JOIN itemOption ON oi.iid = itemOption.iid AND oi.ioid = itemOption.ioid "

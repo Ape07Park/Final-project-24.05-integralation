@@ -210,16 +210,13 @@ public class ItemController {
 
 	@PostMapping("/update")
 	public String ItemUpdate(@RequestBody ItemRequest itemRequest) {
-		String img1 = (itemRequest.getImg1() == null || itemRequest.getImg1().equals(""))? itemService.getItemIId(itemRequest.getIid()).getImg1():itemRequest.getImg1();
-		String img2 = (itemRequest.getImg2() == null || itemRequest.getImg2().equals(""))? itemService.getItemIId(itemRequest.getIid()).getImg2():itemRequest.getImg2();
-		String img3 = (itemRequest.getImg3() == null || itemRequest.getImg3().equals(""))? itemService.getItemIId(itemRequest.getIid()).getImg3():itemRequest.getImg3();
 		// 상품 정보 업데이트
 	    Item item = Item.builder()
 	            .name(itemRequest.getName())
 	            .category(itemRequest.getCategory())
-	            .img1(img1)
-	            .img2(img2)
-	            .img3(img3)
+	            .img1(itemRequest.getImg1())
+	            .img2(itemRequest.getImg2())
+	            .img3(itemRequest.getImg3())
 	            .content(itemRequest.getContent())
 	            .price(itemRequest.getPrice())
 	            .iid(itemRequest.getIid())

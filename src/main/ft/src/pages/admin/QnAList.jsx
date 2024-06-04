@@ -9,7 +9,7 @@ import EditModal from '../../components/QnA/EditModal';
 import QnAPost from '../../components/QnA/QnAPost';
 import { adminQnAList } from '../../api/boardApi';
 import { fetchReplies, postReply, updateReply, deleteReply } from '../../api/replyApi';
-import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 const queryClient = new QueryClient();
 
@@ -332,6 +332,8 @@ function QnAListContent() {
               page={currentPage}
               onChange={handlePageChange}
               disabled={posts.length === 0} // 포스트가 없을 때 페이지네이션 비활성화
+              variant="outlined"
+              color="primary"
             />
           </div>
           <EditModal

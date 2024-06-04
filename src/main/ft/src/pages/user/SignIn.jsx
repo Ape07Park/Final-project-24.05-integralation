@@ -175,6 +175,12 @@ function SignIn() {
                     휴대폰
                   </Link>
                 </Typography>
+                <Typography>
+                  관리자 아이디: admin@gmail.com
+                </Typography>
+                <Typography>
+                  관리자 패스워드: 123456
+                </Typography>
               </Box>
             </Box>
 

@@ -21,7 +21,6 @@ export default function ProductQnA({ posts, reloadQnAData }) {
   const [selectedPostIndex, setSelectedPostIndex] = useState(null);
   const isMobile = useMediaQuery('(max-width:600px)');
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
-  const [userInfo, setUserInfo] = useState(null);
   const auth = getAuth();
   const [replyStatus, setReplyStatus] = useState({});
   const [replies, setReplies] = useState({});
@@ -43,7 +42,6 @@ export default function ProductQnA({ posts, reloadQnAData }) {
       const fetchUserInfo = async () => {
         try {
           const info = await selectUserData(currentUserEmail);
-          setUserInfo(info);
         } catch (error) {
           console.log('사용자 정보를 불러오는 중 에러:', error);
         }
@@ -254,6 +252,8 @@ export default function ProductQnA({ posts, reloadQnAData }) {
           count={Math.ceil(filteredPosts.length / postsPerPage)}
           page={currentPage}
           onChange={handlePageChange}
+          variant="outlined" 
+          color="primary"
         />
       </div>
 

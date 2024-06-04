@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, Table, TableBody, TableCell, TableHead, TableRow, Divider, TableContainer,
-          Button, Box, Stack, Select, MenuItem, CircularProgress, } from "@mui/material";
+import { Container, Typography, Table, TableBody, TableCell, TableHead, TableRow, Divider, TableContainer, Button, Box, Stack, Select, MenuItem, CircularProgress } from "@mui/material";
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import WayModal from '../../components/order/WayModal';
 import AdminCategoryBar from '../../components/admin/AdminCategoryBar';
+import AdminOrderDetailModal from '../../components/admin/AdminOrderDetailModal';
 import TrackerComponent from '../../components/deliveryTracker/TrackerComponent';
 import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
 import { deleteAdminOrderHistory, fetchAdminOrderHistory } from '../../api/orderApi';
@@ -24,6 +24,8 @@ const AdminOrderHistoryListContent = () => {
   const [sortBy, setSortBy] = useState('orderId');
   const [openModal, setOpenModal] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [openOrderModal, setOpenOrderModal] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
   const navigate = useNavigate();
   const auth = getAuth();
 
@@ -53,9 +55,9 @@ const AdminOrderHistoryListContent = () => {
 
   const getGroupedOrders = () => {
     if (!orders || !Array.isArray(orders)) {
-      return {}; 
+      return {};
     }
-  
+
     return orders.reduce((acc, order) => {
       if (!acc[order.oid]) {
         acc[order.oid] = [];
@@ -65,11 +67,10 @@ const AdminOrderHistoryListContent = () => {
     }, {});
   };
 
-  
   const sortedOrders = () => {
     if (sortBy === 'orderId') {
       return Object.entries(getGroupedOrders())
-        .sort(([orderIdA, orderListA], [orderIdB, orderListB]) => orderIdB - orderIdA)
+        .sort(([orderIdA], [orderIdB]) => orderIdB - orderIdA)
         .map(([orderId, orderList]) => ({
           orderId,
           orderList,
@@ -78,7 +79,7 @@ const AdminOrderHistoryListContent = () => {
     } else if (sortBy === 'status') {
       return Object.entries(getGroupedOrders())
         .sort(([orderIdA, orderListA], [orderIdB, orderListB]) => {
-          const statusA = (orderListA[0]?.status || '').toLowerCase(); 
+          const statusA = (orderListA[0]?.status || '').toLowerCase();
           const statusB = (orderListB[0]?.status || '').toLowerCase();
           if (statusA > statusB) {
             return -1;
@@ -95,6 +96,7 @@ const AdminOrderHistoryListContent = () => {
         }));
     }
   };
+
   const handleSortChange = (event) => {
     setSortBy(event.target.value);
   };
@@ -113,9 +115,19 @@ const AdminOrderHistoryListContent = () => {
     await deleteAdminOrderHistory(orderId);
   };
 
+  const handleDetail = (order) => {
+    setSelectedOrder(order);
+    setOpenOrderModal(true);
+  };
+
+  const closeOrderDetailModal = () => {
+    setOpenOrderModal(false);
+
+  };
+
   return (
     <Container fixed sx={{ mb: 5 }}>
-      <AdminCategoryBar/>
+      <AdminCategoryBar />
       <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 2 }}>
         <Select value={sortBy} onChange={handleSortChange}>
           <MenuItem value="orderId">주문 번호별 정렬</MenuItem>
@@ -125,50 +137,52 @@ const AdminOrderHistoryListContent = () => {
 
       <Divider sx={{ mb: 2 }} />
 
-      {isLoading ? ( // Check if loading
+      {isLoading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px' }}>
-          <CircularProgress /> 
+          <CircularProgress />
         </Box>
       ) : (
         sortedOrders().map(({ orderId, orderList, totalPrice }) => (
           <Box key={orderId} sx={{ mb: 3 }}>
             <Stack direction="row" spacing={2} alignItems="center">
               <Typography variant="h6">주문 번호: {orderId}</Typography>
+              <Button size="small" variant="contained" onClick={() => handleDetail(orderList[0])}>
+                주문 상세 정보
+              </Button>
               <Typography variant="body2">주문자: {orderList[0].email}</Typography>
               <Typography variant="body2">주문날짜: {orderList[0].regDate.substring(0, 10)}</Typography>
               <Typography variant="body2">총 가격: {totalPrice.toLocaleString()}원</Typography>
-              <Typography variant="body2">
-                {orderList[0].way ? (  
-                  <div onClick={() => DeliveryTracker(orderList[0].way)} style={{ cursor: 'pointer', textAlign:'center' }}>
+              <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center' }}>
+                배송 상태:
+                {orderList[0].way ? (
+                  <div onClick={() => DeliveryTracker(orderList[0].way)} style={{ cursor: 'pointer', textAlign: 'center', marginLeft: 8 }}>
                     <TrackerComponent order={orderList[0]} />
                   </div>
-                ) : orderList[0].status}
+                ) : (
+                  <span style={{ marginLeft: 8 }}>{orderList[0].status}</span>
+                )}
               </Typography>
               <WayModal
                 open={openModal && selectedOrderId === orderId}
                 onClose={handleCloseModal}
                 order={orderList[0]}
               />
-              <Typography variant="body2" onClick={() => handleOpenModal(orderId)} style={{cursor: 'pointer'}}>
+              <Typography variant="body2" onClick={() => handleOpenModal(orderId)} style={{ cursor: 'pointer' }}>
                 {orderList.some(order => order.way) ? (
                   <>송장 번호: {orderList[0].way}</>
                 ) : (
                   orderList[0].isDeleted !== 2 && (
-                  <Button size="small" variant="contained" onClick={() => handleOpenModal(orderId)}>
-                    송장 입력
-                  </Button>
+                    <Button size="small" variant="contained" style={{ marginRight: 5, border: '1px solid #1976d2', backgroundColor: 'white', color: '#1976d2', fontWeight: 'bold', }} onClick={() => handleOpenModal(orderId)}>
+                      송장 입력
+                    </Button>
                   )
                 )}
               </Typography>
-
               {orderList[0].isDeleted !== 2 && (
-                <Button size="small" variant="contained" color="error" onClick={() => handleDelete(orderId)}>
+                <Button size="small" variant="contained" color="error" style={{ border: '1px solid #f44336', backgroundColor: 'white', color: '#f44336', fontWeight: 'bold', }} onClick={() => handleDelete(orderId)}>
                   주문취소
                 </Button>
               )}
-              <Divider sx={{ mb: 2 }} />
-              <Typography variant="body2">주소: ({orderList[0].postCode}) {orderList[0].addr} {orderList[0].detailedAddr}</Typography>
-
             </Stack>
             <TableContainer>
               <Table>
@@ -203,7 +217,7 @@ const AdminOrderHistoryListContent = () => {
                         {order.price.toLocaleString()}원
                       </TableCell>
                       <TableCell align="center" style={{ color: 'red' }}>
-                        <Typography variant='h4'>{order.isDeleted}</Typography>
+                        <Typography variant="h4">{order.isDeleted}</Typography>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -214,12 +228,14 @@ const AdminOrderHistoryListContent = () => {
           </Box>
         ))
       )}
-
       {!isLoading && sortedOrders().length === 0 && (
         <Typography variant="h6" align="center">
           주문 내역이 없습니다.
         </Typography>
       )}
+
+<AdminOrderDetailModal isOpen={openOrderModal} handleClose={closeOrderDetailModal} order={selectedOrder} />
+
     </Container>
   );
 };

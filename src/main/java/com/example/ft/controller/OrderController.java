@@ -104,7 +104,7 @@ public class OrderController {
 
 		// 사용자 이메일을 이용하여 주문 목록을 조회합니다.
 		List<OrderHistory> orderList = orderService.getOrderHistoryList(email);
-		
+
 		if (orderList.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
@@ -123,7 +123,7 @@ public class OrderController {
 		}
 
 		List<OrderHistory> allOrderList = orderService.getOrderHistoryListForAdmin();
-		
+
 		if (allOrderList.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}

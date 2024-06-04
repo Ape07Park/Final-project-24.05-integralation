@@ -57,7 +57,7 @@ export async function fetchOrderHistory(currentUserEmail) {
     } else {
       console.log('Failed to fetch order history:', error.message);
     }
-    alert(error);
+    console.log(error);
   }
 }
 
@@ -103,3 +103,13 @@ export async function deleteAdminOrderHistory(orderId) {
     console.log('주문 삭제 실패:', error);
   }
 }
+
+export const nonMembersOrderHistory = async (name, tel) => {
+  try {
+    const response = await axios.post('/ft/order/nonMembersOrderHistory', { name, tel });
+    return response; // 가져온 데이터 반환
+  } catch (error) {
+    console.log('데이터를 불러오는 중 에러:', error);
+    throw error;
+  }
+};

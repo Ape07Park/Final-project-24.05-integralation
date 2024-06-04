@@ -20,7 +20,6 @@ export default function BackgroundRemoval({ imageFile }) {
 
   const removeBackground = async () => {
     if (!imgFile) {
-      console.log('No image selected.');
       return;
     }
 
@@ -73,7 +72,6 @@ export default function BackgroundRemoval({ imageFile }) {
   const addImage = (imageData) => {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-
     // 캔버스의 크기를 이미지에 2배
     canvas.width = 1000;   
     canvas.height = 1000; 
@@ -88,17 +86,17 @@ export default function BackgroundRemoval({ imageFile }) {
   const addBlackBackground = (imageData) => {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    
     // 캔버스의 크기를 이미지와 같게 설정
     canvas.width = 1000;  
     canvas.height = 1000; 
     ctx.fillStyle = 'black';         
     ctx.fillRect(0, 0, canvas.width, canvas.height);  // 위에서의 내용을 적용 x 0, y 0에서부터 그린다
-    ctx.drawImage(imageData, (1000 - imageData.width) / 2, (1000 - imageData.height) / 2);                   // 적용할 그림을 x 0, y 0에서부터 그린다
+    ctx.drawImage(imageData, (1000 - imageData.width) / 2, (1000 - imageData.height) / 2); // 적용할 그림을 x 0, y 0에서부터 그린다
 
     return canvas.toDataURL();
   };
 
+  // 마스크 base64 > 파일 형식 변환
   const setMaskImageFile = (base64Data) => {
     const byteString = atob(base64Data.split(',')[1]);
     const ab = new ArrayBuffer(byteString.length);
@@ -111,6 +109,7 @@ export default function BackgroundRemoval({ imageFile }) {
     setMaskImage(file);
   };
 
+  // 원본 base64 > 파일 형식 변환
   const setImageFile = (base64Data) => {
     const byteString = atob(base64Data.split(',')[1]);
     const ab = new ArrayBuffer(byteString.length);

@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
-
 import Button from '@mui/material/Button';
 import { updateUserData } from '../../api/firebase'; // updateUserData 함수 import
 import { useLocation, useNavigate, Link } from 'react-router-dom'; // useHistory 대신 useNavigate 사용
 import { useDaumPostcodePopup } from 'react-daum-postcode';
-
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import CustomButton from '../../components/publics/CustomButton';
 
 // 디자인
 function Copyright(props) {
@@ -40,9 +39,7 @@ export default function UserUpdate() {
   const [detailAddr, setDetailAddr] = useState('');
   const [tel, setTel] = useState('');
   const [req, setReq] = useState('');
-
   const [messageType, setMessageType] = useState('');
-
   // 현재 페이지의 URL 정보를 가져오기 위해 useLocation 훅 사용
   const location = useLocation();
   // 페이지 이동을 위한 함수 가져오기
@@ -221,7 +218,7 @@ export default function UserUpdate() {
                 </Grid>
 
                 <Grid item xs={12}>
-                  <Button
+                  <CustomButton
                     fullWidth
                     type="button"
                     variant="contained"
@@ -229,7 +226,7 @@ export default function UserUpdate() {
                     onClick={() => openPostcode({ onComplete: handleComplete })}
                   >
                     주소 찾기
-                  </Button>
+                  </CustomButton>
                 </Grid>
 
                 <Grid item xs={12}>
@@ -312,14 +309,14 @@ export default function UserUpdate() {
                 </Grid>
               </Grid>
               {/* 사용자 정보 업데이트 버튼 */}
-              <Button
+              <CustomButton
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 1 }} // 간격 조정
                 onClick={handleUpdate}
               >
                 수정
-              </Button>
+              </CustomButton>
 
               {/* 취소 버튼 */}
               <Button

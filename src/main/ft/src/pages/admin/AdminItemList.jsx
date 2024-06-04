@@ -203,9 +203,9 @@ export default function AdminItemList() {
                       </tr>
                       <tr>
                         <td colSpan={2}>
-                          <Button variant="contained" color="primary" size="small" style={{ marginRight: 10 }} onClick={() => { navigate(`/admin/item/update/${item.iid}`) }}>수정</Button>
-                          <Button variant="contained" color="primary" size="small" style={{ marginRight: 10 }} onClick={() => openModal(item.iid, item.price, item.cost, item.salePrice, item.saleDate)}>  세일</Button>
-                          <Button variant="contained" color="error" size="small" onClick={() => deleteItem(item.iid)}>삭제</Button>
+                          <Button variant="contained" color="primary" size="small" style={{ marginRight: 10, border: '1px solid #1976d2', backgroundColor: 'white', color: '#1976d2', fontWeight: 'bold', }} onClick={() => { navigate(`/admin/item/update/${item.iid}`) }}>수정</Button>
+                          <Button variant="contained" color="primary" size="small" style={{ marginRight: 10, border: '1px solid #1976d2', backgroundColor: 'white', color: '#1976d2', fontWeight: 'bold', }} onClick={() => openModal(item.iid, item.price, item.cost, item.salePrice, item.saleDate)}>  세일</Button>
+                          <Button variant="contained" color="error" size="small" style={{ border: '1px solid #f44336', backgroundColor: 'white', color: '#f44336', fontWeight: 'bold', }} onClick={() => deleteItem(item.iid)}>삭제</Button>
                         </td>
                       </tr>
                     </tbody>

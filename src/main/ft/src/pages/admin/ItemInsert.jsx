@@ -99,6 +99,15 @@ export default function ItemInsert() {
     }
   }
 
+  const formImgDelete = (fieldName) => {
+    if (window.confirm("정말로 사진을 삭제하시겠습니까?")) {
+      setForm(prevForm => ({
+        ...prevForm,
+        [fieldName]: '' 
+      }));
+    }
+  }
+
   return (
     <div className='itemInsert'>
       <Card className='itemInsert-card'>
@@ -146,16 +155,19 @@ export default function ItemInsert() {
               <img src={form.img1} alt={form.img1} className='form-image' />
               <br/>
               <input type="file" accept="image/*" onChange={(e) => handleUpload('img1', e.target.files[0])} />
+              <Button size="small" style={{ border: '1px solid #f44336', backgroundColor: 'white', color: '#f44336', fontWeight: 'bold', }} onClick={() => formImgDelete('img1')}>사진삭제</Button>
             </div>
             <div className='images-container'>
               <img src={form.img2} alt={form.img2} className='form-image' />
               <br/>
               <input type="file" accept="image/*" onChange={(e) => handleUpload('img2', e.target.files[0])} />
+              <Button size="small" style={{ border: '1px solid #f44336', backgroundColor: 'white', color: '#f44336', fontWeight: 'bold', }} onClick={() => formImgDelete('img2')}>사진삭제</Button>
             </div>
             <div className='images-container'>
               <img src={form.img3} alt={form.img3} className='form-image' />
               <br/>
               <input type="file" accept="image/*" onChange={(e) => handleUpload('img3', e.target.files[0])} />
+              <Button size="small" style={{ border: '1px solid #f44336', backgroundColor: 'white', color: '#f44336', fontWeight: 'bold', }} onClick={() => formImgDelete('img3')}>사진삭제</Button>
             </div>
             <Button type='submit' variant='contained' className='form-button'>등록</Button>
           </form>

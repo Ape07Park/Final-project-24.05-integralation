@@ -70,8 +70,6 @@ export default function Karlo({ image, maskImage }) {
     readerImage.readAsDataURL(selectedImage);
   };
 
-
-
   return (
     <>
       {loading ? ( 

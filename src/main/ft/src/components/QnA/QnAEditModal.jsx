@@ -101,6 +101,15 @@ export default function QnAEditModal({ isOpen, handleClose, posts }) {
     handleClose();
   };
 
+  const formImgDelete = (fieldName) => {
+    if (window.confirm("정말로 사진을 삭제하시겠습니까?")) {
+      setForm(prevForm => ({
+        ...prevForm,
+        [fieldName]: '' 
+      }));
+    }
+  }
+
   return (
     <Modal
       open={isOpen}
@@ -127,8 +136,7 @@ export default function QnAEditModal({ isOpen, handleClose, posts }) {
           label="비밀글 문의하기"
           style={{ marginBottom: '20px' }}
         />
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }}>
-          <input type="file" accept="image/*" onChange={(e) => handleUpload('img', e.target.files[0])} style={{ marginRight: '10px' }} />
+        <div style={{ marginBottom: '20px' }}>
           {form.img ? (
             <img
               src={form.img}
@@ -145,9 +153,11 @@ export default function QnAEditModal({ isOpen, handleClose, posts }) {
             <div style={{ width: '100px', height: '100px', backgroundColor: '#f0f0f0', borderRadius: '5px' }}></div>
           )}
         </div>
+        <input type="file" accept="image/*" onChange={(e) => handleUpload('img', e.target.files[0])} style={{ marginRight: '10px' }} />
+        <Button size="small" style={{ border: '1px solid #f44336', backgroundColor: 'white', color: '#f44336', fontWeight: 'bold', }} onClick={() => formImgDelete('img')}>사진삭제</Button>
         <div style={{ textAlign: 'center' }}>
-          <Button type="submit" variant="contained" color="primary" onClick={handleSubmit} style={{ marginRight: '5px', fontWeight: 'bold' }}>등록</Button>
-          <Button variant="contained" color="error" onClick={handleCancel} style={{ fontWeight: 'bold' }}>취소</Button>
+          <Button type="submit" variant="contained" color="primary" onClick={handleSubmit} style={{ marginRight: 5, border: '1px solid #1976d2', backgroundColor: 'white', color: '#1976d2', fontWeight: 'bold', }}>등록</Button>
+          <Button variant="contained" color="error" onClick={handleCancel} style={{ border: '1px solid #f44336', backgroundColor: 'white', color: '#f44336', fontWeight: 'bold', }}>취소</Button>
         </div>
       </div>
     </Modal>
