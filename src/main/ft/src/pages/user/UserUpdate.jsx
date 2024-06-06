@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { updateUserData } from '../../api/firebase'; // updateUserData 함수 import
+import { auth, updatePassword, updateUserData } from '../../api/firebase'; // updateUserData 함수 import
 import { useLocation, useNavigate, Link } from 'react-router-dom'; // useHistory 대신 useNavigate 사용
 import { useDaumPostcodePopup } from 'react-daum-postcode';
 import Grid from '@mui/material/Grid';
@@ -114,10 +114,16 @@ export default function UserUpdate() {
     };
 
     try {
-      // 사용자 정보 업데이트 요청
+      const currentUser = auth.currentUser;
+
+      // auth에서 비밀번호 변경
+      await updatePassword(currentUser, password);
+
+      // db에 사용자 정보 업데이트 요청
       await updateUserData(updatedUserInfo);
       // 업데이트 후, 이전 페이지로 이동
       navigate(-1);
+      
     } catch (error) {
       console.log('사용자 정보 업데이트 중 오류:', error);
     }
